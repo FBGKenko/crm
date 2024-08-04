@@ -18,4 +18,28 @@ class identificacion extends Model
     public function seccion(){
         return $this->belongsTo(seccion::class);
     }
+    public static function crear($response){
+        $identificacion = new identificacion();
+        $identificacion->persona_id = $response['idPersona'];
+        $identificacion->curp = trim(strtoupper($response['curp']));
+        $identificacion->clave_elector = trim(strtoupper($response['claveElectoral']));
+        $identificacion->lugarNacimiento = trim(strtoupper($response['lugarNacimiento']));
+        if($response['seccion'] > 0){
+            $identificacion->seccion_id = $response['seccion'];
+        }
+        $identificacion->save();
+        return $identificacion;
+    }
+
+    public static function modificar($response, $identificacion){
+        $identificacion->persona_id = $response['idPersona'];
+        $identificacion->curp = trim(strtoupper($response['curp']));
+        $identificacion->clave_elector = trim(strtoupper($response['claveElectoral']));
+        $identificacion->lugarNacimiento = trim(strtoupper($response['lugarNacimiento']));
+        if($response['seccion'] > 0){
+            $identificacion->seccion_id = $response['seccion'];
+        }
+        $identificacion->save();
+        return $identificacion;
+    }
 }

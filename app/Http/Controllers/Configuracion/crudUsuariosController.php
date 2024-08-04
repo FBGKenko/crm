@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Configuracion;
 
+use App\Http\Controllers\Controller;
 use App\Models\bitacora;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
@@ -28,7 +29,7 @@ class crudUsuariosController extends Controller
         $bitacora->save();
 
         $roles = Role::where('name', '!=', 'SUPER ADMINISTRADOR')->get(['name']);
-        return view('crudUsuarios', compact('roles'));
+        return view('Pages.usuarios.crudUsuarios', compact('roles'));
     }
     public function todosUsuarios(Request $formulario){
         $user = auth()->user();

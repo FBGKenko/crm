@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Contacto;
 
+use App\Http\Controllers\Controller;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
 use App\Models\domicilio;
@@ -14,12 +15,6 @@ class mapaController extends Controller
 {
     public function index(){
         $user = auth()->user();
-
-        // $user = auth()->user();
-        // // return $user;
-        // $niveles = isset($user->niveles) ? explode( ',', $user->niveles) : null;
-        // return $niveles; //APLICAR TRIM A CADA NIVEL
-
         $user = auth()->user();
         switch ($user->nivel_acceso) {
             case 'TODO':
@@ -82,6 +77,6 @@ class mapaController extends Controller
             $domicilioArray[] = $coordenadas;
         }
 
-        return view('mapa', compact('domicilioArray'));
+        return view('Pages.contactos.mapa', compact('domicilioArray'));
     }
 }

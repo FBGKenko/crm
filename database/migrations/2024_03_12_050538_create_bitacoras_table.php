@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('bitacoras', function (Blueprint $table) {
             $table->id();
-            $table->string('accion');
-            $table->string('url');
+            $table->text('accion');
+            $table->text('url');
             $table->string('ip');
             $table->string('tipo');
             $table->foreignId('user_id')->nullable()->constrained();

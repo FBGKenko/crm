@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Encuestas;
 
+use App\Http\Controllers\Controller;
 use App\Exports\resultadoExport;
 use App\Models\encuesta;
 use App\Models\persona;
@@ -17,7 +18,7 @@ class crudResultadosController extends Controller
 {
     public function index(){
          $user = auth()->user();
-        return view('respuestasEncuestas', ['codigoUsuario' => $user->id]);
+        return view('Pages.Encuestas.respuestasEncuestas', ['codigoUsuario' => $user->id]);
     }
     public function inicializar(){
         $encuestas = encuesta::where(function($query){

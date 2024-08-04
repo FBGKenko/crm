@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Marketing;
 
+use App\Http\Controllers\Controller;
 use App\Models\objetivo;
 use App\Models\oportunidad;
 use Exception;
@@ -12,11 +13,7 @@ use Illuminate\Support\Facades\Log;
 class crudObjetivoController extends Controller
 {
     public function index(){
-        return view('crudObjetivos');
-    }
-
-    public function inicializar(Request $formulario){
-
+        return view('Pages.marketing.crudObjetivos');
     }
 
     public function cargarTabla(Request $formulario){

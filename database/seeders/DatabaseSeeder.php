@@ -249,66 +249,66 @@ class DatabaseSeeder extends Seeder
             $seccion->objetivo =  $dato[1]/2;
             $seccion->save();
         }
-        $datos = Excel::toCollection(new personasYDatosImport, storage_path('app/Catalogos/FORMATO CARGA INICIAL OK.xlsx'));
-        foreach ($datos[0] as $dato) {
-            if(!isset($dato[1])){
-                break;
-            }
-            $nuevaPersona = new persona();
-            if(isset($dato[0])){
-                $numero_serie = $dato[0];
-                echo $numero_serie."\n";
-                $fecha = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($numero_serie);
-                $nuevaPersona->fecha_registro = $fecha; // Salida: 2024-01-01;
-                echo 'Fecha creacion:'.$fecha->format('Y-m-d')."\n";
-            }
-            $nuevaPersona->folio = $dato[1];
-            $nuevaPersona->nombres = $dato[2];
-            $nuevaPersona->apellido_paterno = $dato[3];
-            $nuevaPersona->apellido_materno = $dato[4];
-            $nuevaPersona->genero = ($dato[5] == 'M') ? 'HOMBRE' : 'MUJER';
-            $nuevaPersona->telefono_celular = $dato[6];
-            $nuevaPersona->telefono_fijo = $dato[7];
-            $nuevaPersona->correo = $dato[8];
-            $nuevaPersona->nombre_en_facebook = $dato[24];
-            $nuevaPersona->escolaridad = $dato[25];
-            $nuevaPersona->afiliado = $dato[27];
-            $nuevaPersona->simpatizante = $dato[26];
-            $nuevaPersona->programa = $dato[28];
-            $nuevaPersona->funcion_en_campania = $dato[29];
-            if(isset($dato[12])){
-                $numero_serie = $dato[12];
-                echo $numero_serie."\n";
-                $fecha = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($numero_serie);
-                $nuevaPersona->fecha_nacimiento =  $fecha; // Salida: 2024-01-01;
-                echo 'Fecha nacimiento:'.$fecha->format('Y-m-d')."\n";
-            }
-            // $nuevaPersona->edadPromedio = $dato->; CALCULAR CON FECHA NACIMIENTO
-            $nuevaPersona->observaciones = $dato[31];
-            $nuevaPersona->etiquetas = $dato[30];
-            $nuevaPersona->rolEstructura = $dato[19];
-            $nuevaPersona->rolNumero = $dato[20];
-            $nuevaPersona->save();
+        // $datos = Excel::toCollection(new personasYDatosImport, storage_path('app/Catalogos/FORMATO CARGA INICIAL OK.xlsx'));
+        // foreach ($datos[0] as $dato) {
+        //     if(!isset($dato[1])){
+        //         break;
+        //     }
+        //     $nuevaPersona = new persona();
+        //     if(isset($dato[0])){
+        //         $numero_serie = $dato[0];
+        //         echo $numero_serie."\n";
+        //         $fecha = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($numero_serie);
+        //         $nuevaPersona->fecha_registro = $fecha; // Salida: 2024-01-01;
+        //         echo 'Fecha creacion:'.$fecha->format('Y-m-d')."\n";
+        //     }
+        //     $nuevaPersona->folio = $dato[1];
+        //     $nuevaPersona->nombres = $dato[2];
+        //     $nuevaPersona->apellido_paterno = $dato[3];
+        //     $nuevaPersona->apellido_materno = $dato[4];
+        //     $nuevaPersona->genero = ($dato[5] == 'M') ? 'HOMBRE' : 'MUJER';
+        //     $nuevaPersona->telefono_celular = $dato[6];
+        //     $nuevaPersona->telefono_fijo = $dato[7];
+        //     $nuevaPersona->correo = $dato[8];
+        //     $nuevaPersona->nombre_en_facebook = $dato[24];
+        //     $nuevaPersona->escolaridad = $dato[25];
+        //     $nuevaPersona->afiliado = $dato[27];
+        //     $nuevaPersona->simpatizante = $dato[26];
+        //     $nuevaPersona->programa = $dato[28];
+        //     $nuevaPersona->funcion_en_campania = $dato[29];
+        //     if(isset($dato[12])){
+        //         $numero_serie = $dato[12];
+        //         echo $numero_serie."\n";
+        //         $fecha = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($numero_serie);
+        //         $nuevaPersona->fecha_nacimiento =  $fecha; // Salida: 2024-01-01;
+        //         echo 'Fecha nacimiento:'.$fecha->format('Y-m-d')."\n";
+        //     }
+        //     // $nuevaPersona->edadPromedio = $dato->; CALCULAR CON FECHA NACIMIENTO
+        //     $nuevaPersona->observaciones = $dato[31];
+        //     $nuevaPersona->etiquetas = $dato[30];
+        //     $nuevaPersona->rolEstructura = $dato[19];
+        //     $nuevaPersona->rolNumero = $dato[20];
+        //     $nuevaPersona->save();
 
-            $nuevaIdentificacion = new identificacion();
-            $nuevaIdentificacion->clave_elector = $dato[9];
-            $nuevaIdentificacion->curp = $dato[10];
-            $nuevaIdentificacion->persona_id = $nuevaPersona->id;
-            $nuevaIdentificacion->seccion_id = $dato[11];
-            $nuevaIdentificacion->save();
+        //     $nuevaIdentificacion = new identificacion();
+        //     $nuevaIdentificacion->clave_elector = $dato[9];
+        //     $nuevaIdentificacion->curp = $dato[10];
+        //     $nuevaIdentificacion->persona_id = $nuevaPersona->id;
+        //     $nuevaIdentificacion->seccion_id = $dato[11];
+        //     $nuevaIdentificacion->save();
 
-            $domicilio = new domicilio();
-            $domicilio->calle = $dato[14];
-            $domicilio->numero_exterior = $dato[15];
-            $domicilio->numero_interior = $dato[16];
-            $idColonia = colonia::where('nombre', $dato[17])->first();
-            if(isset($idColonia)){
-                $domicilio->colonia_id = $idColonia->id;
-            }
-            $domicilio->latitud = $dato[22];
-            $domicilio->longitud = $dato[23];
-            $domicilio->identificacion_id = $nuevaIdentificacion->id;
-            $domicilio->save();
-        }
+        //     $domicilio = new domicilio();
+        //     $domicilio->calle = $dato[14];
+        //     $domicilio->numero_exterior = $dato[15];
+        //     $domicilio->numero_interior = $dato[16];
+        //     $idColonia = colonia::where('nombre', $dato[17])->first();
+        //     if(isset($idColonia)){
+        //         $domicilio->colonia_id = $idColonia->id;
+        //     }
+        //     $domicilio->latitud = $dato[22];
+        //     $domicilio->longitud = $dato[23];
+        //     $domicilio->identificacion_id = $nuevaIdentificacion->id;
+        //     $domicilio->save();
+        // }
     }
 }

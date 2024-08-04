@@ -15,4 +15,45 @@ class domicilio extends Model
     public function colonia(){
         return $this->belongsTo(colonia::class);
     }
+
+    public static function crear($response){
+        $coordenadas = explode(',',$response['coordenadas']);
+        $domicilio = new domicilio();
+        $domicilio->calle1 = trim(strtoupper($response['calle1']));
+        $domicilio->calle2 = trim(strtoupper($response['calle2']));
+        $domicilio->calle3 = trim(strtoupper($response['calle3']));
+        $domicilio->numero_exterior = $response['numeroExterior'];
+        $domicilio->numero_interior = $response['numeroInterior'];
+        $domicilio->referencia = trim(strtoupper($response['referencia']));
+        if($response['colonia'] > 0){
+            $domicilio->colonia_id = $response['colonia'];
+        }
+        $domicilio->identificacion_id = $response['idIdentificacion'];
+        if(isset($coordenadas) && count($coordenadas) > 1){
+            $domicilio->latitud = $coordenadas[0];
+            $domicilio->longitud = $coordenadas[1];
+        }
+        $domicilio->save();
+        return $domicilio;
+    }
+
+    public static function modificar($response, $domicilio){
+        $coordenadas = explode(',',$response['coordenadas']);
+        $domicilio->calle1 = trim(strtoupper($response['calle1']));
+        $domicilio->calle2 = trim(strtoupper($response['calle2']));
+        $domicilio->calle3 = trim(strtoupper($response['calle3']));
+        $domicilio->numero_exterior = $response['numeroExterior'];
+        $domicilio->numero_interior = $response['numeroInterior'];
+        $domicilio->referencia = trim(strtoupper($response['referencia']));
+        if($response['colonia'] > 0){
+            $domicilio->colonia_id = $response['colonia'];
+        }
+        $domicilio->identificacion_id = $response['idIdentificacion'];
+        if(isset($coordenadas) && count($coordenadas) > 1){
+            $domicilio->latitud = $coordenadas[0];
+            $domicilio->longitud = $coordenadas[1];
+        }
+        $domicilio->save();
+        return $domicilio;
+    }
 }

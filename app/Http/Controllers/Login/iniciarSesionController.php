@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Login;
 
+use App\Http\Controllers\Controller;
 use App\Imports\metasSeccionImport;
 use App\Imports\personasYDatosImport;
 use App\Models\bitacora;
@@ -41,7 +42,7 @@ class iniciarSesionController extends Controller
             $bitacora->tipo = 'vista';
             $bitacora->user_id = null;
             $bitacora->save();
-            return view('inicioSesion');
+            return view('Pages.Login.inicioSesion');
         }
 
     }

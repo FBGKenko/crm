@@ -1,20 +1,19 @@
 <?php
 
-use App\Http\Controllers\bitacoraController;
-use App\Http\Controllers\crudPersonasController;
-use App\Http\Controllers\crudUsuariosController;
-use App\Http\Controllers\estadisticaController;
-use App\Http\Controllers\formularioSimpatizanteController;
-use App\Http\Controllers\iniciarSesionController;
-use App\Http\Controllers\mapaController;
-use App\Http\Controllers\tablaSimpatizantesController;
-use App\Http\Controllers\crudEncuestasController;
-use App\Http\Controllers\crudObjetivoController;
-use App\Http\Controllers\crudOportunidadesController;
+use App\Http\Controllers\Configuracion\bitacoraController;
+use App\Http\Controllers\Configuracion\crudUsuariosController;
+use App\Http\Controllers\Contacto\crudPersonasController;
+use App\Http\Controllers\Contacto\formularioSimpatizanteController;
+use App\Http\Controllers\Contacto\mapaController;
+use App\Http\Controllers\Contacto\personaController;
+use App\Http\Controllers\Contacto\tablaSimpatizantesController;
 use App\Http\Controllers\crudPromotoresController;
-use App\Http\Controllers\crudResultadosController;
-use App\Http\Controllers\repuestasEncuestasController;
-
+use App\Http\Controllers\Encuestas\crudEncuestasController;
+use App\Http\Controllers\Encuestas\crudResultadosController;
+use App\Http\Controllers\Estadistica\estadisticaController;
+use App\Http\Controllers\Login\iniciarSesionController;
+use App\Http\Controllers\Marketing\crudObjetivoController;
+use App\Http\Controllers\Marketing\crudOportunidadesController;
 use App\Models\bitacora;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +64,17 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::post('/borrar-usuario-{usuario}', 'borrarUsuario')
         ->name('crudUsuario.borrar')->middleware(['can:crudUsuarios.delete']);
     });
+    Route::prefix('contactos')->controller(personaController::class)->group(function() {
+        Route::get('/', 'index');
+        Route::get('/agregar', 'vistaAgregar');
+        Route::post('/agregar', 'agregar');
+        Route::get('/modificar-{persona}', 'vistaModificar');
+        Route::post('/modificar-{persona}', 'modificar');
+        Route::get('/ver-{persona}', 'vistaVer');
+        Route::post('/borrar-{persona}', 'borrar');
+        Route::post('/supervisar-{persona}', 'supervisar');
+    });
+
     Route::prefix('simpatizantes')->group(function() {
         Route::controller(tablaSimpatizantesController::class)->group(function() {
             Route::get('/', 'index')

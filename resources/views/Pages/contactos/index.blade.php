@@ -51,10 +51,9 @@ Tabla de Simpatizantes
                     <thead>
                         <th>Consecutivo</th>
                         <th>Estatus</th>
+                        <th>Apodo</th>
                         <th>Nombre Completo</th>
-                        <th>Telefono</th>
-                        <th>Sección</th>
-                        <th>Distrito Local</th>
+                        <th>Tipo</th>
                         <th>Opciones:</th>
                     </thead>
                     <tbody>
@@ -104,10 +103,9 @@ Tabla de Simpatizantes
                         }
                         return estatus;
                     }},
+                { data: 'apodo' },
                 { data: 'nombre_completo'},
-                { data: 'telefono_celular' },
-                { data: 'seccionId' },
-                { data: 'distritoLocalId' },
+                { data: 'tipo'},
                 { data: null,
                     render: function(data, type, row){
                         var botones = '';

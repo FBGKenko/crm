@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Contacto;
 
+use App\Http\Controllers\Controller;
 use App\Models\bitacora;
 use App\Models\domicilio;
 use App\Models\identificacion;
@@ -18,7 +19,7 @@ class crudPersonasController extends Controller
             session()->flash('personaModificarDenegada', 'No se puede modificar una persona autorizada');
             return redirect()->route('crudSimpatizantes.index');
         }
-        return view('formularioSimpatizante', ['persona' => $persona->id, 'latitud' => $persona->identificacion->domicilio->latitud,
+        return view('Pages.contactos.formularioSimpatizante', ['persona' => $persona->id, 'latitud' => $persona->identificacion->domicilio->latitud,
         'longitud' => $persona->identificacion->domicilio->longitud]);
     }
 
@@ -210,6 +211,6 @@ class crudPersonasController extends Controller
             'distritoLocal' => isset($persona->identificacion->seccion) ? $persona->identificacion->seccion->distritoLocal->id : null,
             'seccion' => isset($persona->identificacion->seccion) ? $persona->identificacion->seccion->id : null,
         ];
-        return view('consultarSimpatizante', $datos);
+        return view('Pages.contactos.consultarSimpatizante', $datos);
     }
 }

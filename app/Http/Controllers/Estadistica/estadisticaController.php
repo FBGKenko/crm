@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Estadistica;
 
+use App\Http\Controllers\Controller;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
 use App\Models\entidad;
@@ -19,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\TextData\Format;
 class estadisticaController extends Controller
 {
     public function index(){
-        return view('estadistica');
+        return view('Pages.estadistica.estadistica');
     }
 
     public function inicializar(){

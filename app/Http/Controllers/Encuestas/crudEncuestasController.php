@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Encuestas;
 
+use App\Http\Controllers\Controller;
 use App\Models\bitacora;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
@@ -25,18 +26,6 @@ use Spatie\Permission\Models\Role;
 class crudEncuestasController extends Controller
 {
     public function index(){
-        // $user = auth()->user();
-        // $bitacora = new bitacora();
-        // $bitacora->accion = 'entrando en la vista crud encuestas : ' . $user->email;
-        // $bitacora->url = url()->current();
-        // $bitacora->ip = $formulario->ip();
-        // $bitacora->tipo = 'vista';
-        // $bitacora->user_id = $user->id;
-        // $bitacora->save();
-
-        // $roles = Role::where('name', '!=', 'SUPER ADMINISTRADOR')->get(['name']);
-        // return view('crudEncuestas', compact('roles'));
-
         $encuestas = encuesta::where('deleted_at', null)
         ->where('estatus', 'ENCURSO')
         ->get();
@@ -59,7 +48,7 @@ class crudEncuestasController extends Controller
             }
         }
         $user = auth()->user();
-        return view('crudEncuestas', ['codigoPromotor' => $user->id]);
+        return view('Pages.Encuestas.crudEncuestas', ['codigoPromotor' => $user->id]);
     }
     public function cargarEncuestas(Request $formulario){
         if(isset($formulario->fechaInicio)){
@@ -418,7 +407,7 @@ class crudEncuestasController extends Controller
                     $usuarioExiste = persona::find($formulario->codigoPromotor);
                     $codigoPromotor = $usuarioExiste->id;
                 }
-                return view('responderEncuesta',
+                return view('Pages.Encuestas.responderEncuesta',
                 ['idEncuesta' =>$encuesta->id, 'codigoPromotor' => $codigoPromotor,
                 'origen' => $formulario->origen,
                 'nombreEncuesta' => $encuesta->nombre]);
@@ -470,7 +459,7 @@ class crudEncuestasController extends Controller
         }
     }
     public function graciasResponder(){
-        return view('graciasEncuesta');
+        return view('Pages.Encuestas.graciasEncuesta');
     }
 
 }

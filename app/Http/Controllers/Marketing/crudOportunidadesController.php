@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Marketing;
 
+use App\Http\Controllers\Controller;
 use App\Exports\oportunidadesExport;
 use App\Models\bitacora;
 use App\Models\distritoFederal;
@@ -28,7 +29,7 @@ use Spatie\Permission\Models\Role;
 class crudOportunidadesController extends Controller
 {
     public function index(){
-        return view('crudOportunidades');
+        return view('Pages.marketing.crudOportunidades');
     }
     public function cargarOportunidades(Request $formulario){
         try {

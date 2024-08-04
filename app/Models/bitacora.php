@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DragonCode\Contracts\Cashier\Auth\Auth;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,20 +15,14 @@ class bitacora extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function crearRegistro($accion, $url, $ip, $tipo, $idUser){
-        try{
-            DB::beginTransaction();
-            $bitacora = new bitacora();
-            $bitacora->accion = $accion;
-            $bitacora->url = $url;
-            $bitacora->ip = $ip;
-            $bitacora->tipo = $tipo;
-            $bitacora->user_id = $idUser;
-            $bitacora->save();
-            DB::commit();
-        }
-        catch (Exception $e){
-            DB::rollBack();
-        }
+    public static function crearRegistro($accion, $ip, $tipo){
+        $bitacora = new bitacora();
+        $bitacora->accion = $accion;
+        $bitacora->url = url()->current();
+        $bitacora->ip = $ip;
+        $bitacora->tipo = $tipo;
+        $bitacora->user_id = Auth()->id();
+        $bitacora->save();
+        DB::commit();
     }
 }
