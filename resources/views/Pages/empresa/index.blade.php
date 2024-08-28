@@ -52,7 +52,12 @@ Lista Empresas
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                             <li>
+                                                <a class="dropdown-item" href="#"> Asignar </a>
+                                            </li>
+                                            <li>
                                                 <a class="dropdown-item" href="{{route('empresas.modificar', $empresa->id)}}"> Modificar </a>
+                                            </li>
+                                            <li>
                                                 <a class="dropdown-item" href="#">
                                                     <form action="{{route('empresas.borrar', $empresa->id)}}" method="post">
                                                         @csrf

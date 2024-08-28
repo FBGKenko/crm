@@ -18,16 +18,96 @@ Tabla de Simpatizantes
         </script>
     @endif
     <br>
-
+    <div class="modal fade" id="modalAsignarEmpresa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <form id="formularioAsignarEmpresas" action="" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Asignar relacion con empresa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Empresas:</h5>
+                        <select id="seleccionarEmpresa" class="form-select">
+                            <option value="0" selected disabled>Seleccione una empresa</option>
+                        </select>
+                        <div class="card">
+                            <div class="card-header">
+                                Empresas
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="contenedorEmpresas" class="list-group-item">
+                                    <div class="row">
+                                        <div class="col">NombreEmpresa</div>
+                                        <div class="col">
+                                            <h5 for="">¿Es un cliente?</h5>
+                                            <div class="d-flex">
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="esCliente_1" id="esCliente_1">
+                                                    <label class="form-check-label">
+                                                        Si
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="esCliente_1" id="esCliente_1">
+                                                    <label class="form-check-label">
+                                                        No
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <h5 for="">¿Es un promotor?</h5>
+                                            <div class="d-flex">
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="esPromotor_1" id="esPromotor_1">
+                                                    <label class="form-check-label">
+                                                        Si
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="esPromotor_1" id="esPromotor_1">
+                                                    <label class="form-check-label">
+                                                        No
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <h5 for="">¿Es un colaborador?</h5>
+                                            <div class="d-flex">
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="esColaborador_1" id="esColaborador_1">
+                                                    <label class="form-check-label">
+                                                        Si
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="esColaborador_1" id="esColaborador_1">
+                                                    <label class="form-check-label">
+                                                        No
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="container-fluid px-4">
         <h1 class="mt-4">Tabla de Personas</h1>
-        <div class="row">
-            <div class="col">
-                <h3>Registros sin supervisar: <span id="conteoSinSupervisar"></span></h3>
-            </div>
-            <div class="col">
-                <h3>Personas Registradas: <span id="conteoTotal"></span></h3>
-            </div>
+        <button class="btn btn-primary" id="btnFiltrar">Filtrar</button>
+        <div id="contenedorFiltros" class="container border border-1" style="display: none;">
+            <h5>filtros pendientes</h5>
         </div>
         <div class="card mb-4">
             <div class="card-header">
@@ -74,6 +154,9 @@ Tabla de Simpatizantes
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                             <li>
+                                                <a class="dropdown-item btnAsignarEmpresa" id="btnModalAsignar_{{$persona->id}}" href="#"> Asignar </a>
+                                            </li>
+                                            <li>
                                                 <a class="dropdown-item" href="{{route('contactos.fichaTecnica', $persona->id)}}"> Ver </a>
                                             </li>
                                             {{-- <li>
@@ -96,7 +179,8 @@ Tabla de Simpatizantes
                                             </li>
                                             <li>
                                                 <a class="dropdown-item" href="#">
-                                                    <form action="{{route('contactos.borrar', $persona->id)}}" method="post"> @csrf
+                                                    <form action="{{route('contactos.borrar', $persona->id)}}" method="post">
+                                                        @csrf
                                                         <span class="botonBorrar">Borrar</span>
                                                     </form>
                                                 </a>
@@ -181,9 +265,48 @@ Tabla de Simpatizantes
 
     });
 
-    $('#botonBorrar').click(function (e) {
-        $(this).parent().
+    $('.botonBorrar').click(function (e) {
+        $(this).parent().trigger('submit');
     });
+    $('#btnFiltrar').click(function (e) {
+        $(this).next().slideToggle();
+    });
+    $('.btnAsignarEmpresa').click(function (e) {
+        var idPersona = $(this).attr('id').split('_')[1];
+        $.when(
+            $.ajax({
+                type: "get",
+                url: "/contactos/asignar-empresas-" + idPersona,
+                data: [],
+                contentType: "application/x-www-form-urlencoded",
+                success: function (response) {
+                    //CARGAR EMPRESAS RELACIONADAS
+                    $('#formularioAsignarEmpresas').attr('action', "/contactos/asignar-empresas-" + idPersona);
+                    $('#modalAsignarEmpresa').modal('show');
+                },
+                error: function( data, textStatus, jqXHR){
+                    if (jqXHR.status === 0) {
+                        console.log('Not connect: Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        console.log('Requested page not found [404]');
+                    } else if (jqXHR.status == 500) {
+                        console.log('Internal Server Error [500].');
+                    } else if (textStatus === 'parsererror') {
+                        console.log('Requested JSON parse failed.');
+                    } else if (textStatus === 'timeout') {
+                        console.log('Time out error.');
+                    } else if (textStatus === 'abort') {
+                        console.log('Ajax request aborted.');
+                    } else {
+                        console.log('Uncaught Error: ' + jqXHR.responseText);
+                    }
+                }
+            })
+        ).then(
+            function( data, textStatus, jqXHR ) {
+                // Swal.close();
+        });
 
+    });
 </script>
 @endsection

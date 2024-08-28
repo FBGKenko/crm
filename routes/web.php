@@ -75,6 +75,8 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::post('/borrar-{persona}', 'borrar')->name('contactos.borrar');
         Route::post('/supervisar-{persona}', 'supervisar')->name('contactos.supervisar');
         Route::get('/ficha-{persona}', 'fichaTecnica')->name('contactos.fichaTecnica');
+        Route::get('/asignar-empresas-{persona}', 'cargarEmpresasAsignadas')->name('contactos.cargarEmpresasAsignadas');
+        Route::post('/asignar-empresas-{persona}', 'gardarEmpresasAsignadas')->name('contactos.gardarEmpresasAsignadas');
     });
     Route::prefix('empresas')->controller(EmpresaController::class)->group(function() {
         Route::get('/', 'index')->name('empresas.index');

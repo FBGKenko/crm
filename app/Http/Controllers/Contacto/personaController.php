@@ -12,6 +12,7 @@ use App\Models\identificacion;
 use App\Models\localidad;
 use App\Models\municipio;
 use App\Models\persona;
+use App\Models\RelacionPersonaEmpresa;
 use DragonCode\Contracts\Cashier\Auth\Auth;
 use Exception;
 use Illuminate\Http\Request;
@@ -28,6 +29,14 @@ class personaController extends Controller
             'supervisado',
         )->get();
         return view('Pages.contactos.index', compact('personas'));
+    }
+
+    function cargarEmpresasAsignadas(Request $request, $idPersona){
+        return RelacionPersonaEmpresa::where('persona_id', $idPersona)->get();
+    }
+
+    function gardarEmpresasAsignadas(Request $request, $idPersona){
+
     }
 
     function vistaAgregar(){
