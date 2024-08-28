@@ -2,7 +2,7 @@
 
 @section('tittle')
     {{
-        (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
+        str_contains(url()->current(), 'agregar') ?
         'Agregar Persona' : 'Modificar Persona'
     }}
 @endsection
@@ -47,14 +47,14 @@
     <div class="card-header">
         <h3>
             {{
-                (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
+                str_contains(url()->current(), 'agregar') ?
                 'Agregar Persona' : 'Modificar Persona'
             }}
         </h3>
     </div>
     <div class="card-body">
         {{-- FORMULARIO DE AGREGAR USUARIO --}}
-        <form id="formularioAgregarSimpatizante" action=" {{ (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ? route('agregarSimpatizante.agregandoSimpatizante') : route('crudPersonas.modificarPersona', $persona) }} " method="post" style="">
+        <form id="formularioAgregarSimpatizante" action=" {{  str_contains(url()->current(), 'agregar') ? route('contactos.agregar') : route('contactos.modificar', $persona->id) }}" method="post" style="">
             @csrf
             <div class="container">
                 @error('errorValidacion')
@@ -89,6 +89,7 @@
                 {{-- CONTENEDORES --}}
                 <div class="tab-content">
                     <div class="tab-pane container pt-3 active" id="datosControl">
+                        {{-- CONTENEDOR DATOS DE CONTROL --}}
                         <div id="datosControl" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Datos de control </h3>
                             <div class="row row-cols-1 row-cols-sm-3">
@@ -110,6 +111,9 @@
                                     <h4>Promotor</h4>
                                     <select class="form-select selectToo" id="promotores" name="promotor">
                                         <option value="0" selected>SIN DATO</option>
+                                        @foreach ($listaPromotores as $promotor)
+                                                <option value="{{$promotor->id}}">{{$promotor->nombres}} {{$promotor->apellido_paterno}} {{$promotor->apellido_materno}}, {{$promotor->apodo}}</option>
+                                        @endforeach
                                     </select>
                                     @error('promotor')
                                         <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -117,7 +121,7 @@
                                 </div>
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
-                                <div class="col">
+                                <div class="col d-none">
                                     <h4>Origen</h4>
                                     <select id="origen" name="origen" class="form-select selectToo" aria-label="Tipo de Registro">
                                         <option value="0">SIN DATO</option>
@@ -130,12 +134,16 @@
                                     <h4>Referencia de Origen</h4>
                                     <select id="referenciaOrigen" name="referenciaOrigen" class="form-select selectToo" aria-label="Tipo de Registro">
                                         <option value="0">SIN DATO</option>
+                                        @foreach ($listaPersonas as $persona)
+                                                <option value="{{$persona->id}}">{{$persona->nombres}} {{$persona->apellido_paterno}} {{$persona->apellido_materno}}, {{$persona->apodo}}</option>
+                                        @endforeach
+
                                     </select>
                                     @error('referenciaOrigen')
                                         <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
-                                <div class="col">
+                                <div class="col d-none">
                                     <h4>Campaña de referencia</h4>
                                     <select id="referenciaCampania" name="referenciaCampania" class="form-select selectToo" aria-label="Tipo de Registro">
                                         <option value="0">SIN DATO</option>
@@ -147,7 +155,7 @@
                                 </div>
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
-                                <div class="col">
+                                <div class="col d-none">
                                     <h4>Etiquetas de origen</h4>
                                     <select id="etiquetasOrigen" name="etiquetasOrigen" class="form-select selectToo" aria-label="Tipo de Registro">
                                         <option value="0">SIN DATO</option>
@@ -160,6 +168,9 @@
                                     <h4>Estatus</h4>
                                     <select id="estatus" name="estatus" class="form-select selectToo" aria-label="Tipo de Registro">
                                         <option value="0">SIN DATO</option>
+                                        @foreach ($listaEstatus as $estatus)
+                                            <option>{{$estatus->concepto}}</option>
+                                        @endforeach
                                     </select>
                                     @error('estatus')
                                         <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -172,6 +183,7 @@
                         </div>
                     </div>
                     <div class="tab-pane container pt-3 fade" id="datosPersonales">
+                        {{-- CONTENEDOR DATOS PERSONALES --}}
                         <div id="datosPersonales" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Datos personales</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
@@ -215,8 +227,8 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Genero</h4>
-                                    <select name="genero" class="form-select">
+                                    <h4>Sexo</h4>
+                                    <select name="genero" id="genero" class="form-select">
                                         <option {{old('genero') == 'SIN ESPECIFICAR' ? 'selected' : ''}} value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
                                         <option {{old('genero') == 'HOMBRE' ? 'selected' : ''}} value="HOMBRE">HOMBRE</option>
                                         <option {{old('genero') == 'MUJER' ? 'selected' : ''}} value="MUJER">MUJER</option>
@@ -260,6 +272,7 @@
                         </div>
                     </div>
                     <div class="tab-pane container pt-3 fade" id="datosContacto">
+                        {{-- CONTENEDOR DATOS DE CONTACTO --}}
                         <div id="datosContacto" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Datos de contacto</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
@@ -343,6 +356,7 @@
                         </div>
                     </div>
                     <div class="tab-pane container pt-3 fade" id="datosDomicilio">
+                        {{-- CONTENEDOR DATOS DE DOMICILIO --}}
                         <div id="datosDomicilio" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Datos de domicilio</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
@@ -396,6 +410,9 @@
                                     <h4>Colonia</h4>
                                     <select class="form-select selectToo" id="colonias" name="colonia" style="width: 100%">
                                         <option value="0">SIN DATO</option>
+                                        @foreach ($listaColonias as $colonia)
+                                            <option value="{{$colonia->id}}">{{$colonia->nombre}}, {{$colonia->seccionColonia[0]->seccion->distritoLocal->municipio->nombre}}</option>
+                                        @endforeach
                                     </select>
                                     @error('colonia')
                                         <div id="coloniaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -411,12 +428,13 @@
                                     <div id="codigoPostalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
-                                <div class="col" id="fondoDelegacion">
+                                <div class="col d-none" id="fondoDelegacion">
                                     <h4>Ciudad o localidad</h4>
-                                    <select class="form-select selectToo" id="municipios" name="municipio">
+                                    <select class="form-select selectToo" id="ciudad" name="ciudad">
                                         <option value="0">SIN DATO</option>
+
                                     </select>
-                                    @error('municipio')
+                                    @error('ciudad')
                                         <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
@@ -424,6 +442,9 @@
                                     <h4>Municipio o Delegación</h4>
                                     <select class="form-select selectToo" id="municipios" name="municipio">
                                         <option value="0">SIN DATO</option>
+                                        @foreach ($listaMunicipios as $municipio)
+                                        <option value="{{$municipio->id}}">{{$municipio->nombre}}</option>
+                                    @endforeach
                                     </select>
                                     @error('municipio')
                                         <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -433,19 +454,20 @@
 
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
-                                <div class="col">
+                                {{-- <div class="col">
                                     <h4>Entidad federativa</h4>
-                                    <select class="form-select selectToo" id="municipios" name="municipio">
+                                    <select class="form-select selectToo" id="entidadFederativa" name="entidadFederativa">
                                         <option value="0">SIN DATO</option>
                                     </select>
-                                    @error('municipio')
+                                    @error('entidadFederativa')
                                         <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
-                                </div>
-                                <div class="col" id="fondoDelegacion">
+                                </div> --}}
+                                <div class="col d-none" id="fondoDelegacion">
                                     <h4>País</h4>
-                                    <select class="form-select selectToo" id="municipios" name="municipio" style="width:100%">
+                                    <select class="form-select selectToo" id="pais" name="municipio" style="width:100%">
                                         <option value="0">SIN DATO</option>
+                                        <option value="1">MÉXICO</option>
                                     </select>
                                     @error('municipio')
                                         <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -476,6 +498,7 @@
                         </div>
                     </div>
                     <div class="tab-pane container pt-3 fade" id="datosIdentificacion">
+                        {{-- CONTENEDOR DATOS DE IDENTIFICACION --}}
                         <div id="datosIdentificacion" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Datos de identificación</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
@@ -489,13 +512,13 @@
                                 </div>
                                 <div class="col">
                                     <h4>RFC</h4>
-                                    <input type="text" style="text-transform: uppercase; color: black" class="form-control" id="claveElectoral" name="claveElectoral" value="{{old('claveElectoral')}}"
+                                    <input type="text" style="text-transform: uppercase; color: black" class="form-control" id="rfc" name="claveElectoral" value="{{old('claveElectoral')}}"
                                     minlength="18" maxlength="18" placeholder="ABCDEF12345678BH1">
                                     @error('claveElectoral')
                                         <div id="claveElectoralError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
-                                <div class="col" id="fondoSeccion">
+                                <div class="col d-none" id="fondoSeccion">
                                     <h4>Lugar de nacimiento</h4>
                                     <select class="form-select selectToo" id="lugarNacimiento" name="lugarNacimiento" style="width:100%">
                                         <option value="0">SIN DATO</option>
@@ -508,6 +531,7 @@
                         </div>
                     </div>
                     <div class="tab-pane container pt-3 fade" id="datosRelacion">
+                        {{-- CONTENEDOR DATOS DE RELACION --}}
                         <div id="datosRelacion" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Datos de relación</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
@@ -515,6 +539,8 @@
                                     <h4>Cliente</h4>
                                     <select class="form-select selectToo" id="clientes" name="cliente" style="width:100%">
                                         <option value="0" selected>SIN DATO</option>
+                                        <option>SI</option>
+                                        <option>NO</option>
                                     </select>
                                     @error('promotor')
                                         <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -524,6 +550,8 @@
                                     <h4>Promotor</h4>
                                     <select class="form-select selectToo" id="promotorEstructura" name="promotorEstructura" style="width:100%">
                                         <option value="0" selected>SIN DATO</option>
+                                        <option>SI</option>
+                                        <option>NO</option>
                                     </select>
                                     @error('promotor')
                                         <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -533,6 +561,8 @@
                                     <h4>Colaborador</h4>
                                     <select class="form-select selectToo" id="colaborador" name="colaborador" style="width:100%">
                                         <option value="0" selected>SIN DATO</option>
+                                        <option>SI</option>
+                                        <option>NO</option>
                                     </select>
                                     @error('promotor')
                                         <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -542,6 +572,7 @@
                         </div>
                     </div>
                     <div class="tab-pane container pt-3 fade" id="otrosDatos">
+                        {{-- CONTENEDOR OTROS DATOS --}}
                         <div id="otrosDatos" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Otros datos</h3>
                             <h4>Etiquetas</h4>
@@ -605,8 +636,6 @@
     {{-- PASAR LIBRERIAS A PLANTILLA --}}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
 <script src="{{url('/')}}/js/validacionesFormulario.js" text="text/javascript"></script>
-
-
 <script text="text/javascript">
     var marker;
     var marker2;
@@ -750,260 +779,12 @@
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-        });
-        $.when(
-            $.ajax({
-                type: "get",
-                url: "{{route('agregarSimpatizante.inicializar')}}",
-                data: [],
-                contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
-                    console.log(response.colonias);
-                    // Obtener el conteo de repeticiones
-                    const repeticiones = contarRepeticiones(response.colonias);
-                    console.log(repeticiones);
-                    $.each(response.colonias, function (i, valor) {
-                        //AQUI REPETIDOS
-                        $('#colonias').append(
-                            $('<option>').val(valor.id).text(valor.nombre)
-                        );
-                    });
-                    $.each(response.municipios, function (i, valor) {
-                        $('#municipios').append(
-                            $('<option>').val(valor.id).text(valor.nombre)
-                        );
-                    });
-                    $.each(response.secciones, function (i, valor) {
-                        $('#secciones').append(
-                            $('<option>').text(valor.id)
-                        );
-                    });
-                    $.each(response.entidades, function (i, valor) {
-                        $('#entidades').append(
-                            $('<option>').val(valor.id).text(valor.nombre)
-                        );
-                    });
-                    $.each(response.distritosFederales, function (i, valor) {
-                        $('#distritosFederales').append(
-                            $('<option>').text(valor.id)
-                        );
-                    });
-                    $.each(response.distritosLocales, function (i, valor) {
-                        $('#distritosLocales').append(
-                            $('<option>').text(valor.id)
-                        );
-                    });
-                    $.each(response.promotores, function (i, valor) {
-                        $('#promotores').append(
-                            $('<option>').val(valor.id).text(`${valor.nombres} ${valor.apellido_paterno}`)
-                        );
-                    });
-
-                    @if(old('colonia'))
-                        $('#colonias').val({{old('colonia')}});
-                    @endif
-                    @if(old('municipio'))
-                        $('#municipios').val({{old('municipio')}});
-                    @endif
-                    @if(old('seccion'))
-                        $('#secciones').val({{old('seccion')}});
-                    @endif
-                    @if(old('entidadFederativa'))
-                        $('#entidades').val({{old('entidadFederativa')}});
-                    @endif
-                    @if(old('distritoFederal'))
-                        $('#distritosFederales').val({{old('distritoFederal')}});
-                    @endif
-                    @if(old('distritoLocal'))
-                        $('#distritosLocales').val({{old('distritoLocal')}});
-                    @endif
-                    @if(old('promotor'))
-                        $('#promotores').val({{old('promotor')}});
-                    @endif
-                },
-                error: function( data, textStatus, jqXHR){
-                    if (jqXHR.status === 0) {
-                        console.log('Not connect: Verify Network.');
-                    } else if (jqXHR.status == 404) {
-                        console.log('Requested page not found [404]');
-                    } else if (jqXHR.status == 500) {
-                        console.log('Internal Server Error [500].');
-                    } else if (textStatus === 'parsererror') {
-                        console.log('Requested JSON parse failed.');
-                    } else if (textStatus === 'timeout') {
-                        console.log('Time out error.');
-                    } else if (textStatus === 'abort') {
-                        console.log('Ajax request aborted.');
-                    } else {
-                        console.log('Uncaught Error: ' + jqXHR.responseText);
-                    }
-                }
-            })
-        ).then(
-            function( data, textStatus, jqXHR ) {
-            @if (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] != 'agregar' && session('noEsCargaInicial') == false)
-                $.when(
-                    $.ajax({
-                        type: "get",
-                        url: "{{url('/')}}/simpatizantes/modificar/cargarPersona-{{$persona}}",
-                        data: [],
-                        contentType: "application/x-www-form-urlencoded",
-                        success: function (response) {
-                            console.log(response.persona.telefono_celular);
-                            if(response.persona.created_at != null){
-                                $('input[name="fechaRegistro"]').val(response.persona.created_at.substring(0, 10));
-                            }
-                            $('input[name="folio"]').val(response.persona.folio);
-                            $('select[name="promotor"]').val(response.persona.persona_id != null ? response.persona.persona_id : 0);
-                            $('select[name="promotor"]').trigger('change');
-                            $('input[name="apellido_paterno"]').val(response.persona.apellido_paterno);
-                            $('input[name="apellido_materno"]').val(response.persona.apellido_materno);
-                            $('input[name="nombre"]').val(response.persona.nombres);
-                            $('select[name="genero"]').val(response.persona.genero);
-                            if(response.persona.fecha_nacimiento != null){
-                                $('input[name="fechaNacimiento"]').val(response.persona.fecha_nacimiento.substring(0, 10));
-                                $('#fechaNacimiento').trigger('change');
-                            }
-
-                            $('select[name="escolaridad"]').val(response.persona.escolaridad);
-                            $('input[name="telefonoCelular"]').val(response.persona.telefono_celular);
-                            $('input[name="telefonoFijo"]').val(response.persona.telefono_fijo);
-                            $('input[name="correo"]').val(response.persona.correo);
-                            $('input[name="facebook"]').val(response.persona.nombre_en_facebook);
-                            $('input[name="calle"]').val(response.domicilio.calle);
-                            $('input[name="numeroExterior"]').val(response.domicilio.numero_exterior);
-                            $('input[name="numeroInterior"]').val(response.domicilio.numero_interior);
-                            $('input[name="codigoPostal"]').val(response.colonia != null ? response.colonia.codigo_postal : 0);
-                            $('select[name="municipio"]').val(response.municipio != null ? response.municipio : 0);
-                            $('select[name="municipio"]').trigger('change');
-
-                            $('select[name="colonia"]').val(response.domicilio.colonia_id != null ?   response.domicilio.colonia_id : 0);
-                            if(response.domicilio.colonia_id != null){
-                                //COMO HACER PARA QUE FUNCIONE DESPUES
-                                // $('select[name="colonia"]').trigger('change');
-                            }
-                            $('input[name="claveElectoral"]').val(response.identificacion.clave_elector);
-                            $('input[name="curp"]').val(response.identificacion.curp);
-                            $('select[name="seccion"]').val(  response.identificacion.seccion_id != null ?   response.identificacion.seccion_id : 0);
-                            if(response.identificacion.seccion_id != null){
-                                $('select[name="seccion"]').trigger('change');
-                            }
-                            $('select[name="distritoLocal"]').val(  response.distritoLocal != null ?   response.distritoLocal : 0);
-                            $('select[name="distritoLocal"]').trigger('change');
-                            $('select[name="distritoFederal"]').val(  response.distritoFederal != null ?   response.distritoFederal : 0);
-                            $('select[name="distritoFederal"]').trigger('change');
-                            $('select[name="entidadFederativa"]').val(  response.entidad != null ?   response.entidad : 0);
-                            $('select[name="entidadFederativa"]').trigger('change');
-                            $('select[name="esAfiliado"]').val(response.persona.afiliado);
-                            $('select[name="esSimpatizante"]').val(  response.persona.simpatizante != null ?   response.persona.simpatizante : 0);
-                            $('select[name="programa"]').val(  response.persona.programa != null ?   response.persona.programa : 0);
-                            $('select[name="programa"]').trigger('change');
-                            if(response.persona.rolEstructuraTemporal != null){
-                                $('#tieneRolTemporal').val('SI');
-                                $('#tieneRolTemporal').trigger('change');
-                            }
-                            $('select[name="rolEstructura"]').val(response.persona.rolEstructura != null ?   response.persona.rolEstructura : 0);
-                            $('select[name="rolEstructura"]').trigger('change');
-                            $('input[name="rolNumero"]').val(response.persona.rolNumero);
-                            $('select[name="rolEstructuraTemporal"]').val(response.persona.rolEstructuraTemporal != null ?   response.persona.rolEstructuraTemporal : 0);
-                            $('select[name="rolEstructuraTemporal"]').trigger('change');
-                            $('input[name="rolNumeroTemporal"]').val(response.persona.rolNumeroTemporal);
-                            $('input[name="funciones"]').val(response.persona.funcion_en_campania);
-                            $('textarea[name="observaciones"]').val(response.persona.observaciones);
-                            if(response.domicilio.latitud != null){
-                                $('input[name="coordenadas"]').val(`${response.domicilio.latitud},${response.domicilio.longitud}`);
-                                placeMarker({lat: response.domicilio.latitud, lng: response.domicilio.longitud});
-                            }
-
-                            let etiquedasPreprocesar = (response.persona.etiquetas != null) ? response.persona.etiquetas.split(',') : [];
-                            $.each(etiquedasPreprocesar, function (i, valor) {
-                                createTag(valor);
-                            });
-                            $('#fechaRegistro').focus();
-                        },
-                        error: function( data, textStatus, jqXHR){
-                            if (jqXHR.status === 0) {
-                                console.log('Not connect: Verify Network.');
-                            } else if (jqXHR.status == 404) {
-                                console.log('Requested page not found [404]');
-                            } else if (jqXHR.status == 500) {
-                                console.log('Internal Server Error [500].');
-                            } else if (textStatus === 'parsererror') {
-                                console.log('Requested JSON parse failed.');
-                            } else if (textStatus === 'timeout') {
-                                console.log('Time out error.');
-                            } else if (textStatus === 'abort') {
-                                console.log('Ajax request aborted.');
-                            } else {
-                                console.log('Uncaught Error: ' + jqXHR.responseText);
-                            }
-                        }
-                    })
-                ).then(
-                    function( data, textStatus, jqXHR ) {
-                        @if (old('fechaRegistro'))
-                            $('#fechaRegistro').val("{{old('fechaRegistro')}}");
-                        @endif
-                        @if (old('etiquetas'))
-                            let etiquetasCrudas = @json(old('etiquetas'));
-                            let etiquedasPreprocesar = (etiquetasCrudas != null) ? etiquetasCrudas.split(',') : [];
-                            $.each(etiquedasPreprocesar, function (i, valor) {
-                                createTag(valor);
-                            });
-                        @endif
-                        @if (old('rolEstructura'))
-                            $('#rolEstructura').trigger("change");
-                        @endif
-                        @if (old('rolEstructuraTemporal'))
-                            $('#tieneRolTemporal').trigger('change');
-                            $('#rolEstructuraTemporal').trigger("change");
-                        @endif
-                        @if(old('coordenadas'))
-                            placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}});
-                            $('input[name="coordenadas"]').val(`{{explode(',', old('coordenadas'))[0]}},{{explode(',', old('coordenadas'))[1]}}`);
-
-                        @endif
-                        @if(old('observaciones'))
-                            $('#comment').html("{{old('observaciones')}}");
-                        @endif
-                        $('.selectToo').select2({
-                            language: {
-
-                                noResults: function() {
-
-                                return "No hay resultado";
-                                },
-                                searching: function() {
-
-                                return "Buscando..";
-                                }
-                            }
-                        });
-                        Swal.close();
-                    });
-            @else
-                $('.selectToo').select2({
-                    language: {
-
-                        noResults: function() {
-
-                        return "No hay resultado";
-                        },
-                        searching: function() {
-
-                        return "Buscando..";
-                        }
-                    }
-                });
-                Swal.close();
-            @endif
-
-        });
+        // Swal.fire({
+        //     title: 'Cargando...',
+        //     allowOutsideClick: false,
+        //     showConfirmButton: false,
+        //     html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+        // });
         @if (old('fechaRegistro'))
             $('#fechaRegistro').val("{{old('fechaRegistro')}}");
         @endif
@@ -1013,13 +794,6 @@
             $.each(etiquedasPreprocesar, function (i, valor) {
                 createTag(valor);
             });
-        @endif
-        @if (old('rolEstructura'))
-            $('#rolEstructura').trigger("change");
-        @endif
-        @if (old('rolEstructuraTemporal'))
-            $('#tieneRolTemporal').trigger('change');
-            $('#rolEstructuraTemporal').trigger("change");
         @endif
         @if(old('coordenadas'))
             placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}});
@@ -1034,7 +808,7 @@
 
 
     $('#curp').on('input', soloMayusculas);
-    $('#claveElectoral').on('input', soloMayusculas);
+    $('#rfc').on('input', soloMayusculas);
     function soloMayusculas(){
         $(this).val($(this).val().toUpperCase());
     }
@@ -1095,6 +869,7 @@
 
 
     $('#formularioAgregarSimpatizante').submit(function (e) {
+
         let txtCelular = $("#telefonoCelular").val();
         let telefonoFijo = $("#telefonoFijo").val();
         let nombres = $("#nombre").val();
@@ -1105,14 +880,7 @@
         let colonia = $("#colonias").val();
         let codigoPostal = $("#codigoPostal").val();
         let municipio = $("#municipios").val();
-        if(nombres.length > 0 && apellidoPaterno.length > 0 &&
-            (
-                (txtCelular.length == 10 ) ||
-                (telefonoFijo.length == 11) ||
-                (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(correo)) ||
-                (calle.length > 0 || numeroExterior.length > 0 || colonia != 0 || municipio != 0 || codigoPostal.length == 5)
-            )
-        ){
+        if(true){
             if($('#inputEtiquetaCrear').is(':focus')){
                 return false;
             }
@@ -1129,6 +897,7 @@
                         $('<input>').attr('name', 'etiquetas').attr('id', 'etiquetas').attr('type', 'hidden')
                         .val(etiquetas)
                     );
+
                 }
             }
         }
@@ -1171,12 +940,61 @@
         }
     });
 
-
-
-
-
-
-
-
+    @if (str_contains(url()->current(), 'modificar') && !session()->has('mensajeError'))
+        cargarFormulario();
+        function cargarFormulario(){
+            $("#fechaRegistro").val('{{$persona->fecha_registro}}');
+            $("#folio").val('{{$persona->folio}}');
+            $("#promotores").val('{{($persona->persona_id != null) ? $persona->persona_id : 0}}');
+            $("#origen").val('{{$persona->origen}}');
+            $("#referenciaOrigen").val('{{($persona->referenciaOrigen != null) ? $persona->referenciaOrigen : 0}}');
+            $("#estatus").val('{{($persona->estatus != null) ? $persona->estatus : 0}}');
+            $("#apodo").val('{{$persona->apodo}}');
+            $("#nombres").val('{{$persona->nombres}}');
+            $("#apellidoPaterno").val('{{$persona->apellido_paterno}}');
+            $("#apellidoMaterno").val('{{$persona->apellido_materno}}');
+            $('#genero').val('{{($persona->genero != null) ? $persona->genero : 0}}');
+            $("#fechaNacimiento").val('{{$persona->fecha_nacimiento}}');
+            $("#rangoEdad").val('{{$persona->edadPromedio}}');
+            $("#telefonoCelular1").val('{{$persona->telefonoCelular1}}');
+            $("#telefonoCelular2").val('{{$persona->telefonoCelular2}}');
+            $("#telefonoCelular3").val('{{$persona->telefonoCelular3}}');
+            $("#correo").val('{{$persona->correo}}');
+            $("#correoAlternativo").val('{{$persona->correoAlternativo}}');
+            $("#telefonoFijo").val('{{$persona->telefono_fijo}}');
+            $("#nombreFacebook").val('{{$persona->nombre_en_facebook}}');
+            $("#twitter").val('{{$persona->twitter}}');
+            $("#instagram").val('{{$persona->instagram}}');
+            $("#calle1").val('{{$persona->identificacion->domicilio->calle1}}');
+            $("#calle2").val('{{$persona->identificacion->domicilio->calle2}}');
+            $("#calle3").val('{{$persona->identificacion->domicilio->calle3}}');
+            $("#numeroExterior").val('{{$persona->identificacion->domicilio->numero_exterior}}');
+            $("#numeroInterior").val('{{$persona->identificacion->domicilio->numero_interior}}');
+            $("#colonias").val('{{($persona->identificacion->domicilio->colonia_id != 0) ? $persona->identificacion->domicilio->colonia_id : 0}}');
+            $("#colonias").trigger('change');
+            // $("#codigoPostal").val('');
+            // $("#ciudad").val();
+            // $("#municipios").val();
+            // $("#entidadFederativa").val();
+            // $("#pais").val();
+            $("#referencia").val('{{$persona->identificacion->domicilio->referencia}}');
+            $("#coordenada").val('{{$persona->identificacion->domicilio->latitud}}, {{$persona->identificacion->domicilio->longitud}}');
+            $("#cordenada").val('{{$persona->identificacion->domicilio->latitud}}, {{$persona->identificacion->domicilio->longitud}}');
+            $("#curp").val('{{$persona->identificacion->curp}}');
+            $("#rfc").val('{{$persona->identificacion->clave_elector}}');
+            $("#lugarNacimiento").val('{{$persona->identificacion->lugarNacimiento}}');
+            $("#clientes").val("{{($persona->cliente != null) ? $persona->cliente : 0}}");
+            $("#promotorEstructura").val("{{($persona->promotor != null) ? $persona->promotor : 0}}");
+            $("#colaborador").val("{{($persona->colaborador != null) ? $persona->colaborador : 0}}");
+            $("#comment").val();
+            let etiquedasPreprocesar = ("{{$persona->etiquetas}}" != null) ? "{{$persona->etiquetas}}".split(',') : [];
+            $.each(etiquedasPreprocesar, function (i, valor) {
+                createTag(valor);
+            });
+            //casos especiales
+            // <input type="hidden" id="coordenadas" name="coordenadas"
+            // <div class="mt-3 contenedorEtiquetasCrear"
+        }
+    @endif
     </script>
 @endsection

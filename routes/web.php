@@ -8,6 +8,7 @@ use App\Http\Controllers\Contacto\mapaController;
 use App\Http\Controllers\Contacto\personaController;
 use App\Http\Controllers\Contacto\tablaSimpatizantesController;
 use App\Http\Controllers\crudPromotoresController;
+use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\Encuestas\crudEncuestasController;
 use App\Http\Controllers\Encuestas\crudResultadosController;
 use App\Http\Controllers\Estadistica\estadisticaController;
@@ -65,16 +66,24 @@ Route::prefix('/')->middleware('auth')->group(function (){
         ->name('crudUsuario.borrar')->middleware(['can:crudUsuarios.delete']);
     });
     Route::prefix('contactos')->controller(personaController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/agregar', 'vistaAgregar');
-        Route::post('/agregar', 'agregar');
-        Route::get('/modificar-{persona}', 'vistaModificar');
-        Route::post('/modificar-{persona}', 'modificar');
-        Route::get('/ver-{persona}', 'vistaVer');
-        Route::post('/borrar-{persona}', 'borrar');
-        Route::post('/supervisar-{persona}', 'supervisar');
+        Route::get('/', 'index')->name('contactos.index');
+        Route::get('/agregar', 'vistaAgregar')->name('contactos.vistaAgregar');
+        Route::post('/agregar', 'agregar')->name('contactos.agregar');
+        Route::get('/modificar-{persona}', 'vistaModificar')->name('contactos.vistaModificar');
+        Route::post('/modificar-{persona}', 'modificar')->name('contactos.modificar');
+        Route::get('/ver-{persona}', 'vistaVer')->name('contactos.vistaVer');
+        Route::post('/borrar-{persona}', 'borrar')->name('contactos.borrar');
+        Route::post('/supervisar-{persona}', 'supervisar')->name('contactos.supervisar');
+        Route::get('/ficha-{persona}', 'fichaTecnica')->name('contactos.fichaTecnica');
     });
-
+    Route::prefix('empresas')->controller(EmpresaController::class)->group(function() {
+        Route::get('/', 'index')->name('empresas.index');
+        Route::get('/agregar', 'vistaAgregar')->name('empresas.vistaAgregar');
+        Route::post('/agregar', 'crear')->name('empresas.agregar');
+        Route::get('/modificar-{empresa}', 'vistaModificar')->name('empresas.vistaModificar');
+        Route::post('/modificar-{empresa}', 'modificar')->name('empresas.modificar');
+        Route::post('/borrar-{empresa}', 'borrar')->name('empresas.borrar');
+    });
     Route::prefix('simpatizantes')->group(function() {
         Route::controller(tablaSimpatizantesController::class)->group(function() {
             Route::get('/', 'index')
@@ -183,7 +192,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
     Route::post("/crudOportunidades/cambiarOportunidad", [crudOportunidadesController::class, 'cambiarEstado'])->name("oportunidades.cambiarEstatus");
     Route::post("/crudOportunidades/agregar-actividad-{oportunidad}", [crudOportunidadesController::class, 'agregarActividad'])->name("oportunidades.agregarActividad");
 
-    Route::get("/promotores/cargarTabla", [crudPromotoresController::class, 'cargarPromotores'])->name("promotores.cargarPromotores");
+    // Route::get("/promotores/cargarTabla", [crudPromotoresController::class, 'cargarPromotores'])->name("promotores.cargarPromotores");
 
 
 

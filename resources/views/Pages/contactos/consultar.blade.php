@@ -45,6 +45,538 @@
             Consultar Persona
         </h3>
     </div>
+    <form id="" action=" {{  str_contains(url()->current(), 'agregar') ? route('contactos.agregar') : route('contactos.modificar', $persona->id) }}" method="post" style="">
+        @csrf
+        <div class="container">
+            @error('errorValidacion')
+                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+            @enderror
+            <br>
+            {{-- CABECERAS --}}
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link active" data-bs-toggle="tab" href="#datosControl">DATOS DE CONTROL</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="tab" href="#datosPersonales">DATOS PERSONALES</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="tab" href="#datosContacto">DATOS DE CONTACTO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#datosDomicilio">DATOS DE DOMICILIO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#datosIdentificacion">DATOS DE IDENTIFICACIÓN</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#datosRelacion">DATOS DE RELACIÓN</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#otrosDatos">OTROS DATOS</a>
+                </li>
+            </ul>
+
+            {{-- CONTENEDORES --}}
+            <div class="tab-content">
+                <div class="tab-pane container pt-3 active" id="datosControl">
+                    <div id="datosControl" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                        <h3>Datos de control </h3>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Fecha de registro</h4>
+                                <input type="date" class="form-control" id="fechaRegistro" name="fechaRegistro" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}" value="{{date('Y-m-d')}}">
+                                @error('fechaRegistro')
+                                    <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Folio</h4>
+                                <input type="number" min="0" maxlength="7" class="form-control" id="folio" name="folio" value="{{old('folio')}}">
+                                @error('folio')
+                                    <div id="folioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Promotor</h4>
+                                <select class="form-select selectToo" id="promotores" name="promotor">
+                                    <option value="0" selected>SIN DATO</option>
+                                </select>
+                                @error('promotor')
+                                    <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Origen</h4>
+                                <select id="origen" name="origen" class="form-select selectToo" aria-label="Tipo de Registro">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('origen')
+                                    <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Referencia de Origen</h4>
+                                <select id="referenciaOrigen" name="referenciaOrigen" class="form-select selectToo" aria-label="Tipo de Registro">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('referenciaOrigen')
+                                    <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Campaña de referencia</h4>
+                                <select id="referenciaCampania" name="referenciaCampania" class="form-select selectToo" aria-label="Tipo de Registro">
+                                    <option value="0">SIN DATO</option>
+
+                                </select>
+                                @error('referenciaCampania')
+                                    <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Etiquetas de origen</h4>
+                                <select id="etiquetasOrigen" name="etiquetasOrigen" class="form-select selectToo" aria-label="Tipo de Registro">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('etiquetasOrigen')
+                                    <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Estatus</h4>
+                                <select id="estatus" name="estatus" class="form-select selectToo" aria-label="Tipo de Registro">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('estatus')
+                                    <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane container pt-3 fade" id="datosPersonales">
+                    <div id="datosPersonales" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                        <h3>Datos personales</h3>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4 class="fw-bold">Apodo</h4>
+                                <input type="text" class="form-control" id="apodo" name="apodo" value="{{old('apodo')}}"
+                                minlength="3" maxlength="255"
+                                onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
+                                @error('apodo')
+                                    <div id="apellidoPaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4 >Nombre(s)</h4>
+                                <input type="text" class="form-control" id="nombres" name="nombres" value="{{old('nombres')}}"
+                                minlength="3" maxlength="255"
+                                onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
+                                @error('nombres')
+                                    <div id="apellidoPaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Apellido paterno</h4>
+                                <input type="text" class="form-control" id="apellidoPaterno" name="apellidoPaterno" value="{{old('apellidoPaterno')}}"
+                                minlength="3" maxlength="255"
+                                onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
+                                @error('apellidoPaterno')
+                                    <div id="apellidoMaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Apellido materno</h4>
+                                <input type="text" class="form-control" id="apellidoMaterno" name="apellidoMaterno" value="{{old('apellidoMaterno')}}" minlength="3" maxlength="255"
+
+                                onblur="if (this.value == '') {this.value = '';}"
+                                onfocus="if (this.value == '') {this.value = '';}">
+                                @error('apellidoMaterno')
+                                    <div id="nombresError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Genero</h4>
+                                <select name="genero" id="genero" class="form-select">
+                                    <option {{old('genero') == 'SIN ESPECIFICAR' ? 'selected' : ''}} value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
+                                    <option {{old('genero') == 'HOMBRE' ? 'selected' : ''}} value="HOMBRE">HOMBRE</option>
+                                    <option {{old('genero') == 'MUJER' ? 'selected' : ''}} value="MUJER">MUJER</option>
+                                </select>
+                                @error('genero')
+                                    <div id="generoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Fecha de Nacimiento</h4>
+                                <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" value="{{old('fechaNacimiento')}}"
+                                min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
+                                @error('fechaNacimiento')
+                                    <div id="fechaNacimientoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Rango de edad</h4>
+                                <select id="rangoEdad" class="form-select" name="rangoEdad">
+                                    <option {{old('rangoEdad') == '0' ? 'selected' : ''}} value="23">NO ESPECIFICÓ</option>
+                                    <option {{old('rangoEdad') == '23' ? 'selected' : ''}} value="23">18-28</option>
+                                    <option {{old('rangoEdad') == '34' ? 'selected' : ''}} value="34">29-39</option>
+                                    <option {{old('rangoEdad') == '45' ? 'selected' : ''}} value="45">40-49</option>
+                                    <option {{old('rangoEdad') == '55' ? 'selected' : ''}} value="55">50-69</option>
+                                    <option {{old('rangoEdad') == '74' ? 'selected' : ''}} value="74">70-adelante</option>
+                                </select>
+                                @error('rangoEdad')
+                                    <div id="rangoEdadError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+
+                            </div>
+                            <div class="col">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane container pt-3 fade" id="datosContacto">
+                    <div id="datosContacto" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                        <h3>Datos de contacto</h3>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Telefono Celular 1</h4>
+                                <input type="number" class="form-control" id="telefonoCelular1" name="telefonoCelular1" value="{{old('telefonoCelular1')}}"
+                                minlength="10" maxlength="12">
+                                @error('telefonoCelular1')
+                                    <div id="telefonoCelularError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Telefono Celular 2</h4>
+                                <input type="number" class="form-control" id="telefonoCelular2" name="telefonoCelular2" value="{{old('telefonoCelular2')}}"
+                                minlength="10" maxlength="12">
+                                @error('telefonoCelular2')
+                                    <div id="telefonoCelularError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Telefono Celular 3</h4>
+                                <input type="number" class="form-control" id="telefonoCelular3" name="telefonoCelular3" value="{{old('telefonoCelular3')}}"
+                                minlength="10" maxlength="12">
+                                @error('telefonoCelular3')
+                                    <div id="telefonoCelularError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Correo electrónico</h4>
+                                <input type="text" class="form-control" id="correo" name="correo" value="{{old('correo')}}" minlength="3"
+                                maxlength="255">
+                                @error('correo')
+                                    <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Correo electrónico alternativo</h4>
+                                <input type="text" class="form-control" id="correoAlternativo" name="correoAlternativo" value="{{old('correoAlternativo')}}" minlength="3"
+                                maxlength="255">
+                                @error('correoAlternativo')
+                                    <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Telefono Fijo</h4>
+                                <input type="text" class="form-control" id="telefonoFijo" name="telefonoFijo" value="{{old('telefonoFijo')}}" minlength="3"
+                                maxlength="255">
+                                @error('telefonoFijo')
+                                    <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Facebook</h4>
+                                <input type="text" class="form-control" id="nombreFacebook" name="nombreFacebook" value="{{old('nombreFacebook')}}" minlength="3"
+                                maxlength="255">
+                                @error('nombreFacebook')
+                                    <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>X/Twitter</h4>
+                                <input type="text" class="form-control" id="twitter" name="twitter" value="{{old('twitter')}}" minlength="3"
+                                maxlength="255">
+                                @error('twitter')
+                                    <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Instagram</h4>
+                                <input type="text" class="form-control" id="instagram" name="instagram" value="{{old('instagram')}}" minlength="3"
+                                maxlength="255">
+                                @error('instagram')
+                                    <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane container pt-3 fade" id="datosDomicilio">
+                    <div id="datosDomicilio" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                        <h3>Datos de domicilio</h3>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Calle principal</h4>
+                                <input type="text" class="form-control" id="calle1" name="calle1" value="{{old('calle1')}}"
+
+                                onblur="if (this.value == '') {this.value = '';}"
+                                onfocus="if (this.value == '') {this.value = '';}">
+                                @error('calle1')
+                                    <div id="calleError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Entre calle 1</h4>
+                                <input type="text" class="form-control" id="calle2" name="calle2" value="{{old('calle2')}}"
+
+                                onblur="if (this.value == '') {this.value = '';}"
+                                onfocus="if (this.value == '') {this.value = '';}">
+                                @error('calle2')
+                                    <div id="calleError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Entre calle 2</h4>
+                                <input type="text" class="form-control" id="calle3" name="calle3" value="{{old('calle3')}}"
+
+                                onblur="if (this.value == '') {this.value = '';}"
+                                onfocus="if (this.value == '') {this.value = '';}">
+                                @error('calle3')
+                                    <div id="calleError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Número Externo</h4>
+                                <input type="number" class="form-control" id="numeroExterior" name="numeroExterior" value="{{old('numeroExterior')}}">
+                                @error('numeroExterior')
+                                    <div id="numeroExteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Número Interno</h4>
+                                <input type="text" class="form-control" id="numeroInterior" name="numeroInterior" value="{{old('numeroInterior')}}">
+                                @error('numeroInterior')
+                                    <div id="numeroInteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col" id="fondoColonia">
+                                <h4>Colonia</h4>
+                                <select class="form-select selectToo" id="colonias" name="colonia" style="width: 100%">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('colonia')
+                                    <div id="coloniaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Código Postal</h4>
+                                <input type="number" class="form-control" id="codigoPostal" name="codigoPostal" value="{{old('codigoPostal')}}">
+                                @error('codigoPostal')
+                                <div id="codigoPostalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col" id="fondoDelegacion">
+                                <h4>Ciudad o localidad</h4>
+                                <select class="form-select selectToo" id="ciudad" name="ciudad">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('ciudad')
+                                    <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col" id="fondoDelegacion">
+                                <h4>Municipio o Delegación</h4>
+                                <select class="form-select selectToo" id="municipios" name="municipio">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('municipio')
+                                    <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+
+
+                        </div>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Entidad federativa</h4>
+                                <select class="form-select selectToo" id="entidadFederativa" name="entidadFederativa">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('entidadFederativa')
+                                    <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col" id="fondoDelegacion">
+                                <h4>País</h4>
+                                <select class="form-select selectToo" id="pais" name="municipio" style="width:100%">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('municipio')
+                                    <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col" id="fondoDelegacion">
+                                <h4>Referencias</h4>
+                                <input type="text" class="form-control" id="referencia" name="referencia" value="{{old('referencia')}}">
+                                @error('referencia')
+                                <div id="codigoPostalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+
+
+                        </div>
+                        <br>
+                        <h4>¿Donde vive la persona? (Dar double click para crear una marca)</h4>
+                        <center>
+                            <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
+                            <input type="text" class="col-3 d-none" id="cordenada" class="form-control" value="{{old('coordenadas')}}" disabled>
+                        </center>
+                        <center>
+                            <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
+                            @error('coordenadas')
+                                    <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </center>
+                    </div>
+                </div>
+                <div class="tab-pane container pt-3 fade" id="datosIdentificacion">
+                    <div id="datosIdentificacion" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                        <h3>Datos de identificación</h3>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>CURP</h4>
+                                <input type="text" style="text-transform: uppercase; color: black" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18"
+                                placeholder="ABCD123456HBCDEF12">
+                                @error('curp')
+                                    <div id="curpError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>RFC</h4>
+                                <input type="text" style="text-transform: uppercase; color: black" class="form-control" id="rfc" name="claveElectoral" value="{{old('claveElectoral')}}"
+                                minlength="18" maxlength="18" placeholder="ABCDEF12345678BH1">
+                                @error('claveElectoral')
+                                    <div id="claveElectoralError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col" id="fondoSeccion">
+                                <h4>Lugar de nacimiento</h4>
+                                <select class="form-select selectToo" id="lugarNacimiento" name="lugarNacimiento" style="width:100%">
+                                    <option value="0">SIN DATO</option>
+                                </select>
+                                @error('lugarNacimiento')
+                                    <div id="seccionError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane container pt-3 fade" id="datosRelacion">
+                    <div id="datosRelacion" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                        <h3>Datos de relación</h3>
+                        <div class="row row-cols-1 row-cols-sm-3">
+                            <div class="col">
+                                <h4>Cliente</h4>
+                                <select class="form-select selectToo" id="clientes" name="cliente" style="width:100%">
+                                    <option value="0" selected>SIN DATO</option>
+                                </select>
+                                @error('promotor')
+                                    <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Promotor</h4>
+                                <select class="form-select selectToo" id="promotorEstructura" name="promotorEstructura" style="width:100%">
+                                    <option value="0" selected>SIN DATO</option>
+                                </select>
+                                @error('promotor')
+                                    <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <h4>Colaborador</h4>
+                                <select class="form-select selectToo" id="colaborador" name="colaborador" style="width:100%">
+                                    <option value="0" selected>SIN DATO</option>
+                                </select>
+                                @error('promotor')
+                                    <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane container pt-3 fade" id="otrosDatos">
+                    <div id="otrosDatos" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                        <h3>Otros datos</h3>
+                        <h4>Etiquetas</h4>
+                        <div class="row justify-content-between">
+                            <div class="col-10">
+                                <input type="text" id="inputEtiquetaCrear" class="form-control" placeholder="',' para agregar etiqueta">
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" id="agregarEtiquetaCrear" class="btn btn-primary">Agregar</button>
+                            </div>
+                        </div>
+                        <div class="mt-3 contenedorEtiquetasCrear">
+                            <!-- <span class="tag">oh my God <span class="remove-tag">&#10006;</span></span>
+                            <span class="tag">second tag <span class="remove-tag">&#10006;</span></span>
+                            <span class="tag">tag3 <span class="remove-tag">&#10006;</span></span> -->
+                        </div>
+                        <br>
+                        <div class="row row-cols-1">
+                            <div class="col">
+                                <h4>Observaciones</h4>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" id="comment" name="observaciones"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <small class="mt-3">(*) Son campos obligatorios para el formulario</small>
+        </div>
+        <br>
+        <div>
+            <center>
+                <button id="BotonAgregarPersona" class="btn btn-primary" hidden></button>
+                <a id="BotonValidador" onclick="validar()" class="btn btn-primary" >
+                    {{
+                        (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
+                        'Agregar Persona' : 'Modificar Persona'
+                    }}
+                </a>
+                <!-- <button class="btn btn-danger" type="button" class="cerrarFormulario">Limpiar</button> -->
+            </center>
+        </div>
+    </div>
     <div class="card-body">
         {{-- FORMULARIO DE AGREGAR USUARIO --}}
         <div class="container">

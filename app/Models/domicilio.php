@@ -8,12 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 class domicilio extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'calle1',
+        'calle2',
+        'calle3',
+        'numero_exterior',
+        'numero_interior',
+        'latitud',
+        'longitud',
+        'colonia_id',
+        'identificacion_id',
+        'empresa_id',
+        'referencia',
+    ];
     public function identificacion(){
         return $this->belongsTo(identificacion::class);
     }
 
     public function colonia(){
         return $this->belongsTo(colonia::class);
+    }
+
+    public function empresa(){
+        return $this->belongsTo(empresa::class);
     }
 
     public static function crear($response){

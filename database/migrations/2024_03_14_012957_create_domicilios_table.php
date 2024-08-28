@@ -21,7 +21,8 @@ return new class extends Migration
             $table->float('latitud', 20, 15)->nullable();
             $table->float('longitud', 20, 15)->nullable();
             $table->foreignId('colonia_id')->nullable()->constrained();
-            $table->foreignId('identificacion_id')->constrained();
+            $table->foreignId('identificacion_id')->nullable()->constrained();
+            $table->foreignId('empresa_id')->nullable()->constrained();
             $table->string('referencia')->nullable();
             $table->timestamps();
         });
@@ -35,3 +36,4 @@ return new class extends Migration
         Schema::dropIfExists('domicilios');
     }
 };
+

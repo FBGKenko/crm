@@ -18,6 +18,7 @@ use App\Models\distritoFederal;
 use App\Models\distritoLocal;
 use App\Models\domicilio;
 use App\Models\entidad;
+use App\Models\estatus;
 use App\Models\identificacion;
 use App\Models\meta;
 use App\Models\municipio;
@@ -249,6 +250,27 @@ class DatabaseSeeder extends Seeder
             $seccion->objetivo =  $dato[1]/2;
             $seccion->save();
         }
+
+        estatus::create([
+            'concepto' =>  'PENDIENTE',
+            'nivel' => '0'
+        ]);
+        estatus::create([
+            'concepto' =>  'INICIADO',
+            'nivel' => '1'
+        ]);
+        estatus::create([
+            'concepto' =>  'COMPROMISO',
+            'nivel' => '2'
+        ]);
+        estatus::create([
+            'concepto' =>  'CONCLUIDO',
+            'nivel' => '3'
+        ]);
+        estatus::create([
+            'concepto' =>  'CANCELADO',
+            'nivel' => '-1'
+        ]);
         // $datos = Excel::toCollection(new personasYDatosImport, storage_path('app/Catalogos/FORMATO CARGA INICIAL OK.xlsx'));
         // foreach ($datos[0] as $dato) {
         //     if(!isset($dato[1])){

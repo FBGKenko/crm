@@ -24,9 +24,9 @@ class identificacion extends Model
         $identificacion->curp = trim(strtoupper($response['curp']));
         $identificacion->clave_elector = trim(strtoupper($response['claveElectoral']));
         $identificacion->lugarNacimiento = trim(strtoupper($response['lugarNacimiento']));
-        if($response['seccion'] > 0){
-            $identificacion->seccion_id = $response['seccion'];
-        }
+        // if($response['seccion'] > 0){
+        //     $identificacion->seccion_id = $response['seccion'];
+        // }
         $identificacion->save();
         return $identificacion;
     }
@@ -36,9 +36,9 @@ class identificacion extends Model
         $identificacion->curp = trim(strtoupper($response['curp']));
         $identificacion->clave_elector = trim(strtoupper($response['claveElectoral']));
         $identificacion->lugarNacimiento = trim(strtoupper($response['lugarNacimiento']));
-        if($response['seccion'] > 0){
-            $identificacion->seccion_id = $response['seccion'];
-        }
+        // if($response['seccion'] > 0){
+        //     $identificacion->seccion_id = $response['seccion'];
+        // }
         $identificacion->save();
         return $identificacion;
     }

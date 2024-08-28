@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained();
             $table->date('fecha_registro')->nullable();
-            $table->integer('folio')->nullable();
+            $table->string('folio')->nullable();
             $table->foreignId('persona_id')->nullable()->constrained();
             $table->string('origen')->nullable();
             $table->string('referenciaOrigen')->nullable();
             $table->string('referenciaCampania')->nullable();
             $table->string('etiquetasOrigen')->nullable();
-            $table->string('estatus')->nullable()->default('CONGELADO');
+            $table->string('estatus')->nullable()->default('PENDIENTE');
             $table->string('apodo')->nullable();
             $table->string('nombres')->nullable();
             $table->string('apellido_paterno')->nullable();
@@ -42,6 +42,9 @@ return new class extends Migration
             $table->string('etiquetas')->nullable();
             $table->boolean('supervisado')->default(0);
             $table->string('tipo')->default('SIN DEFINIR');
+            $table->string('cliente')->nullable();
+            $table->string('promotor')->nullable();
+            $table->string('colaborador')->nullable();
             $table->string('campoPersonalizado')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();

@@ -14,16 +14,16 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </head>
 
-    <style>
+    {{-- <style>
         .flex-column {
             flex-direction: column !important;
             background-color: #000000e3;
         }
-    </style>
+    </style> --}}
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">Detector</a>
+            <a class="navbar-brand ps-3" href="index.html">CRM</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -59,7 +59,7 @@
                             <div class="sb-sidenav-menu-heading">Menú</div>
 
 
-                            @can('estadistica.index')
+                            {{-- @can('estadistica.index')
 
                                 <li>
                                     <a href="#submenu1" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
@@ -96,38 +96,42 @@
                                     </ul>
                                 </li>
 
-                            @endcan
+                            @endcan --}}
+
                             <li>
                                 <a href="#submenu3" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
-                                    <i class="fas fa-id-card"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Contactos</span>
+                                    <i class="fas fa-id-card"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Listas</span>
                                 </a>
                                 <ul class="collapse  nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
-                                    @can('crudSimpatizantes.index')
                                         <li class="w-100">
-                                            <a class="nav-link" href="{{url('/')}}/simpatizantes">
+                                            <a class="nav-link" href="{{route('contactos.index')}}">
                                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                                 Personas
                                             </a>
                                         </li>
-
-                                    @endcan
+                                        <li class="w-100">
+                                            <a class="nav-link" href="{{route('empresas.index')}}">
+                                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                                Empresas
+                                            </a>
+                                        </li>
                                     {{-- <li class="w-100">
                                         <a class="nav-link" href="{{url('/')}}/crudPromotores">
                                             <div class="sb-nav-link-icon"><i class="fas fa-user-group"></i></div>
                                             Promotores
                                         </a>
                                     </li> --}}
-                                    @can('mapa.index')
+                                    {{-- @can('mapa.index')
                                     <li class="w-100">
                                         <a class="nav-link" href="{{url('/')}}/mapa">
                                             <div class="sb-nav-link-icon"><i class="fa-solid fa-location-dot"></i></div>
                                             Mapa de Personas
                                         </a>
                                     </li>
-                                    @endcan
+                                    @endcan --}}
                                 </ul>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <a href="#submenu5" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                     <i class="fas fa-bullhorn"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Marketing</span>
                                 </a>
@@ -145,27 +149,23 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li> --}}
                             <li>
                                 <a href="#submenu4" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                     <i class="fas fa-gear"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Configuración</span>
                                 </a>
                                 <ul class="collapse  nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
                                     <li class="w-100">
-                                        @can('crudUsuarios.index')
-                                            <a class="nav-link" href="{{url('/')}}/gestor-usuarios">
+                                            <a class="nav-link" href="{{route('crudUsuario.index')}}">
                                                 <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                                 Usuarios del Sistema
                                             </a>
-                                        @endcan
                                     </li>
                                     <li class="w-100">
-                                        @can('bitacora.index')
                                             <a class="nav-link" href="{{url('/')}}/bitacora">
                                                 <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>
                                                 Bitácora
                                             </a>
-                                        @endcan
                                     </li>
                                 </ul>
                             </li>
@@ -227,6 +227,13 @@
                 'title':"Éxito",
                 'text':"{{session('mensajeExito')}}",
                 'icon':"success"
+            });
+        @endif
+        @if (session()->has('mensajeError'))
+            Swal.fire({
+                'title':"Error",
+                'text':"{{session('mensajeError')}}",
+                'icon':"error"
             });
         @endif
         @if (session('nivelAccesoDenegado'))
