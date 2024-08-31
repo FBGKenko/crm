@@ -51,6 +51,10 @@ class persona extends Model
         return $this->hasMany(empresa::class, 'persona_id');
     }
 
+    public function relacionPersonaEmpresa(){
+        return $this->hasMany(relacionPersonaEmpresa::class, 'persona_id');
+    }
+
     public static function crear($response){
         $personaNueva = persona::create($response);
         return $personaNueva;

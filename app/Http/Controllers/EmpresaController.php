@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\colonia;
 use App\Models\empresa;
 use App\Models\persona;
+use App\Models\RelacionPersonaEmpresa;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,9 +15,16 @@ class EmpresaController extends Controller
 {
     function index(){
         $listaEmpresa = empresa::with(['domicilio', 'representante'])->select('id', 'nombreEmpresa', 'persona_id')->get();
-        return view('Pages.empresa.index', compact('listaEmpresa'));
+        $listaPersonas = persona::where('deleted_at', null)
+        ->select(
+            'id',
+            DB::raw("CONCAT(COALESCE(nombres, '') , ' ' , COALESCE(apellido_paterno, '') , ' ' , COALESCE(apellido_materno, '') , ', ' , COALESCE(apodo, '')) as NombreCompleto")
+        )
+        ->get();
+        return view('Pages.empresa.index', compact('listaEmpresa', 'listaPersonas'));
     }
     function vistaAgregar(){
+        $empresa = null;
         $urlFormulario = route('empresas.agregar');
         $listaPersonas = persona::where('deleted_at', null)->get();
         $listaColonias = colonia::with('seccionColonia.seccion.distritoLocal.municipio')
@@ -99,5 +107,27 @@ class EmpresaController extends Controller
             session()->flash('mensajeError', 'Verifique los campos del formulario');
             return back()->withInput();
         }
+    }
+
+    function cargarContactosAsignados(Request $request, $empresa){
+        return RelacionPersonaEmpresa::with('personas')->where('empresa_id', $empresa)->get();
+    }
+
+    function guardarContactosAsignados(Request $request, $empresa){
+        try {
+            DB::transaction(function() use($request, $empresa){
+                foreach ($request->Relaciones as $relacion) {
+                    $datos = array_merge($relacion, ["empresa_id" => $empresa]);
+                    RelacionPersonaEmpresa::agregarNuevaRelacion($datos);
+                }
+            });
+            session()->flash('mensajeExito', 'Se creo relaciones entre las personas de forma éxitosa');
+            return redirect()->route('empresas.index');
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            session()->flash('mensajeError', 'Verifique los campos del formulario al asignar');
+            return back()->withInput();
+        }
+
     }
 }

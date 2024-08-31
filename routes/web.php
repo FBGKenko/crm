@@ -85,6 +85,8 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::get('/modificar-{empresa}', 'vistaModificar')->name('empresas.vistaModificar');
         Route::post('/modificar-{empresa}', 'modificar')->name('empresas.modificar');
         Route::post('/borrar-{empresa}', 'borrar')->name('empresas.borrar');
+        Route::get('/asignar-contactos-{empresa}', 'cargarContactosAsignados')->name('empresas.cargarContactosAsignados');
+        Route::post('/asignar-contactos-{empresa}', 'guardarContactosAsignados')->name('empresas.guardarContactosAsignados');
     });
     Route::prefix('simpatizantes')->group(function() {
         Route::controller(tablaSimpatizantesController::class)->group(function() {
