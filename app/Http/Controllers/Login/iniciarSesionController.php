@@ -42,7 +42,7 @@ class iniciarSesionController extends Controller
             $bitacora->tipo = 'vista';
             $bitacora->user_id = null;
             $bitacora->save();
-            return view('Pages.Login.inicioSesion');
+            return view('Pages.login.inicioSesion');
         }
 
     }
@@ -69,13 +69,13 @@ class iniciarSesionController extends Controller
                     return redirect()->route('estadistica.index');
                     break;
                 case 'SUPERVISOR':
-                    return redirect()->route('crudSimpatizantes.index');
+                    return redirect()->route('contactos.index');
                     break;
                 case 'CAPTURISTA':
-                    return redirect()->route('crudSimpatizantes.index');
+                    return redirect()->route('contactos.index');
                     break;
                     case 'CONSULTAS':
-                        return redirect()->route('crudSimpatizantes.index');
+                        return redirect()->route('contactos.index');
                         break;
                 default:
                     return back()->withErrors(['email' => 'Ocurrió un error con el usuario ingresado, comuniquese con el administrador del sistema.']);

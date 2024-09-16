@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Configuracion\bitacoraController;
 use App\Http\Controllers\Configuracion\crudUsuariosController;
+use App\Http\Controllers\Configuracion\permisosController;
 use App\Http\Controllers\Contacto\crudPersonasController;
 use App\Http\Controllers\Contacto\formularioSimpatizanteController;
 use App\Http\Controllers\Contacto\mapaController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Estadistica\estadisticaController;
 use App\Http\Controllers\Login\iniciarSesionController;
 use App\Http\Controllers\Marketing\crudObjetivoController;
 use App\Http\Controllers\Marketing\crudOportunidadesController;
+use App\Http\Controllers\perfilUsuarioController;
 use App\Models\bitacora;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +52,10 @@ Route::get("/gracias",
 
 Route::prefix('/')->middleware('auth')->group(function (){
     Route::post('cerrando-sesion', [iniciarSesionController::class, 'cerrarSesion'])->name('logout');
+
+    Route::prefix('permisos')->controller(permisosController::class)->group(function () {
+        Route::get('/', 'index')->name('permisos.index');
+    });
 
     Route::prefix('gestor-usuarios')->controller(crudUsuariosController::class)->group(function () {
         Route::get('/', 'index')
@@ -87,6 +93,14 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::post('/borrar-{empresa}', 'borrar')->name('empresas.borrar');
         Route::get('/asignar-contactos-{empresa}', 'cargarContactosAsignados')->name('empresas.cargarContactosAsignados');
         Route::post('/asignar-contactos-{empresa}', 'guardarContactosAsignados')->name('empresas.guardarContactosAsignados');
+    });
+
+    Route::prefix('perfil')->controller(perfilUsuarioController::class)->group(function () {
+        Route::get('/gestionar-grupos/{usuario}', 'index')->name('perfil.index');
+        Route::get('/buscarRelaciones', 'buscarRelaciones')->name('perfil.buscarRelaciones');
+        Route::post('/gestionar-grupos/{usuario}', 'manejarPerfil')->name('perfil.manejarPerfil');
+        Route::post('/relacionar-usuarios-con-grupos', 'relacionarGruposConUsuarios')->name('perfil.relacionarGruposConUsuarios');
+        Route::post('/borrar-relacion/{usuario}', 'borrarRelacion')->name('perfil.borrarRelacion');
     });
     Route::prefix('simpatizantes')->group(function() {
         Route::controller(tablaSimpatizantesController::class)->group(function() {

@@ -361,22 +361,41 @@
                     $.each(response[0], function (index, elemento) {
                         var apellidoMaterno = (elemento.apellido_materno != null) ? elemento.apellido_materno : '';
                         $('#tablaUsuarios2').DataTable().row.add([
-                            elemento.id, elemento.nombre + ' ' + elemento.apellido_paterno + ' ' + apellidoMaterno, elemento.email, elemento.telefono, elemento.name,
-                            @can('crudUsuarios.edit')
-                                '<button id="btnModificarUsuario_'+elemento.id+'" class ="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModificarModal">'+
-                                    '<i class="fas fa-edit me-1">'+
-                                '</i>Editar'+
-                                '</button>'+
-                            @endcan
-                            @can('crudUsuarios.delete')
-                                '<form action="{{url('/')}}/gestor-usuarios/borrar-usuario-' + elemento.id + '" method="post">'+
-                                '<a id="borrarUsuario_'+elemento.id+'" type="button" class="btn btn btn-danger">'+
-                                '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
-                                '<i class="fas fa-close me-1">'+
-                                '</i>Borrar</a>'+
-                                '</form>'+
-                            @endcan
-                            ''
+                            elemento.id,
+                            elemento.nombre + ' ' + elemento.apellido_paterno + ' ' + apellidoMaterno,
+                            elemento.email,
+                            elemento.telefono,
+                            elemento.name,
+                            $('<div class="dropdown">').append(
+                                $('<button type="button">').addClass("btn btn-secondary dropdown-toggle").attr({ "data-bs-toggle": "dropdown", "aria-expanded": "false" })
+                                    .text('Acciones'),
+                                $('<ul class="dropdown-menu">').append(
+                                    $('<li>').append(
+                                        $('<a class="dropdown-item">').attr('href', '{{url("/")}}/perfil/gestionar-grupos/' + elemento.id).append(
+                                            $('<i>').addClass('fas fa-users me-1'),
+                                            "Asignar grupos"
+                                        )
+                                    ),
+                                    $('<li>').append(
+                                        $('<button id="btnModificarUsuario_' + elemento.id + '">').addClass('dropdown-item')
+                                        .attr({ "data-bs-toggle": "modal", "data-bs-target": "#ModificarModal" })
+                                        .append(
+                                            $('<i>').addClass('fas fa-edit me-1'),
+                                            "Editar",
+                                        )
+                                    ),
+                                    $('<li>').append(
+                                        $('<form action="{{url('/')}}/gestor-usuarios/borrar-usuario-' + elemento.id + '" method="post">')
+                                        .append(
+                                            $('<input type="hidden" name="_token">').val("{{csrf_token()}}"),
+                                            $('<a id="borrarUsuario_'+elemento.id+'" type="button">').addClass('dropdown-item').append(
+                                                $('<i>').addClass('fas fa-close me-1'),
+                                                'Borrar'
+                                            )
+                                        )
+                                    )
+                                )
+                            ).prop('outerHTML')
                         ]).draw();
                         $('#borrarUsuario_' + elemento.id).click(clickBorrar);
                     });
@@ -577,6 +596,6 @@
             });
         });
 
-
+        $('#cambiosToast').show();
     </script>
 @endsection

@@ -12,6 +12,7 @@ use App\Models\identificacion;
 use App\Models\localidad;
 use App\Models\municipio;
 use App\Models\persona;
+use App\Models\relacionPerfilUsuario;
 use App\Models\RelacionPersonaEmpresa;
 use DragonCode\Contracts\Cashier\Auth\Auth;
 use Exception;
@@ -21,13 +22,38 @@ use Illuminate\Support\Facades\DB;
 class personaController extends Controller
 {
     function index(){
-        $personas = persona::where('deleted_at', null)->select(
+        $query = persona::where('deleted_at', null)
+        ->select(
             'personas.id',
             'apodo',
             DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
             'telefonoCelular1',
             'supervisado',
-        )->get();
+        );
+
+        $usuarioActual = auth()->user();
+        if($usuarioActual->getRoleNames()->first() != 'SUPER ADMINISTRADOR' && $usuarioActual->getRoleNames()->first() != 'ADMINISTRADOR'){
+            $modelosAsociados = relacionPerfilUsuario::join('perfils', 'perfils.id', '=', 'relacion_perfil_usuarios.perfil_id')
+            ->join('perfil_modelo_relacionados', 'perfil_modelo_relacionados.perfil_id', '=', 'perfils.id')
+            ->where([
+                ['user_id', '=', $usuarioActual->id],
+                ['modelo', '=', 'App\Models\persona']
+            ])
+            ->distinct()
+            ->select(
+                'perfil_modelo_relacionados.modelo',
+                'perfil_modelo_relacionados.idAsociado',
+            )
+            ->get();
+
+            $query->where(function($consulta) use ($modelosAsociados) {
+                foreach ($modelosAsociados as $modelo) {
+                    $consulta->orWhere('personas.id', $modelo->idAsociado);
+                }
+            });
+        }
+
+        $personas = $query->get();
         return view('Pages.contactos.index', compact('personas'));
     }
 
@@ -40,8 +66,6 @@ class personaController extends Controller
     }
 
     function vistaAgregar(){
-
-
         $listaPersonas = persona::where('deleted_at', null)->get();
         $listaPromotores = persona::where('deleted_at', null)->where('promotor','SI')->get();
         $listaEstatus = estatus::get();
@@ -227,6 +251,7 @@ class personaController extends Controller
             'persona' => $registro,
         ]);
     }
+
     function borrar(persona $persona, Request $request){
         try{
             DB::beginTransaction();

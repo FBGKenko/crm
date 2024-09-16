@@ -14,16 +14,26 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </head>
 
-    {{-- <style>
-        .flex-column {
+    <style>
+        li ul.nav{
+            background: #0d0f11;
+        }
+        h4{
+            font-weight: 400;
+        }
+
+        label.form-label{
+            font-weight: 700;
+        }
+        /* .flex-column {
             flex-direction: column !important;
             background-color: #000000e3;
-        }
-    </style> --}}
+        } */
+    </style>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">CRM</a>
+            <a class="navbar-brand ps-3" href="">CRM</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -154,13 +164,19 @@
                                 <a href="#submenu4" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                     <i class="fas fa-gear"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Configuración</span>
                                 </a>
-                                <ul class="collapse  nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
+                                <ul class="collapse nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
                                     <li class="w-100">
                                             <a class="nav-link" href="{{route('crudUsuario.index')}}">
                                                 <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                                 Usuarios del Sistema
                                             </a>
                                     </li>
+                                    <li class="w-100">
+                                        <a class="nav-link" href="{{route('permisos.index')}}">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-unlock-alt"></i></div>
+                                            Permisos
+                                        </a>
+                                </li>
                                     <li class="w-100">
                                             <a class="nav-link" href="{{url('/')}}/bitacora">
                                                 <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>
@@ -243,6 +259,40 @@
                 'icon':"warning"
             });
         @endif
+        $('.select2').select2();
+
+        function alertaCargando(activar = true){
+            if (activar) {
+                Swal.fire({
+                    title: 'Cargando...',
+                    html: 'Espera por favor...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+            }
+            else {
+                Swal.close();
+            }
+        }
+        function peticionAjax(url, funcionExito, tipoRequest, data = null) {
+            $.ajax({
+                url: url,
+                type: tipoRequest,
+                data: data,
+                success: funcionExito,
+                error: function (xhr, status, error) {
+                    alertaCargando(false);
+                }
+            });
+        }
+
+        function cambiarValorSelect2(selector, valor = 0){
+            $(selector).val(valor);
+            $(selector).trigger('change');
+        }
         </script>
         @yield('scripts')
     </body>

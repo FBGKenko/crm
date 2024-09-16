@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\colonia;
 use App\Models\empresa;
 use App\Models\persona;
+use App\Models\relacionPerfilUsuario;
 use App\Models\RelacionPersonaEmpresa;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,7 +15,33 @@ use Illuminate\Support\Facades\Log;
 class EmpresaController extends Controller
 {
     function index(){
-        $listaEmpresa = empresa::with(['domicilio', 'representante'])->select('id', 'nombreEmpresa', 'persona_id')->get();
+        $query = empresa::with(['domicilio', 'representante'])
+        ->select('id', 'nombreEmpresa', 'persona_id');
+
+        $usuarioActual = auth()->user();
+        if($usuarioActual->getRoleNames()->first() != 'SUPER ADMINISTRADOR' && $usuarioActual->getRoleNames()->first() != 'ADMINISTRADOR'){
+            $modelosAsociados = relacionPerfilUsuario::join('perfils', 'perfils.id', '=', 'relacion_perfil_usuarios.perfil_id')
+            ->join('perfil_modelo_relacionados', 'perfil_modelo_relacionados.perfil_id', '=', 'perfils.id')
+            ->where([
+                ['user_id', '=', $usuarioActual->id],
+                ['modelo', '=', 'App\Models\empresa']
+            ])
+            ->distinct()
+            ->select(
+                'perfil_modelo_relacionados.modelo',
+                'perfil_modelo_relacionados.idAsociado',
+            )
+            ->get();
+
+            $query->where(function($consulta) use ($modelosAsociados) {
+                foreach ($modelosAsociados as $modelo) {
+                    $consulta->orWhere('empresas.id', $modelo->idAsociado);
+                }
+            });
+        }
+
+        $listaEmpresa = $query->get();
+
         $listaPersonas = persona::where('deleted_at', null)
         ->select(
             'id',

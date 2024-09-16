@@ -94,7 +94,7 @@
                             <h3>Datos de control </h3>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Fecha de registro</h4>
+                                    <label>Fecha de registro</label>
                                     <input type="date" class="form-control" id="fechaRegistro" name="fechaRegistro" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}" value="{{date('Y-m-d')}}">
                                     @error('fechaRegistro')
                                         <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
