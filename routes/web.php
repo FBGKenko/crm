@@ -48,6 +48,12 @@ Route::post("/encuestas/contestar-encuesta-{encuesta}",
 [crudEncuestasController::class, 'contestarEncuesta'])->name('encuestas.contestarEncuesta');
 Route::get("/gracias",
 [crudEncuestasController::class, 'graciasResponder'])->name('encuestas.graciasResponder');
+Route::post("/iniciar-sesion/recuperar-clave/",
+[iniciarSesionController::class, 'enviarCorreo'])->name('login.enviarCorreo');
+Route::get("/iniciar-sesion/recuperar-clave-{token}",
+[iniciarSesionController::class, 'vistaRecuperarClave'])->name('login.vistaRecuperarClave');
+Route::post("/iniciar-sesion/recuperar-clave-{token}",
+[iniciarSesionController::class, 'cambiarClave'])->name('login.cambiarClave');
 
 
 Route::prefix('/')->middleware('auth')->group(function (){

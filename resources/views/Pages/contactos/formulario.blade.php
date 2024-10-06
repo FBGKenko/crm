@@ -94,21 +94,21 @@
                             <h3>Datos de control </h3>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <label>Fecha de registro</label>
+                                    <label class="form-label mt-3">Fecha de registro</label>
                                     <input type="date" class="form-control" id="fechaRegistro" name="fechaRegistro" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}" value="{{date('Y-m-d')}}">
                                     @error('fechaRegistro')
                                         <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Folio</h4>
+                                    <label class="form-label mt-3">Folio</label>
                                     <input type="number" min="0" maxlength="7" class="form-control" id="folio" name="folio" value="{{old('folio')}}">
                                     @error('folio')
                                         <div id="folioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Promotor</h4>
+                                    <label class="form-label mt-3">Promotor</label>
                                     <select class="form-select selectToo" id="promotores" name="promotor">
                                         <option value="0" selected>SIN DATO</option>
                                         @foreach ($listaPromotores as $promotor)
@@ -122,7 +122,7 @@
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col d-none">
-                                    <h4>Origen</h4>
+                                    <label class="form-label mt-3">Origen</label>
                                     <select id="origen" name="origen" class="form-select selectToo" aria-label="Tipo de Registro">
                                         <option value="0">SIN DATO</option>
                                     </select>
@@ -131,7 +131,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Referencia de Origen</h4>
+                                    <label class="form-label mt-3">Referencia de Origen</label>
                                     <select id="referenciaOrigen" name="referenciaOrigen" class="form-select selectToo" aria-label="Tipo de Registro">
                                         <option value="0">SIN DATO</option>
                                         @foreach ($listaPersonas as $persona)
@@ -143,29 +143,8 @@
                                         <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
-                                <div class="col d-none">
-                                    <h4>Campaña de referencia</h4>
-                                    <select id="referenciaCampania" name="referenciaCampania" class="form-select selectToo" aria-label="Tipo de Registro">
-                                        <option value="0">SIN DATO</option>
-
-                                    </select>
-                                    @error('referenciaCampania')
-                                        <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row row-cols-1 row-cols-sm-3">
-                                <div class="col d-none">
-                                    <h4>Etiquetas de origen</h4>
-                                    <select id="etiquetasOrigen" name="etiquetasOrigen" class="form-select selectToo" aria-label="Tipo de Registro">
-                                        <option value="0">SIN DATO</option>
-                                    </select>
-                                    @error('etiquetasOrigen')
-                                        <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
                                 <div class="col">
-                                    <h4>Estatus</h4>
+                                    <label class="form-label mt-3">Estatus</label>
                                     <select id="estatus" name="estatus" class="form-select selectToo" aria-label="Tipo de Registro">
                                         <option value="0">SIN DATO</option>
                                         @foreach ($listaEstatus as $estatus)
@@ -173,6 +152,28 @@
                                         @endforeach
                                     </select>
                                     @error('estatus')
+                                        <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row row-cols-1 row-cols-sm-3">
+                                <div class="col d-none">
+                                    <label class="form-label mt-3">Etiquetas de origen</label>
+                                    <select id="etiquetasOrigen" name="etiquetasOrigen" class="form-select selectToo" aria-label="Tipo de Registro">
+                                        <option value="0">SIN DATO</option>
+                                    </select>
+                                    @error('etiquetasOrigen')
+                                        <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                    @enderror
+                                </div>
+
+                                <div class="col d-none">
+                                    <label class="form-label mt-3">Campaña de referencia</label>
+                                    <select id="referenciaCampania" name="referenciaCampania" class="form-select selectToo" aria-label="Tipo de Registro">
+                                        <option value="0">SIN DATO</option>
+
+                                    </select>
+                                    @error('referenciaCampania')
                                         <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
@@ -188,7 +189,7 @@
                             <h3>Datos personales</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4 class="fw-bold">Apodo</h4>
+                                    <label class="form-label mt-3" class="fw-bold">Apodo</label>
                                     <input type="text" class="form-control" id="apodo" name="apodo" value="{{old('apodo')}}"
                                     minlength="3" maxlength="255"
                                     onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
@@ -197,7 +198,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4 >Nombre(s)</h4>
+                                    <label class="form-label mt-3" >Nombre(s)</label>
                                     <input type="text" class="form-control" id="nombres" name="nombres" value="{{old('nombres')}}"
                                     minlength="3" maxlength="255"
                                     onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
@@ -206,7 +207,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Apellido paterno</h4>
+                                    <label class="form-label mt-3">Apellido paterno</label>
                                     <input type="text" class="form-control" id="apellidoPaterno" name="apellidoPaterno" value="{{old('apellidoPaterno')}}"
                                     minlength="3" maxlength="255"
                                     onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
@@ -217,7 +218,7 @@
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Apellido materno</h4>
+                                    <label class="form-label mt-3">Apellido materno</label>
                                     <input type="text" class="form-control" id="apellidoMaterno" name="apellidoMaterno" value="{{old('apellidoMaterno')}}" minlength="3" maxlength="255"
 
                                     onblur="if (this.value == '') {this.value = '';}"
@@ -227,7 +228,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Sexo</h4>
+                                    <label class="form-label mt-3">Sexo</label>
                                     <select name="genero" id="genero" class="form-select">
                                         <option {{old('genero') == 'SIN ESPECIFICAR' ? 'selected' : ''}} value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
                                         <option {{old('genero') == 'HOMBRE' ? 'selected' : ''}} value="HOMBRE">HOMBRE</option>
@@ -238,7 +239,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Fecha de Nacimiento</h4>
+                                    <label class="form-label mt-3">Fecha de Nacimiento</label>
                                     <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" value="{{old('fechaNacimiento')}}"
                                     min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
                                     @error('fechaNacimiento')
@@ -249,7 +250,7 @@
                             <br>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Rango de edad</h4>
+                                    <label class="form-label mt-3">Rango de edad</label>
                                     <select id="rangoEdad" class="form-select" name="rangoEdad">
                                         <option {{old('rangoEdad') == '0' ? 'selected' : ''}} value="23">NO ESPECIFICÓ</option>
                                         <option {{old('rangoEdad') == '23' ? 'selected' : ''}} value="23">18-28</option>
@@ -277,7 +278,7 @@
                             <h3>Datos de contacto</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Telefono Celular 1</h4>
+                                    <label class="form-label mt-3">Telefono Celular 1</label>
                                     <input type="number" class="form-control" id="telefonoCelular1" name="telefonoCelular1" value="{{old('telefonoCelular1')}}"
                                     minlength="10" maxlength="12">
                                     @error('telefonoCelular1')
@@ -285,7 +286,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Telefono Celular 2</h4>
+                                    <label class="form-label mt-3">Telefono Celular 2</label>
                                     <input type="number" class="form-control" id="telefonoCelular2" name="telefonoCelular2" value="{{old('telefonoCelular2')}}"
                                     minlength="10" maxlength="12">
                                     @error('telefonoCelular2')
@@ -293,7 +294,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Telefono Celular 3</h4>
+                                    <label class="form-label mt-3">Telefono Celular 3</label>
                                     <input type="number" class="form-control" id="telefonoCelular3" name="telefonoCelular3" value="{{old('telefonoCelular3')}}"
                                     minlength="10" maxlength="12">
                                     @error('telefonoCelular3')
@@ -303,7 +304,7 @@
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Correo electrónico</h4>
+                                    <label class="form-label mt-3">Correo electrónico</label>
                                     <input type="text" class="form-control" id="correo" name="correo" value="{{old('correo')}}" minlength="3"
                                     maxlength="255">
                                     @error('correo')
@@ -311,7 +312,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Correo electrónico alternativo</h4>
+                                    <label class="form-label mt-3">Correo electrónico alternativo</label>
                                     <input type="text" class="form-control" id="correoAlternativo" name="correoAlternativo" value="{{old('correoAlternativo')}}" minlength="3"
                                     maxlength="255">
                                     @error('correoAlternativo')
@@ -319,7 +320,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Telefono Fijo</h4>
+                                    <label class="form-label mt-3">Telefono Fijo</label>
                                     <input type="text" class="form-control" id="telefonoFijo" name="telefonoFijo" value="{{old('telefonoFijo')}}" minlength="3"
                                     maxlength="255">
                                     @error('telefonoFijo')
@@ -329,7 +330,7 @@
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Facebook</h4>
+                                    <label class="form-label mt-3">Facebook</label>
                                     <input type="text" class="form-control" id="nombreFacebook" name="nombreFacebook" value="{{old('nombreFacebook')}}" minlength="3"
                                     maxlength="255">
                                     @error('nombreFacebook')
@@ -337,7 +338,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>X/Twitter</h4>
+                                    <label class="form-label mt-3">X/Twitter</label>
                                     <input type="text" class="form-control" id="twitter" name="twitter" value="{{old('twitter')}}" minlength="3"
                                     maxlength="255">
                                     @error('twitter')
@@ -345,7 +346,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Instagram</h4>
+                                    <label class="form-label mt-3">Instagram</label>
                                     <input type="text" class="form-control" id="instagram" name="instagram" value="{{old('instagram')}}" minlength="3"
                                     maxlength="255">
                                     @error('instagram')
@@ -361,7 +362,7 @@
                             <h3>Datos de domicilio</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Calle principal</h4>
+                                    <label class="form-label mt-3">Calle principal</label>
                                     <input type="text" class="form-control" id="calle1" name="calle1" value="{{old('calle1')}}"
 
                                     onblur="if (this.value == '') {this.value = '';}"
@@ -371,7 +372,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Entre calle 1</h4>
+                                    <label class="form-label mt-3">Entre calle 1</label>
                                     <input type="text" class="form-control" id="calle2" name="calle2" value="{{old('calle2')}}"
 
                                     onblur="if (this.value == '') {this.value = '';}"
@@ -381,7 +382,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Entre calle 2</h4>
+                                    <label class="form-label mt-3">Entre calle 2</label>
                                     <input type="text" class="form-control" id="calle3" name="calle3" value="{{old('calle3')}}"
 
                                     onblur="if (this.value == '') {this.value = '';}"
@@ -393,21 +394,21 @@
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Número Externo</h4>
+                                    <label class="form-label mt-3">Número Externo</label>
                                     <input type="number" class="form-control" id="numeroExterior" name="numeroExterior" value="{{old('numeroExterior')}}">
                                     @error('numeroExterior')
                                         <div id="numeroExteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Número Interno</h4>
+                                    <label class="form-label mt-3">Número Interno</label>
                                     <input type="text" class="form-control" id="numeroInterior" name="numeroInterior" value="{{old('numeroInterior')}}">
                                     @error('numeroInterior')
                                         <div id="numeroInteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
                                 <div class="col" id="fondoColonia">
-                                    <h4>Colonia</h4>
+                                    <label class="form-label mt-3">Colonia</label>
                                     <select class="form-select selectToo" id="colonias" name="colonia" style="width: 100%">
                                         <option value="0">SIN DATO</option>
                                         @foreach ($listaColonias as $colonia)
@@ -422,14 +423,14 @@
                             <br>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Código Postal</h4>
+                                    <label class="form-label mt-3">Código Postal</label>
                                     <input type="number" class="form-control" id="codigoPostal" name="codigoPostal" value="{{old('codigoPostal')}}">
                                     @error('codigoPostal')
                                     <div id="codigoPostalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
                                 <div class="col d-none" id="fondoDelegacion">
-                                    <h4>Ciudad o localidad</h4>
+                                    <label class="form-label mt-3">Ciudad o localidad</label>
                                     <select class="form-select selectToo" id="ciudad" name="ciudad">
                                         <option value="0">SIN DATO</option>
 
@@ -439,7 +440,7 @@
                                     @enderror
                                 </div>
                                 <div class="col" id="fondoDelegacion">
-                                    <h4>Municipio o Delegación</h4>
+                                    <label class="form-label mt-3">Municipio o Delegación</label>
                                     <select class="form-select selectToo" id="municipios" name="municipio">
                                         <option value="0">SIN DATO</option>
                                         @foreach ($listaMunicipios as $municipio)
@@ -455,7 +456,7 @@
                             </div>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 {{-- <div class="col">
-                                    <h4>Entidad federativa</h4>
+                                    <label class="form-label mt-3">Entidad federativa</label>
                                     <select class="form-select selectToo" id="entidadFederativa" name="entidadFederativa">
                                         <option value="0">SIN DATO</option>
                                     </select>
@@ -464,7 +465,7 @@
                                     @enderror
                                 </div> --}}
                                 <div class="col d-none" id="fondoDelegacion">
-                                    <h4>País</h4>
+                                    <label class="form-label mt-3">País</label>
                                     <select class="form-select selectToo" id="pais" name="municipio" style="width:100%">
                                         <option value="0">SIN DATO</option>
                                         <option value="1">MÉXICO</option>
@@ -474,7 +475,7 @@
                                     @enderror
                                 </div>
                                 <div class="col" id="fondoDelegacion">
-                                    <h4>Referencias</h4>
+                                    <label class="form-label mt-3">Referencias</label>
                                     <input type="text" class="form-control" id="referencia" name="referencia" value="{{old('referencia')}}">
                                     @error('referencia')
                                     <div id="codigoPostalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -484,7 +485,7 @@
 
                             </div>
                             <br>
-                            <h4>¿Donde vive la persona? (Dar double click para crear una marca)</h4>
+                            <label class="form-label mt-3">¿Donde vive la persona? (Dar double click para crear una marca)</label>
                             <center>
                                 <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
                                 <input type="text" class="col-3 d-none" id="cordenada" class="form-control" value="{{old('coordenadas')}}" disabled>
@@ -503,7 +504,7 @@
                             <h3>Datos de identificación</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>CURP</h4>
+                                    <label class="form-label mt-3">CURP</label>
                                     <input type="text" style="text-transform: uppercase; color: black" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18"
                                     placeholder="ABCD123456HBCDEF12">
                                     @error('curp')
@@ -511,7 +512,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>RFC</h4>
+                                    <label class="form-label mt-3">RFC</label>
                                     <input type="text" style="text-transform: uppercase; color: black" class="form-control" id="rfc" name="claveElectoral" value="{{old('claveElectoral')}}"
                                     minlength="18" maxlength="18" placeholder="ABCDEF12345678BH1">
                                     @error('claveElectoral')
@@ -519,7 +520,7 @@
                                     @enderror
                                 </div>
                                 <div class="col d-none" id="fondoSeccion">
-                                    <h4>Lugar de nacimiento</h4>
+                                    <label class="form-label mt-3">Lugar de nacimiento</label>
                                     <select class="form-select selectToo" id="lugarNacimiento" name="lugarNacimiento" style="width:100%">
                                         <option value="0">SIN DATO</option>
                                     </select>
@@ -536,7 +537,7 @@
                             <h3>Datos de relación</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <div class="col">
-                                    <h4>Cliente</h4>
+                                    <label class="form-label mt-3">Cliente</label>
                                     <select class="form-select selectToo" id="clientes" name="cliente" style="width:100%">
                                         <option value="0" selected>SIN DATO</option>
                                         <option>SI</option>
@@ -547,7 +548,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Promotor</h4>
+                                    <label class="form-label mt-3">Promotor</label>
                                     <select class="form-select selectToo" id="promotorEstructura" name="promotorEstructura" style="width:100%">
                                         <option value="0" selected>SIN DATO</option>
                                         <option>SI</option>
@@ -558,7 +559,7 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <h4>Colaborador</h4>
+                                    <label class="form-label mt-3">Colaborador</label>
                                     <select class="form-select selectToo" id="colaborador" name="colaborador" style="width:100%">
                                         <option value="0" selected>SIN DATO</option>
                                         <option>SI</option>
@@ -575,7 +576,7 @@
                         {{-- CONTENEDOR OTROS DATOS --}}
                         <div id="otrosDatos" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Otros datos</h3>
-                            <h4>Etiquetas</h4>
+                            <label class="form-label mt-3">Etiquetas</label>
                             <div class="row justify-content-between">
                                 <div class="col-10">
                                     <input type="text" id="inputEtiquetaCrear" class="form-control" placeholder="',' para agregar etiqueta">
@@ -592,7 +593,7 @@
                             <br>
                             <div class="row row-cols-1">
                                 <div class="col">
-                                    <h4>Observaciones</h4>
+                                    <label class="form-label mt-3">Observaciones</label>
                                     <div class="form-group">
                                         <textarea class="form-control" rows="5" id="comment" name="observaciones"></textarea>
                                     </div>

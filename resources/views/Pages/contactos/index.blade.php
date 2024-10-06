@@ -21,7 +21,7 @@ Tabla de Simpatizantes
 
     <div class="container-fluid px-4">
         <h1 class="mt-4">Tabla de Personas</h1>
-        <button class="btn btn-primary" id="btnFiltrar">Filtrar</button>
+        {{-- <button class="btn btn-primary" id="btnFiltrar">Filtrar</button> --}}
         <div id="contenedorFiltros" class="container border border-1" style="display: none;">
             <h5>filtros pendientes</h5>
         </div>
@@ -52,11 +52,12 @@ Tabla de Simpatizantes
                             <tr>
                                 <td>{{$persona->id}}</td>
                                 <td>
-                                    @if ($persona->supervisado)
+                                    {{$persona->estatus}}
+                                    {{-- @if ($persona->supervisado)
                                         <div class="bg-success bg-gradient text-white fw-bold rounded p-3 py-1">Supervisado</div>
                                     @else
                                         <div class="bg-danger bg-gradient text-white fw-bold rounded p-3 py-1"> No Supervisado </div>
-                                    @endif
+                                    @endif --}}
                                 </td>
                                 <td>{{($persona->apodo) ? $persona->apodo : 'SIN REGISTRO'}}</td>
                                 <td>{{($persona->nombre_completo) ? $persona->nombre_completo : 'SIN REGISTRO'}}</td>

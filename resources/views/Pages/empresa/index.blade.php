@@ -144,6 +144,11 @@ Lista Empresas
                     //CARGAR EMPRESAS RELACIONADAS
                     $('#contenedorEmpresas').html("");
                     contadorRenglones = 0;
+                    if(response.length == 0){
+                        $('#contenedorEmpresas').append(
+                            $(`<label id="labelNoPersonasEmpresas">`).addClass('form-label text-secondary').text('No hay personas relacionadas con la empresa')
+                        );
+                    }
                     response.forEach(persona => {
                         contadorRenglones++;
                         var datosPersona = {
@@ -185,88 +190,88 @@ Lista Empresas
             function( data, textStatus, jqXHR ) {
                 // Swal.close();
         });
+    });
 
-
-        function cargarRenglonAsignarPersona(contador, datosPersona){
-            return $('<div class="row">').append(
-                $('<input type="hidden">').attr({id: "idPersonaEscondido", name: `Relaciones[${contador}][persona_id]`}).val(datosPersona.idPersona),
-                $('<div class="col">').text(datosPersona.nombre),
-                $('<div class="col">').append(
-                    $('<h5>').text('¿Es un cliente?'),
-                    $('<div class="d-flex">').append(
-                        $('<div class="form-check me-3">').append(
-                            $('<input type="radio">').addClass("form-check-input")
-                                .attr({name: `Relaciones[${contador}][esCliente]`, id: `esClienteSi_` + contador})
-                                .val('SI').prop('checked', datosPersona.esClienteSi),
-                            $('<label class="form-check-label">').text("SI")
-                        ),
-                        $('<div class="form-check">').append(
-                            $('<input type="radio">').addClass("form-check-input")
-                                .attr({name: `Relaciones[${contador}][esCliente]`, id: `esClienteNo_` + contador})
-                                .val('NO').prop('checked', datosPersona.esClienteNo),
-                            $('<label class="form-check-label">').text("No")
-                        )
+    function cargarRenglonAsignarPersona(contador, datosPersona){
+        return $('<div class="row">').append(
+            $('<input type="hidden">').attr({id: "idPersonaEscondido", name: `Relaciones[${contador}][persona_id]`}).val(datosPersona.idPersona),
+            $('<div class="col">').text(datosPersona.nombre),
+            // $('<div class="col">').append(
+            //     $('<h5>').text('¿Es un cliente?'),
+            //     $('<div class="d-flex">').append(
+            //         $('<div class="form-check me-3">').append(
+            //             $('<input type="radio">').addClass("form-check-input")
+            //                 .attr({name: `Relaciones[${contador}][esCliente]`, id: `esClienteSi_` + contador})
+            //                 .val('SI').prop('checked', datosPersona.esClienteSi),
+            //             $('<label class="form-check-label">').text("SI")
+            //         ),
+            //         $('<div class="form-check">').append(
+            //             $('<input type="radio">').addClass("form-check-input")
+            //                 .attr({name: `Relaciones[${contador}][esCliente]`, id: `esClienteNo_` + contador})
+            //                 .val('NO').prop('checked', datosPersona.esClienteNo),
+            //             $('<label class="form-check-label">').text("No")
+            //         )
+            //     )
+            // ),
+            // $('<div class="col">').append(
+            //     $('<h5>').text('¿Es un promotor?'),
+            //     $('<div class="d-flex">').append(
+            //         $('<div class="form-check me-3">').append(
+            //             $('<input type="radio">').addClass("form-check-input")
+            //                 .attr({name: `Relaciones[${contador}][esPromotor]`, id: `esPromotorSi_` + contador})
+            //                 .val('SI').prop('checked', datosPersona.esPromotorSi),
+            //             $('<label class="form-check-label">').text("SI")
+            //         ),
+            //         $('<div class="form-check">').append(
+            //             $('<input type="radio">').addClass("form-check-input")
+            //                 .attr({name: `Relaciones[${contador}][esPromotor]`, id: `esPromotorNo_` + contador})
+            //                 .val('NO').prop('checked', datosPersona.esPromotorNo),
+            //             $('<label class="form-check-label">').text("No")
+            //         )
+            //     )
+            // ),
+            $('<div class="col">').append(
+                $('<h5>').text('¿Es un colaborador?'),
+                $('<div class="d-flex">').append(
+                    $('<div class="form-check me-3">').append(
+                        $('<input type="radio">').addClass("form-check-input")
+                            .attr({name: `Relaciones[${contador}][esColaborador]`, id: `esColaboradorSi_` + contador})
+                            .val('SI').prop('checked', datosPersona.esColaboradorSi),
+                        $('<label class="form-check-label">').text("SI")
+                    ),
+                    $('<div class="form-check">').append(
+                        $('<input type="radio">').addClass("form-check-input")
+                            .attr({name: `Relaciones[${contador}][esColaborador]`, id: `esColaboradorNo_` + contador})
+                            .val('NO').prop('checked', datosPersona.esColaboradorNo),
+                        $('<label class="form-check-label">').text("No")
                     )
-                ),
-                $('<div class="col">').append(
-                    $('<h5>').text('¿Es un promotor?'),
-                    $('<div class="d-flex">').append(
-                        $('<div class="form-check me-3">').append(
-                            $('<input type="radio">').addClass("form-check-input")
-                                .attr({name: `Relaciones[${contador}][esPromotor]`, id: `esPromotorSi_` + contador})
-                                .val('SI').prop('checked', datosPersona.esPromotorSi),
-                            $('<label class="form-check-label">').text("SI")
-                        ),
-                        $('<div class="form-check">').append(
-                            $('<input type="radio">').addClass("form-check-input")
-                                .attr({name: `Relaciones[${contador}][esPromotor]`, id: `esPromotorNo_` + contador})
-                                .val('NO').prop('checked', datosPersona.esPromotorNo),
-                            $('<label class="form-check-label">').text("No")
-                        )
-                    )
-                ),
-                $('<div class="col">').append(
-                    $('<h5>').text('¿Es un colaborador?'),
-                    $('<div class="d-flex">').append(
-                        $('<div class="form-check me-3">').append(
-                            $('<input type="radio">').addClass("form-check-input")
-                                .attr({name: `Relaciones[${contador}][esColaborador]`, id: `esColaboradorSi_` + contador})
-                                .val('SI').prop('checked', datosPersona.esColaboradorSi),
-                            $('<label class="form-check-label">').text("SI")
-                        ),
-                        $('<div class="form-check">').append(
-                            $('<input type="radio">').addClass("form-check-input")
-                                .attr({name: `Relaciones[${contador}][esColaborador]`, id: `esColaboradorNo_` + contador})
-                                .val('NO').prop('checked', datosPersona.esColaboradorNo),
-                            $('<label class="form-check-label">').text("No")
-                        )
-                    )
-                ),
-                $('<div class="col">').append(
-                    $('<h5>').text('Cargo:'),
-                    $('<input type="text" class="form-control">')
-                        .attr({id: "cargoPersona_" + contador, name: `Relaciones[${contador}][puesto]`}).val(datosPersona.puesto)
                 )
-            );
-        }
+            ),
+            $('<div class="col">').append(
+                $('<h5>').text('Cargo:'),
+                $('<input type="text" class="form-control">')
+                    .attr({id: "cargoPersona_" + contador, name: `Relaciones[${contador}][puesto]`}).val(datosPersona.puesto)
+            )
+        );
+    }
 
-        $('#seleccionarEmpresa').change(function (e){
-            contadorRenglones++;
-            var datosPersona = {
-                nombre: $('#seleccionarEmpresa option:selected').text(),
-                idPersona: $(this).val(),
-                puesto: null,
-                esColaboradorSi: false,
-                esColaboradorNo: false,
-                esPromotorSi: false,
-                esPromotorNo: false,
-                esClienteSi: false,
-                esClienteNo: false,
-            };
-            var renglonNuevo = cargarRenglonAsignarPersona(contadorRenglones, datosPersona);
-            $('#contenedorEmpresas').append(renglonNuevo);
-            $("#seleccionarEmpresa").val(0);
-        });
+    $('#seleccionarEmpresa').change(function (e){
+        contadorRenglones++;
+        var datosPersona = {
+            nombre: $('#seleccionarEmpresa option:selected').text(),
+            idPersona: $(this).val(),
+            puesto: null,
+            esColaboradorSi: false,
+            esColaboradorNo: false,
+            esPromotorSi: false,
+            esPromotorNo: false,
+            esClienteSi: false,
+            esClienteNo: false,
+        };
+        $('#labelNoPersonasEmpresas').remove();
+        var renglonNuevo = cargarRenglonAsignarPersona(contadorRenglones, datosPersona);
+        $('#contenedorEmpresas').append(renglonNuevo);
+        $("#seleccionarEmpresa").val(0);
     });
 </script>
 @endsection

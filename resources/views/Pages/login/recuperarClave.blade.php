@@ -1,24 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
-</head>
-<body>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Detector de Intención del Voto (VEVO)</title>
+        <title>Recuperar contraseña</title>
         <link href="{{ asset('Plantilla/css/styles.css') }}" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <style>
@@ -31,26 +19,6 @@
         </style>
     </head>
     <body class="bg-primary">
-        <div class="modal fade" id="modalOlvideClave" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <form action="{{route('login.enviarCorreo')}}" method="post">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Olvide mi contraseña</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @csrf
-                            <label class="form-label">Ingrese su correo:</label>
-                            <input type="email" name="recuperarCorreo" id="recuperarCorreo" class="form-control" placeholder="ej. usuario@mail.com">
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary">Enviar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
         <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
                 <main>
@@ -58,26 +26,21 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-5">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h4 class="text-center font-weight-light my-4">CRM</h4></div>
+                                    <div class="card-header"><h4 class="text-center font-weight-light my-4">Recuperar contraseña</h4></div>
                                     <div class="card-body">
-                                    <form action="{{route('login.comprobando')}}" id="formularioIniciarSesion" method="post" class="form-floating mb-3">
+                                    <form action="{{route('login.cambiarClave', $token)}}" id="formularioIniciarSesion" method="post" class="form-floating mb-3">
                                         @csrf
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" type="email" name="correo" id="correo" min="3"  />
-                                            <label for="inputEmail">Correo Electronico</label>
+                                            <input class="form-control" type="password" name="clave" id="clave" min="3"/>
+                                            <label for="">Nueva contraseña</label>
                                         </div>
-
-
                                         <div class="form-floating mb-3">
-                                                <input class="form-control" type="password" name="contrasenia" id="contrasenia"  />
-                                                <label for="inputPassword">Contraseña</label>
+                                                <input class="form-control" type="password" name="nuevaClave" id="nuevaClave"  />
+                                                <label for="">Repetir contraseña</label>
                                         </div>
-
-
-                                        <button class="botonInicio btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Iniciar sesion</button>
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalOlvideClave"> Olvide mi contraseña </button>
+                                        <center><button class="botonInicio btn btn-primary">Cambiar</button></center>
                                         @error('email')
-                                        <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                            <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                         @enderror
                                     </form>
 
@@ -105,7 +68,7 @@
 
             <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" >
-  Launch demo modal
+    Launch demo modal
 </button>
 
 <!-- Modal -->
@@ -141,22 +104,35 @@
                     'icon':"error"
                 });
             @endif
-            $(".botonInicio").on('click', function(event){
-                Swal.fire({
-                    title: 'Cargando...',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-                });
-            });
 
             $('#formularioIniciarSesion').submit(function(e){
-                Swal.fire({
-                    title: 'Cargando...',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-                });
+                var clave1 = $('#clave').val();
+                var clave2 = $('#nuevaClave').val();
+                if(clave1 == '' && clave2 == ''){
+                    Swal.fire({
+                        'title':"Error",
+                        'text':"Las contraseñas ingresadas no deben de estar vacias. Verifiquelas porfavor.",
+                        'icon':"error"
+                    });
+                    return false;
+                }
+                else if(clave1 != clave2){
+                    Swal.fire({
+                        'title':"Error",
+                        'text':"Las contraseñas ingresadas no coinciden. Verifiquelas porfavor.",
+                        'icon':"error"
+                    });
+                    return false;
+                }
+                else{
+                    Swal.fire({
+                        title: 'Cargando...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+                    });
+                }
+
             });
         </script>
     </body>

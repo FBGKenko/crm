@@ -67,9 +67,9 @@
                                         @endforeach
                                     </select>
                                     <div class="d-flex">
-                                        <button type="button" id="" class="btn btn-primary">
+                                        {{-- <button type="button" id="" class="btn btn-primary">
                                             Renombrar
-                                        </button>
+                                        </button> --}}
                                         <button type="button" id="btnGuardarPerfil" class="btn btn-success">
                                             Guardar
                                         </button>
