@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
             'nombre' => 'BELIZARIO',
             'apellido_paterno' => 'RUIZ',
             'email' => 'belizario.ruiz@hotmail.com',
-            'password' => Hash::make('123'),
+            'password' => Hash::make('@IngeniaSI2024'),
             'email_verified_at' => Date("Y-m-d H:i:s"),
             'nivel_acceso' => 'TODO',
         ]);

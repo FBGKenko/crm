@@ -69,21 +69,19 @@
                             <div class="sb-sidenav-menu-heading">Menú</div>
 
 
-                            {{-- @can('estadistica.index')
-
-                                <li>
-                                    <a href="#submenu1" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
-                                        <i class="fas fa-chart-bar"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Estadística</span> </a>
-                                    <ul class="collapse  nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                                        <li class="w-100">
-                                            <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
-                                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
-                                                Panel de Estadística
-                                             </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            @endcan
+                            <li>
+                                <a href="#submenu1" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
+                                    <i class="fas fa-chart-bar"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Estadística</span> </a>
+                                <ul class="collapse  nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                                    <li class="w-100">
+                                        <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                                            Panel de Estadística
+                                            </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            {{--
                             @can('encuestas.index')
 
                                 <li>
@@ -125,6 +123,12 @@
                                                 Empresas
                                             </a>
                                         </li>
+                                        <li class="w-100">
+                                            <a class="nav-link" href="{{url('/')}}/mapa">
+                                                <div class="sb-nav-link-icon"><i class="fa-solid fa-location-dot"></i></div>
+                                                Mapa de Personas
+                                            </a>
+                                        </li>
                                     {{-- <li class="w-100">
                                         <a class="nav-link" href="{{url('/')}}/crudPromotores">
                                             <div class="sb-nav-link-icon"><i class="fas fa-user-group"></i></div>
@@ -139,6 +143,37 @@
                                         </a>
                                     </li>
                                     @endcan --}}
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
+                                    <i class="fas fa-balance-scale"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Cotizaciones</span>
+                                </a>
+                                <ul class="collapse  nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                                        <li class="w-100">
+                                            <a class="nav-link" href="{{route('inventario.index')}}">
+                                                <div class="sb-nav-link-icon"><i class="fas fa-archive"></i></div>
+                                                Inventario
+                                            </a>
+                                        </li>
+                                        <li class="w-100">
+                                            <a class="nav-link" href="{{route('cotizacion.index')}}">
+                                                <div class="sb-nav-link-icon"><i class="fas fa-balance-scale"></i></div>
+                                                Cotizaciones
+                                            </a>
+                                        </li>
+                                        <li class="w-100">
+                                            <a class="nav-link" href="{{route('factura.index')}}">
+                                                <div class="sb-nav-link-icon"><i class="fas fa-university"></i></div>
+                                                Facturas
+                                            </a>
+                                        </li>
+                                    {{-- <li class="w-100">
+                                        <a class="nav-link" href="{{url('/')}}/crudPromotores">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-user-group"></i></div>
+                                            Promotores
+                                        </a>
+                                    </li> --}}
                                 </ul>
                             </li>
                             {{-- <li>
@@ -178,10 +213,10 @@
                                         </a>
                                 </li>
                                     <li class="w-100">
-                                            <a class="nav-link" href="{{url('/')}}/bitacora">
-                                                <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>
-                                                Bitácora
-                                            </a>
+                                        <a class="nav-link" href="{{url('/')}}/bitacora">
+                                            <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>
+                                            Bitácora
+                                        </a>
                                     </li>
                                 </ul>
                             </li>
@@ -292,6 +327,14 @@
         function cambiarValorSelect2(selector, valor = 0){
             $(selector).val(valor);
             $(selector).trigger('change');
+        }
+        function formatoInputLetrasYEspacios(e){
+            const key = e.key;
+            // Permite letras, espacio, y teclas de control (backspace, delete, etc.)
+            if (!/^[a-zA-Z\s]$/.test(key) && key !== "Backspace" && key !== "Delete" &&
+                key !== "ArrowLeft" && key !== "ArrowRight" && key !== "Tab") {
+                e.preventDefault();
+            }
         }
         </script>
         @yield('scripts')

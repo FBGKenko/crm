@@ -104,7 +104,7 @@
         </div>
 
             <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" >
+{{-- <button type="button" class="btn btn-primary" >
   Launch demo modal
 </button>
 
@@ -120,7 +120,7 @@
 
     </div>
   </div>
-</div>
+</div> --}}
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -141,14 +141,14 @@
                     'icon':"error"
                 });
             @endif
-            $(".botonInicio").on('click', function(event){
-                Swal.fire({
-                    title: 'Cargando...',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-                });
-            });
+            // $(".botonInicio").on('click', function(event){
+            //     Swal.fire({
+            //         title: 'Cargando...',
+            //         allowOutsideClick: false,
+            //         showConfirmButton: false,
+            //         html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+            //     });
+            // });
 
             $('#formularioIniciarSesion').submit(function(e){
                 Swal.fire({

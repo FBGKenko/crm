@@ -8,6 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class identificacion extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'persona_id',
+        'curp',
+        'rfc',
+        'ine',
+        'lugarNacimiento',
+        'clave_elector',
+        'seccion_id',
+    ];
     public function persona(){
         return $this->belongsTo(persona::class);
     }

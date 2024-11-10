@@ -18,7 +18,6 @@ Tabla de Simpatizantes
         </script>
     @endif
     <br>
-
     <div class="container-fluid px-4">
         <h1 class="mt-4">Tabla de Personas</h1>
         {{-- <button class="btn btn-primary" id="btnFiltrar">Filtrar</button> --}}
@@ -40,11 +39,11 @@ Tabla de Simpatizantes
                 {{-- TABLA DE USUARIOS --}}
                 <table id="tablaUsuarios" class="table table-striped table-bordered" style="width:100%">
                     <thead>
-                        <th>Consecutivo</th>
+                        <th>Número de Cliente</th>
                         <th>Estatus</th>
                         <th>Apodo</th>
+                        <th>Supervisión</th>
                         <th>Nombre Completo</th>
-                        <th>Telefono</th>
                         <th>Opciones:</th>
                     </thead>
                     <tbody>
@@ -52,7 +51,7 @@ Tabla de Simpatizantes
                             <tr>
                                 <td>{{$persona->id}}</td>
                                 <td>
-                                    {{$persona->estatus}}
+                                    <span>{{$persona->estatus}}</span>
                                     {{-- @if ($persona->supervisado)
                                         <div class="bg-success bg-gradient text-white fw-bold rounded p-3 py-1">Supervisado</div>
                                     @else
@@ -61,18 +60,30 @@ Tabla de Simpatizantes
                                 </td>
                                 <td>{{($persona->apodo) ? $persona->apodo : 'SIN REGISTRO'}}</td>
                                 <td>{{($persona->nombre_completo) ? $persona->nombre_completo : 'SIN REGISTRO'}}</td>
-                                <td>{{($persona->telefonoCelular1) ? $persona->telefonoCelular1 : 'SIN REGISTRO'}}</td>
                                 <td>
-
-
+                                    @if (Auth::user()->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || Auth::user()->getRoleNames()->first() == 'ADMINISTRADOR' || Auth::user()->getRoleNames()->first() == 'SUPERVISOR')
+                                        <form action="{{route('contactos.supervisar', $persona->id)}}" method="post">
+                                            @csrf
+                                            @if ($persona->supervisado)
+                                                <button class="btn btn-success fw-bold btnSupervisar">Supervisado</button>
+                                            @else
+                                                <button class="btn btn-danger fw-bold btnSupervisar">Sin Supervisar</button>
+                                            @endif
+                                        </form>
+                                    @else
+                                        @if ($persona->supervisado)
+                                            <button class="btn btn-success fw-bold btnSupervisar">Supervisado</button>
+                                        @else
+                                            <button class="btn btn-danger fw-bold btnSupervisar">Sin Supervisar</button>
+                                        @endif
+                                    @endif
+                                </td>
+                                <td>
                                     <div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                             Acciones
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            {{-- <li>
-                                                <a class="dropdown-item btnAsignarEmpresa" id="btnModalAsignar_{{$persona->id}}" href="#"> Asignar </a>
-                                            </li> --}}
                                             <li>
                                                 <a class="dropdown-item" href="{{route('contactos.fichaTecnica', $persona->id)}}"> Ver </a>
                                             </li>
@@ -91,17 +102,21 @@ Tabla de Simpatizantes
                                                     @endif
                                                 </a>
                                             </li> --}}
-                                            <li>
-                                                <a class="dropdown-item" href="{{route('contactos.vistaModificar', $persona->id)}}"> Editar </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="#">
-                                                    <form action="{{route('contactos.borrar', $persona->id)}}" method="post">
-                                                        @csrf
-                                                        <span class="botonBorrar">Borrar</span>
-                                                    </form>
-                                                </a>
-                                            </li>
+                                            @if (Auth::user()->getRoleNames()->first() != 'CAPTURISTA' || (Auth::user()->getRoleNames()->first() == 'CAPTURISTA' && !$persona->supervisado))
+                                                <li>
+                                                    <a class="dropdown-item" href="{{route('contactos.vistaModificar', $persona->id)}}"> Editar </a>
+                                                </li>
+                                            @endif
+                                            @if (Auth::user()->getRoleNames()->first() != 'CAPTURISTA' || (Auth::user()->getRoleNames()->first() == 'CAPTURISTA' && !$persona->supervisado))
+                                                <li>
+                                                    <a class="dropdown-item" href="#">
+                                                        <form action="{{route('contactos.borrar', $persona->id)}}" method="post">
+                                                            @csrf
+                                                            <span class="botonBorrar">Borrar</span>
+                                                        </form>
+                                                    </a>
+                                                </li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </td>
@@ -130,8 +145,6 @@ Tabla de Simpatizantes
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
         var table = $('#tablaUsuarios').DataTable( {
-            //scrollX: true,
-            lengthChange: true,
             // responsive: true,
             language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
@@ -183,7 +196,19 @@ Tabla de Simpatizantes
     });
 
     $('.botonBorrar').click(function (e) {
-        $(this).parent().trigger('submit');
+        Swal.fire({
+            title: '¿Estás seguro de eliminar el registro?',
+            text: "No podrás revertir esto!",
+            icon: 'warning',
+            showDenyButton: true,
+            denyButtonText: 'Eliminar',
+            denyButtonColor: "#28b779",
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Cancelar!'
+        }).then((result) => {
+            if(result.isDenied)
+                $(this).parent().trigger('submit');
+        });
     });
     $('#btnFiltrar').click(function (e) {
         $(this).next().slideToggle();

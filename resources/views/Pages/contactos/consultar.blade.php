@@ -55,13 +55,13 @@
             {{-- CABECERAS --}}
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                  <a class="nav-link active" data-bs-toggle="tab" href="#datosControl">DATOS DE CONTROL</a>
+                    <a class="nav-link active" data-bs-toggle="tab" href="#datosControl">DATOS DE CONTROL</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" data-bs-toggle="tab" href="#datosPersonales">DATOS PERSONALES</a>
+                    <a class="nav-link" data-bs-toggle="tab" href="#datosPersonales">DATOS PERSONALES</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" data-bs-toggle="tab" href="#datosContacto">DATOS DE CONTACTO</a>
+                    <a class="nav-link" data-bs-toggle="tab" href="#datosContacto">DATOS DE CONTACTO</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#datosDomicilio">DATOS DE DOMICILIO</a>

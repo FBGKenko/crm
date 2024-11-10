@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 class EmpresaController extends Controller
 {
     function index(){
-        $query = empresa::with(['domicilio', 'representante'])
+        $query = empresa::with(['representante'])
         ->select('id', 'nombreEmpresa', 'persona_id');
 
         $usuarioActual = auth()->user();

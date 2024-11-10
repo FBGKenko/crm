@@ -65,18 +65,14 @@ class mapaController extends Controller
                 break;
         }
 
-        $puntos = domicilio::join('identificacions', 'identificacions.id', '=', 'domicilios.identificacion_id')
-        ->whereIn('seccion_id', $seccionesParaBuscar)
-        ->where('latitud', '!=', null)
+        $puntos = domicilio::where('latitud', '!=', null)
         ->get(['latitud', 'longitud']);
-
         $domicilioArray = [];
 
         foreach ($puntos as $punto) {
             $coordenadas = array($punto->latitud, $punto->longitud);
             $domicilioArray[] = $coordenadas;
-        }
-
+        };
         return view('Pages.contactos.mapa', compact('domicilioArray'));
     }
 }

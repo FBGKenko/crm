@@ -6,17 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Models\bitacora;
 use App\Models\ciudad;
 use App\Models\colonia;
+use App\Models\correo;
+use App\Models\distritoFederal;
+use App\Models\distritoLocal;
 use App\Models\domicilio;
+use App\Models\empresa;
+use App\Models\entidad;
 use App\Models\estatus;
 use App\Models\identificacion;
 use App\Models\localidad;
 use App\Models\municipio;
 use App\Models\persona;
+use App\Models\personaDomicilio;
 use App\Models\relacionPerfilUsuario;
 use App\Models\RelacionPersonaEmpresa;
-use DragonCode\Contracts\Cashier\Auth\Auth;
+use App\Models\seccion;
+use App\Models\telefono;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class personaController extends Controller
@@ -25,9 +33,9 @@ class personaController extends Controller
         $query = persona::where('deleted_at', null)
         ->select(
             'personas.id',
+            'estatus',
             'apodo',
             DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
-            'telefonoCelular1',
             'supervisado',
         );
 
@@ -66,73 +74,131 @@ class personaController extends Controller
     }
 
     function vistaAgregar(){
-        $listaPersonas = persona::where('deleted_at', null)->get();
         $listaPromotores = persona::where('deleted_at', null)->where('promotor','SI')->get();
+        $listaPersonas = persona::where('deleted_at', null)->get();
         $listaEstatus = estatus::get();
         $listaColonias = colonia::with('seccionColonia.seccion.distritoLocal.municipio')->get();
+        $listaEstados = entidad::get();
         $listaMunicipios = municipio::get();
-        return view('Pages.contactos.formulario', compact('listaPersonas', 'listaPromotores', 'listaColonias', 'listaMunicipios', 'listaEstatus'));
+        $listaSecciones = seccion::get();
+        $listaEmpresas = empresa::where('deleted_at', null)->get();
+        $listaDistritoLocal = distritoLocal::get();
+        $listaDistritoFederal = distritoFederal::get();
+        return view('Pages.contactos.formulario', compact('listaPersonas', 'listaPromotores', 'listaColonias', 'listaMunicipios', 'listaEstatus',
+            'listaEstados', 'listaSecciones', 'listaEmpresas', 'listaDistritoLocal', 'listaDistritoFederal'));
     }
 
     function agregar(Request $request){
         try{
             DB::beginTransaction();
             $datos = [
-                'user_id' => Auth()->id(),
-                'fecha_registro' => $request->input('fechaRegistro'),
-                'folio' => trim($request->input('folio')),
-                'persona_id' => ($request->input('promotor') != 0) ? $request->input('promotor') : null,
-                'origen' => null,
-                'referenciaOrigen' => ($request->input('referenciaOrigen') != 0) ? $request->input('referenciaOrigen') : null,
-                'referenciaCampania' => null,
-                'etiquetasOrigen' => null,
-                'estatus' => ($request->input('estatus') != 0) ? $request->input('estatus') : null,
-                'apodo' => trim(strtoupper($request->input('apodo'))),
-                'nombres' => trim(strtoupper($request->input('nombres'))),
-                'apellido_paterno' => trim(strtoupper($request->input('apellidoPaterno'))),
-                'apellido_materno' => trim(strtoupper($request->input('apellidoMaterno'))),
-                'genero' => ($request->input('genero') != 0) ? $request->input('genero') : null,
-                'fecha_nacimiento' => $request->input('fechaNacimiento'),
-                'edadPromedio' => ($request->input('rangoEdad') != 0) ? $request->input('rangoEdad') : null,
-                'telefonoCelular1' => trim($request->input('telefonoCelular1')),
-                'telefonoCelular2' => trim($request->input('telefonoCelular2')),
-                'telefonoCelular3' => trim($request->input('telefonoCelular3')),
-                'telefono_fijo' => trim($request->input('telefonoFijo')),
-                'correo' => trim(strtoupper($request->input('correo'))),
-                'correoAlternativo' => trim(strtoupper($request->input('correoAlternativo'))),
-                'nombre_en_facebook' => trim(strtoupper($request->input('nombreFacebook'))),
-                'twitter' => trim(strtoupper($request->input('twitter'))),
-                'instagram' => trim(strtoupper($request->input('instagram'))),
-                'observaciones' => trim(strtoupper($request->input('observaciones'))),
-                'etiquetas' => $request->input('etiquetas'),
-                'supervisado' => 0,
-                'tipo' => "SIN DEFINIR",
-                'cliente' => ($request->input('cliente') != 0) ? $request->input('cliente') : null,
-                'promotor' => ($request->input('promotorEstructura') != 0) ? $request->input('promotorEstructura') : null,
-                'colaborador' => ($request->input('colaborador') != 0) ? $request->input('colaborador') : null,
-                'campoPersonalizado' => NULL,
+                'user_id' => Auth::id(),
+                'fecha_registro' => $request->datosControl["fecha_registro"],
+                'folio' => $request->datosControl["folio"],
+                'promotor_id' => $request->datosControl["promotor"] > 0 ? $request->datosControl["promotor"] : null,
+                'origen' => $request->datosControl["origen"],
+                'referenciaOrigen' => $request->datosControl["referenciaOrigen"] > 0 ? $request->datosControl["referenciaOrigen"] : null,
+                'etiquetasOrigen' => trim($request->datosOtrosDatos["etiquetas"]),
+                'estatus' => $request->datosControl["estatus"] > 0 ? $request->datosControl["estatus"] : "PENDIENTE",
+                'apodo' => trim(strtoupper($request->datosPersonales["apodo"])),
+                'apellido_paterno' => trim(strtoupper($request->datosPersonales["apellido_paterno"])),
+                'apellido_materno' => trim(strtoupper($request->datosPersonales["apellido_materno"])),
+                'nombres' => trim(strtoupper($request->datosPersonales["nombres"])),
+                'genero' => $request->datosPersonales["genero"],
+                'fecha_nacimiento' => $request->datosPersonales["fecha_nacimiento"],
+                'rangoEdad' => $request->datosPersonales["rangoEdad"],
+                'nombre_en_facebook' => trim($request->datosContacto["nombre_en_facebook"]),
+                'twitter' => trim($request->datosContacto["twitter"]),
+                'instagram' => trim($request->datosContacto["instagram"]),
+                'afiliado' => $request->datosRelaciones["esAfiliado"],
+                'simpatizante' => $request->datosRelaciones["esSimpatizante"],
+                'programa' => $request->datosRelaciones["programa"],
+                'cliente' => $request->datosRelaciones["cliente"],
+                'promotor' => $request->datosRelaciones["promotorEstructura"],
+                'colaborador' => $request->datosRelaciones["colaborador"],
+                'etiquetas' => $request->datosOtrosDatos["etiquetas"],
+                'observaciones' => trim(strtoupper($request->datosOtrosDatos["observaciones"])),
+                'rolEstructura' => $request->datosEstructura["rolEstructura"],
+                'coordinadorDe' => $request->datosEstructura["rolEstructura"] != -1 ? $request->datosEstructura["rolNumero"] : null,
+                'funcionAsignada' => $request->datosEstructura["funcionAsignada"],
             ];
             $persona = persona::crear($datos);
+            foreach ($request->datosContacto["telefonos"] as $telefono) {
+                telefono::create([
+                    'telefono' => $telefono["telefono"],
+                    'etiqueta' => $telefono["descripcion"],
+                    'persona_id' => $persona->id,
+                ]);
+            }
+            foreach ($request->datosContacto["correos"] as $correo) {
+                correo::create([
+                    'correo' => $correo["correo"],
+                    'etiqueta' => $correo["descripcion"],
+                    'persona_id' => $persona->id,
+                ]);
+            }
             $datos = [
-                'idPersona' => $persona->id,
-                'curp' => $request->input('curp'),
-                'claveElectoral' => $request->input('claveElectoral'),
-                'lugarNacimiento' => $request->input('lugarNacimiento'),
+                'persona_id' => $persona->id,
+                'curp' => trim(strtoupper($request->datosIdentificacion["curp"])),
+                'rfc' => trim(strtoupper($request->datosIdentificacion["rfc"])),
+                // 'ine',
+                'lugarNacimiento' => $request->datosIdentificacion["lugarNacimiento"],
+                'clave_elector' => trim(strtoupper($request->datosUbicacion["clave_elector"])),
+                'seccion_id' => $request->datosUbicacion["seccion"] > 0 ? $request->datosUbicacion["seccion"] : null,
             ];
-            $identificacion = identificacion::crear($datos);
-            $datos = [
-                'coordenadas' => $request->input('coordenadas'),
-                'calle1' => $request->input('calle1'),
-                'calle2' => $request->input('calle2'),
-                'calle3' => $request->input('calle3'),
-                'numeroExterior' => $request->input('numeroExterior'),
-                'numeroInterior' => $request->input('numeroInterior'),
-                'referencia' => $request->input('referencia'),
-                'colonia' => $request->input('colonia'),
-                'idIdentificacion' => $identificacion->id,
-            ];
-            $domicilio = domicilio::crear($datos);
+            $identificacion = identificacion::create($datos);
 
+            $coordeandas = explode(',',$request->datosDomicilio["coordenadas"]);
+            $datosDomicilio = [
+                'calle1' => $request->datosDomicilio["calle1"],
+                'calle2' => $request->datosDomicilio["calle2"],
+                'calle3' => $request->datosDomicilio["calle3"],
+                'numero_exterior' => $request->datosDomicilio["numero_exterior"],
+                'numero_interior' => $request->datosDomicilio["numero_interior"],
+                'latitud' => count($coordeandas) > 1 ? $coordeandas[0] : null,
+                'longitud' => count($coordeandas) > 1 ? $coordeandas[1] : null,
+                'colonia_id' => $request->datosDomicilio["colonia"] > 0 ? $request->datosDomicilio["colonia"] : null,
+                'referencia' => $request->datosDomicilio["referencia"],
+            ];
+            $domicilio = domicilio::create($datosDomicilio);
+            personaDomicilio::create([
+                'tipo' => 'PRINCIPAL',
+                'persona_id' => $persona->id,
+                'domicilio_id' => $domicilio->id,
+            ]);
+
+            if($request->reutilizarDomicilio != "true"){
+                $coordeandas = explode(',',$request->datosFacturacion["coordenadas"]);
+                $datosDomicilio = [
+                    'calle1' => $request->datosFacturacion["calle1"],
+                    'calle2' => $request->datosFacturacion["calle2"],
+                    'calle3' => $request->datosFacturacion["calle3"],
+                    'numero_exterior' => $request->datosFacturacion["numero_exterior"],
+                    'numero_interior' => $request->datosFacturacion["numero_interior"],
+                    'latitud' => count($coordeandas) > 1 ? $coordeandas[0] : null,
+                    'longitud' => count($coordeandas) > 1 ? $coordeandas[1] : null,
+                    'colonia_id' => $request->datosFacturacion["colonia"] > 0 ? $request->datosFacturacion["colonia"] : null,
+                    'referencia' => $request->datosFacturacion["referencia"],
+                ];
+            }
+            $domicilio = domicilio::create($datosDomicilio);
+            personaDomicilio::create([
+                'tipo' => 'FACTURACION',
+                'persona_id' => $persona->id,
+                'domicilio_id' => $domicilio->id,
+            ]);
+            if($request->datosRelacionEmpresa){
+                foreach ($request->datosRelacionEmpresa as $relacionEmpresa) {
+                    if($relacionEmpresa["empresa_id"] > 0){
+                        $datos = [
+                            'persona_id' => $persona->id,
+                            'empresa_id' => $relacionEmpresa["empresa_id"],
+                            'puesto' => $relacionEmpresa["cargo"]
+                        ];
+                        RelacionPersonaEmpresa::create($datos);
+                    }
+                }
+            }
             session()->flash('mensajeExito', 'Se ha agregado la persona con éxito');
             bitacora::crearRegistro('Se ha agregado la persona con éxito', $request->ip(), 'ÉXITO');
             DB::commit();
@@ -147,88 +213,183 @@ class personaController extends Controller
     }
 
     function vistaModificar(persona $persona, Request $request){
-        $registro = persona::with('identificacion.domicilio.colonia')
-        ->where('personas.id', $persona->id)
-        ->first();
-        $listaPersonas = persona::where('deleted_at', null)->get();
+        $registro = persona::with(
+                'relacionDomicilio.domicilio.colonia'
+            )
+        ->find($persona->id);
         $listaPromotores = persona::where('deleted_at', null)->where('promotor','SI')->get();
-        $listaEstatus = estatus::get();
+        $listaPersonas = persona::where('deleted_at', null)->get();
+        $listaEstatus = estatus::get(['id', 'concepto']);
         $listaColonias = colonia::with('seccionColonia.seccion.distritoLocal.municipio')->get();
-
-        $listaMunicipios = municipio::get();
+        $listaEstados = entidad::get(['id', 'nombre']);
+        $listaMunicipios = municipio::get(['id', 'nombre']);
+        $listaSecciones = seccion::get(['id']);
+        $listaEmpresas = empresa::where('deleted_at', null)->get();
+        $listaMunicipios = municipio::get(['id', 'nombre']);
+        $relacionesEmpresa = RelacionPersonaEmpresa::where('persona_id', $persona->id)->get();
+        $listaDistritoLocal = distritoLocal::get(['id']);
+        $listaDistritoFederal = distritoFederal::get(['id']);
+        $conjunto = $request->conjunto;
         return view('Pages.contactos.formulario', [
-            'listaPersonas' => $listaPersonas,
-            'persona' => $registro,
-            'listaPromotores' => $listaPromotores,
-            'listaColonias' => $listaColonias,
-            'listaMunicipios' => $listaMunicipios,
-            'listaEstatus' => $listaEstatus,
+            'listaPersonas' => $listaPersonas, 'persona' => $persona, 'telefonos' => $registro->telefonos, 'correos' => $registro->correos,
+            'identificacion' => $registro->identificacion, 'relacionDomicilio' => $registro->relacionDomicilio, 'listaEmpresas' => $listaEmpresas,
+            'listaPromotores' => $listaPromotores, 'listaColonias' => $listaColonias, 'listaMunicipios' => $listaMunicipios,
+            'listaEstatus' => $listaEstatus, 'listaEstados' => $listaEstados, 'listaSecciones' => $listaSecciones,
+            'relacionesEmpresa' => $relacionesEmpresa, 'listaDistritoLocal' => $listaDistritoLocal, 'listaDistritoFederal' => $listaDistritoFederal,
+            'conjunto' => $conjunto
         ]);
     }
 
     function modificar(persona $persona, Request $request){
         try{
             DB::beginTransaction();
-
             $datos = [
-                'user_id' => $persona->idUsuario,
-                'fecha_registro' => $request->input('fechaRegistro'),
-                'folio' => trim($request->input('folio')),
-                'persona_id' => ($request->input('promotor') != 0) ? $request->input('promotor') : null,
-                'origen' => null,
-                'referenciaOrigen' => ($request->input('referenciaOrigen') != 0) ? $request->input('referenciaOrigen') : null,
-                'referenciaCampania' => null,
-                'etiquetasOrigen' => null,
-                'estatus' => ($request->input('estatus') != 0) ? $request->input('estatus') : null,
-                'apodo' => trim(strtoupper($request->input('apodo'))),
-                'nombres' => trim(strtoupper($request->input('nombres'))),
-                'apellido_paterno' => trim(strtoupper($request->input('apellidoPaterno'))),
-                'apellido_materno' => trim(strtoupper($request->input('apellidoMaterno'))),
-                'genero' => ($request->input('genero') != 0) ? $request->input('genero') : null,
-                'fecha_nacimiento' => $request->input('fechaNacimiento'),
-                'edadPromedio' => ($request->input('rangoEdad') != 0) ? $request->input('rangoEdad') : null,
-                'telefonoCelular1' => trim($request->input('telefonoCelular1')),
-                'telefonoCelular2' => trim($request->input('telefonoCelular2')),
-                'telefonoCelular3' => trim($request->input('telefonoCelular3')),
-                'telefono_fijo' => trim($request->input('telefonoFijo')),
-                'correo' => trim(strtoupper($request->input('correo'))),
-                'correoAlternativo' => trim(strtoupper($request->input('correoAlternativo'))),
-                'nombre_en_facebook' => trim(strtoupper($request->input('nombreFacebook'))),
-                'twitter' => trim(strtoupper($request->input('twitter'))),
-                'instagram' => trim(strtoupper($request->input('instagram'))),
-                'observaciones' => trim(strtoupper($request->input('observaciones'))),
-                'etiquetas' => $request->input('etiquetas'),
-                'supervisado' => 0,
-                'tipo' => "SIN DEFINIR",
-                'cliente' => ($request->input('cliente') != 0) ? $request->input('cliente') : null,
-                'promotor' => ($request->input('promotorEstructura') != 0) ? $request->input('promotorEstructura') : null,
-                'colaborador' => ($request->input('colaborador') != 0) ? $request->input('colaborador') : null,
-                'campoPersonalizado' => NULL,
+                'user_id' => Auth::id(),
+                'fecha_registro' => $request->datosControl["fecha_registro"],
+                'folio' => $request->datosControl["folio"],
+                'promotor_id' => $request->datosControl["promotor"] > 0 ? $request->datosControl["promotor"] : null,
+                'origen' => $request->datosControl["origen"],
+                'referenciaOrigen' => $request->datosControl["referenciaOrigen"] > 0 ? $request->datosControl["referenciaOrigen"] : null,
+                'estatus' => $request->datosControl["estatus"] > 0 ? $request->datosControl["estatus"] : "PENDIENTE",
+                'apodo' => trim(strtoupper($request->datosPersonales["apodo"])),
+                'apellido_paterno' => trim(strtoupper($request->datosPersonales["apellido_paterno"])),
+                'apellido_materno' => trim(strtoupper($request->datosPersonales["apellido_materno"])),
+                'nombres' => trim(strtoupper($request->datosPersonales["nombres"])),
+                'genero' => $request->datosPersonales["genero"],
+                'fecha_nacimiento' => $request->datosPersonales["fecha_nacimiento"],
+                'rangoEdad' => $request->datosPersonales["rangoEdad"],
+                'nombre_en_facebook' => trim($request->datosContacto["nombre_en_facebook"]),
+                'twitter' => trim($request->datosContacto["twitter"]),
+                'instagram' => trim($request->datosContacto["instagram"]),
+                'afiliado' => $request->datosRelaciones["esAfiliado"],
+                'simpatizante' => $request->datosRelaciones["esSimpatizante"],
+                'programa' => $request->datosRelaciones["programa"],
+                'cliente' => $request->datosRelaciones["cliente"],
+                'promotor' => $request->datosRelaciones["promotorEstructura"],
+                'colaborador' => $request->datosRelaciones["colaborador"],
+                'etiquetas' => $request->datosOtrosDatos["etiquetas"],
+                'observaciones' => trim(strtoupper($request->datosOtrosDatos["observaciones"])),
+                'rolEstructura' => $request->datosEstructura["rolEstructura"],
+                'coordinadorDe' => $request->datosEstructura["rolEstructura"] != -1 ? $request->datosEstructura["rolNumero"] : null,
+                'funcionAsignada' => $request->datosEstructura["funcionAsignada"],
             ];
-            persona::modificar($datos, $persona);
+            $persona->update($datos);
 
-            $datos = [
-                'idPersona' => $persona->id,
-                'curp' => $request->input('curp'),
-                'claveElectoral' => $request->input('claveElectoral'),
-                'lugarNacimiento' => $request->input('lugarNacimiento'),
-            ];
-            $identificacion = identificacion::find($persona->identificacion->id);
-            identificacion::modificar($datos, $identificacion);
+            $telefonosExistentes = telefono::where('persona_id', $persona->id)->get();
+            foreach ($telefonosExistentes as $telefono) {
+                $borrar = true;
+                foreach ($request->datosContacto["telefonos"] as $nuevo) {
+                    if($telefono->telefono == $nuevo["telefono"]){
+                        $borrar = false;
+                    }
+                }
+                if($borrar){
+                    $telefono->delete();
+                }
+            }
+            foreach ($request->datosContacto["telefonos"] as $telefono) {
+                $telefonoBuscado = telefono::where('telefono', $telefono["telefono"])->where('persona_id', $persona->id)->first();
+                if(!isset($telefonoBuscado)){
+                    telefono::create([
+                        'telefono' => $telefono["telefono"],
+                        'etiqueta' => $telefono["descripcion"],
+                        'persona_id' => $persona->id,
+                    ]);
+                }
+            }
 
+            $correosExistentes = correo::where('persona_id', $persona->id)->get();
+            foreach ($correosExistentes as $correo) {
+                $borrar = true;
+                foreach ($request->datosContacto["correos"] as $nuevo) {
+                    if($correo->correo == $nuevo["correo"]){
+                        $borrar = false;
+                    }
+                }
+                if($borrar){
+                    $correo->delete();
+                }
+            }
+            foreach ($request->datosContacto["correos"] as $correo) {
+                $correoBuscado = correo::where('correo', $correo["correo"])->where('persona_id', $persona->id)->first();
+                if(!isset($correoBuscado)){
+                    correo::create([
+                        'correo' => $correo["correo"],
+                        'etiqueta' => $correo["descripcion"],
+                        'persona_id' => $persona->id,
+                    ]);
+                }
+            }
             $datos = [
-                'coordenadas' => $request->input('coordenadas'),
-                'calle1' => $request->input('calle1'),
-                'calle2' => $request->input('calle2'),
-                'calle3' => $request->input('calle3'),
-                'numeroExterior' => $request->input('numeroExterior'),
-                'numeroInterior' => $request->input('numeroInterior'),
-                'referencia' => $request->input('referencia'),
-                'colonia' => $request->input('colonia'),
-                'idIdentificacion' => $identificacion->id,
+                'persona_id' => $persona->id,
+                'curp' => trim(strtoupper($request->datosIdentificacion["curp"])),
+                'rfc' => trim(strtoupper($request->datosIdentificacion["rfc"])),
+                // 'ine',
+                'lugarNacimiento' => $request->datosIdentificacion["lugarNacimiento"],
+                'clave_elector' => trim(strtoupper($request->datosUbicacion["clave_elector"])),
+                'seccion_id' => $request->datosUbicacion["seccion"] > 0 ? $request->datosUbicacion["seccion"] : null,
             ];
-            $domicilio = domicilio::find($identificacion->domicilio->id);
-            domicilio::modificar($datos, $domicilio);
+            $identificacion = identificacion::where('persona_id', $persona->id)->update($datos);
+
+            $coordeandas = explode(',',$request->datosDomicilio["coordenadas"]);
+            $datosDomicilio = [
+                'calle1' => $request->datosDomicilio["calle1"],
+                'calle2' => $request->datosDomicilio["calle2"],
+                'calle3' => $request->datosDomicilio["calle3"],
+                'numero_exterior' => $request->datosDomicilio["numero_exterior"],
+                'numero_interior' => $request->datosDomicilio["numero_interior"],
+                'latitud' => count($coordeandas) > 1 ? $coordeandas[0] : null,
+                'longitud' => count($coordeandas) > 1 ? $coordeandas[1] : null,
+                'colonia_id' => $request->datosDomicilio["colonia"] > 0 ? $request->datosDomicilio["colonia"] : null,
+                'referencia' => $request->datosDomicilio["referencia"],
+            ];
+            $idDomicilio = personaDomicilio::where('persona_id', $persona->id)->where('tipo', 'PRINCIPAL')->first();
+            $domicilio = domicilio::where('id', $idDomicilio->domicilio_id)->first();
+            $domicilio->update($datosDomicilio);
+
+            if($request->reutilizarDomicilio != "true"){
+                $coordeandas = explode(',',$request->datosFacturacion["coordenadas"]);
+                $datosDomicilio = [
+                    'calle1' => $request->datosFacturacion["calle1"],
+                    'calle2' => $request->datosFacturacion["calle2"],
+                    'calle3' => $request->datosFacturacion["calle3"],
+                    'numero_exterior' => $request->datosFacturacion["numero_exterior"],
+                    'numero_interior' => $request->datosFacturacion["numero_interior"],
+                    'latitud' => count($coordeandas) > 1 ? $coordeandas[0] : null,
+                    'longitud' => count($coordeandas) > 1 ? $coordeandas[1] : null,
+                    'colonia_id' => $request->datosFacturacion["colonia"] > 0 ? $request->datosFacturacion["colonia"] : null,
+                    'referencia' => $request->datosFacturacion["referencia"],
+                ];
+            }
+            $idDomicilio = personaDomicilio::where('persona_id', $persona->id)->where('tipo', 'FACTURACION')->first();
+            $domicilio = domicilio::where('id', $idDomicilio->domicilio_id)->first();
+            $domicilio->update($datosDomicilio);
+
+            $relacionEmpresasExistentes = RelacionPersonaEmpresa::where('persona_id', $persona->id)->get();
+            foreach ($relacionEmpresasExistentes as $relacion) {
+                $borrar = true;
+                foreach ($request->datosRelacionEmpresa as $nuevo) {
+                    if($relacion->empresa_id == $nuevo["empresa_id"]){
+                        $borrar = false;
+                    }
+                }
+                if($borrar){
+                    $relacion->delete();
+                }
+            }
+            if($request->datosRelacionEmpresa){
+                foreach ($request->datosRelacionEmpresa as $relacionEmpresa) {
+                    $telefonoBuscado = RelacionPersonaEmpresa::where('empresa_id', $relacionEmpresa["empresa_id"])->where('persona_id', $persona->id)->first();
+                    if($relacionEmpresa["empresa_id"] > 0 && !isset($telefonoBuscado)){
+                        $datos = [
+                            'persona_id' => $persona->id,
+                            'empresa_id' => $relacionEmpresa["empresa_id"],
+                            'puesto' => $relacionEmpresa["cargo"]
+                        ];
+                        RelacionPersonaEmpresa::create($datos);
+                    }
+                }
+            }
 
             session()->flash('mensajeExito', 'Se ha modificado la persona con éxito');
             bitacora::crearRegistro('Se ha modificado la persona con éxito', $request->ip(), 'ÉXITO');
@@ -281,7 +442,7 @@ class personaController extends Controller
                 bitacora::crearRegistro('Se ha autorizado la persona con éxito', $request->ip(), 'ÉXITO');
             }
             else{
-                session()->flash('mensajeExito', 'Se ha vuleto no supervizado la persona con éxito');
+                session()->flash('mensajeExito', 'Se ha vuelto no supervizado la persona con éxito');
                 bitacora::crearRegistro('Se ha autorizado la persona con éxito', $request->ip(), 'ÉXITO');
             }
 
@@ -297,7 +458,13 @@ class personaController extends Controller
     }
 
     function fichaTecnica(persona $persona, Request $request){
-        $registro = persona::with('identificacion.domicilio.colonia.seccionColonia.seccion.distritoLocal.municipio.distritoFederal.entidad')
+        $registro = persona::with([
+            'telefonos',
+            'correos',
+            'identificacion',
+            'relacionPersonaEmpresa.empresa',
+            'relacionDomicilio.domicilio.colonia'
+        ])
         ->where('personas.id', $persona->id)
         ->first();
         return view('Pages.contactos.ficha', [

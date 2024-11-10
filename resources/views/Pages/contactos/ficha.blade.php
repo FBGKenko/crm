@@ -26,65 +26,111 @@
                     <span id="encabezadoRotadores" class="align-self-center">
                         Datos de Control
                     </span>
-                    <a href="{{route('contactos.vistaModificar', $persona->id)}}" class="btn btn-primary">
+                    <a href="{{route('contactos.vistaModificar', $persona->id)}}" id="enlaceAModificar" class="btn btn-primary">
                         Modificar
                     </a>
                 </div>
-                <div class="card-body">
-                    <div id="contenedorDatosControl">
+                <div class="card-body tab-content">
+                    <div class="tab-pane container pt-3 active" id="contenedorDatosControl">
                         <h6><span class="fw-bold fs-5">Fecha de registro:</span> {{$persona->fecha_registro}}</h6>
                         <h6><span class="fw-bold fs-5">Folio:</span> {{$persona->folio ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Promotor:</span> </h6>
-                        <h6><span class="fw-bold fs-5">Origen:</span> </h6>
-                        <h6><span class="fw-bold fs-5">Referencia de Origen:</span></h6>
-                        <h6><span class="fw-bold fs-5">Campaña de referencia:</span></h6>
-                        <h6><span class="fw-bold fs-5">Etiquetas de origen:</span></h6>
-                        <h6><span class="fw-bold fs-5">Estatus:</span></h6>
+                        <h6><span class="fw-bold fs-5">Promotor:</span> {{$persona->promotor_id ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Origen:</span> {{$persona->origen ?? 'SIN DATO'}} </h6>
+                        <h6><span class="fw-bold fs-5">Referencia de Origen:</span> PENDIENTE</h6>
+                        <h6><span class="fw-bold fs-5">Campaña de referencia:</span> PENDIENTE</h6>
+                        <h6><span class="fw-bold fs-5">Etiquetas de origen:</span> {{$persona->etiquetaOrigen ?? 'SIN DATO'}} </h6>
+                        <h6><span class="fw-bold fs-5">Estatus:</span> {{$persona->estatus}} </h6>
                     </div>
-                    <div id="contenedorDatosPersonales" style="display: none">
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosPersonales">
                         <h6><span class="fw-bold fs-5">Apodo:</span> {{$persona->apodo ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Nombre(s):</span> {{$persona->nombres ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Primer Apellido:</span> {{$persona->apellido_paterno ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Segundo Apellido:</span>{{$persona->apellido_materno ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Segundo Apellido:</span> {{$persona->apellido_materno ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Sexo:</span> {{$persona->genero ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Fecha de Nacimiento:</span> {{$persona->fecha_nacimiento ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Rango de Edad:</span> {{$persona->edadPromedio ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Rango de Edad:</span> {{$persona->rangoEdad ?? 'SIN DATO'}}</h6>
                     </div>
-                    <div id="contenedorDatosContacto" style="display: none">
-                        <h6><span class="fw-bold fs-5">Celular principal:</span> {{$persona->telefonoCelular1 ?? 'SIN DATO'}}</h6>
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosContacto">
+                        {{-- <h6><span class="fw-bold fs-5">Celular principal:</span> {{$persona->telefonoCelular1 ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Celular alternativo 1:</span> {{$persona->telefonoCelular2 ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Celular alternativo 2:</span> {{$persona->telefonoCelular3 ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Correo electrónico principal:</span> {{$persona->correo ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Correo electrónico alternativo:</span> {{$persona->correoAlternativo ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Telefono Fijo:</span> {{$persona->telefono_fijo ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Correo electrónico alternativo:</span> {{$persona->correoAlternativo ?? 'SIN DATO'}}</h6> --}}
+                        {{-- <h6><span class="fw-bold fs-5">Telefono Fijo:</span> {{$persona->telefono_fijo ?? 'SIN DATO'}}</h6> --}}
+                        @foreach ($persona->telefonos as $telefono)
+                            @if ($loop->index == 0)
+                                <h6><span class="fw-bold fs-5">Telefono Principal:</span> {{$telefono->telefono ?? 'SIN DATO'}}, {{$telefono->etiqueta}}</h6>
+                            @else
+                                <h6><span class="fw-bold fs-5">Telefono {{$loop->index}}:</span> {{$telefono->telefono ?? 'SIN DATO'}}, {{$telefono->etiqueta}}</h6>
+                            @endif
+
+                        @endforeach
+                        @foreach ($persona->correos as $correo)
+                            @if ($loop->index == 0)
+                                <h6><span class="fw-bold fs-5">Correo Principal:</span> {{$correo->correo ?? 'SIN DATO'}}, {{$telefono->etiqueta}}</h6>
+                            @else
+                                <h6><span class="fw-bold fs-5">Correo {{$loop->index}}:</span> {{$correo->correo ?? 'SIN DATO'}}, {{$telefono->etiqueta}}</h6>
+                            @endif
+
+                        @endforeach
                         <h6><span class="fw-bold fs-5">Facebook:</span> {{$persona->nombre_en_facebook ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">X/Twitter:</span> {{$persona->twitter ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Instagram:</span> {{$persona->instagram ?? 'SIN DATO'}}</h6>
                     </div>
-                    <div id="contenedorDatosDomicilio" style="display: none">
-                        <h6><span class="fw-bold fs-5">Calle principal:</span> {{$persona->identificacion->domicilio->calle1 ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Entre calle 1:</span> {{$persona->identificacion->domicilio->calle2 ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Entre calle 2:</span> {{$persona->identificacion->domicilio->calle3 ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Número exterior:</span> {{$persona->identificacion->domicilio->numero_exterior ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Número interior:</span> {{$persona->identificacion->domicilio->numero_interior ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Colonia:</span> {{$persona->identificacion->domicilio->colonia_id ? $persona->identificacion->domicilio->colonia->nombre : 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Código postal:</span> {{$persona->identificacion->domicilio->colonia_id ? $persona->identificacion->domicilio->colonia->codigo_postal : 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">Ciudad:</span></h6>
-                        <h6><span class="fw-bold fs-5">Municipio:</span></h6>
-                        <h6><span class="fw-bold fs-5">País:</span> SIN DATO</h6>
-                        <h6><span class="fw-bold fs-5">Referencias:</span> {{$persona->identificacion->domicilio->referencia ?? 'SIN DATO'}}</h6>
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosDomicilio">
+                        <h6><span class="fw-bold fs-5">Calle principal:</span> {{$persona->relacionDomicilio[0]->domicilio->calle1 ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Entre calle 1:</span> {{$persona->relacionDomicilio[0]->domicilio->calle2 ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Entre calle 2:</span> {{$persona->relacionDomicilio[0]->domicilio->calle3 ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Número exterior:</span> {{$persona->relacionDomicilio[0]->domicilio->numero_exterior ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Número interior:</span> {{$persona->relacionDomicilio[0]->domicilio->numero_interior ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Colonia:</span> {{$persona->relacionDomicilio[0]->domicilio->colonia_id ? $persona->relacionDomicilio[0]->domicilio->colonia->nombre : 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Código postal:</span> {{$persona->relacionDomicilio[0]->domicilio->colonia_id ? $persona->relacionDomicilio[0]->domicilio->colonia->codigo_postal : 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Ciudad:</span> PENDIENTE</h6>
+                        <h6><span class="fw-bold fs-5">Municipio:</span> PENDIENTE</h6>
+                        <h6><span class="fw-bold fs-5">País:</span> PENDIENTE</h6>
+                        <h6><span class="fw-bold fs-5">Referencias:</span> {{$persona->relacion_domicilio[0]->domicilio->referencia ?? 'SIN DATO'}}</h6>
                     </div>
-                    <div id="contenedorDatosIdentificacion" style="display: none">
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosIdentificacion">
                         <h6><span class="fw-bold fs-5">Curp:</span> {{$persona->identificacion->curp ?? 'SIN DATO'}}</h6>
-                        <h6><span class="fw-bold fs-5">RFC:</span> {{$persona->identificacion->clave_elector ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">RFC:</span> {{$persona->identificacion->rfc ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Lugar de nacimiento:</span> {{$persona->identificacion->lugarNacimiento ?? 'SIN DATO'}}</h6>
                     </div>
-                    <div id="contenedorDatosRelacion" style="display: none">
-                        <h6><span class="fw-bold fs-5">Cliente de @Empresa:</span></h6>
-                        <h6><span class="fw-bold fs-5">Promotor de @Empresa:</span></h6>
-                        <h6><span class="fw-bold fs-5">Colaborador de @Empresa:</span></h6>
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosUbicacion">
+                        <h6><span class="fw-bold fs-5">Clave Elector:</span> {{$persona->identificacion->clave_elector ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Sección:</span> {{$persona->identificacion->seccion_id ?? 'SIN DATO'}}</h6>
                     </div>
-                    <div id="contenedorOtrosDatos" style="display: none">
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosRelacion">
+                        <h6><span class="fw-bold fs-5">Cliente de @Empresa:</span> {{$persona->cliente ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Promotor de @Empresa:</span> {{$persona->promotor ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Colaborador de @Empresa:</span> {{$persona->colaborador ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Afiliado de @Empresa:</span> {{$persona->afiliado ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Simpatizante de @Empresa:</span> {{$persona->simpatizante ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Relación Personalizada de @Empresa:</span> {{$persona->programa ?? 'SIN DATO'}}</h6>
+                    </div>
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosEstructura">
+                        <h6><span class="fw-bold fs-5">Rol Estructura:</span> {{$persona->rolEstructura ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Coordinador de:</span> {{$persona->coordinadorDe ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Función asignada:</span> {{$persona->funcionAsignada ?? 'SIN DATO'}}</h6>
+                    </div>
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosRelacionEmpresa">
+                        @foreach ($persona->relacionPersonaEmpresa as $relacion)
+                            <h6><span class="fw-bold fs-5">Puesta en Empresa ({{$relacion->empresa->nombreEmpresa}}):</span> {{$relacion->puesto ?? 'SIN DATO'}}</h6>
+                        @endforeach
+                    </div>
+                    <div class="tab-pane container pt-3 fade" id="contenedorDatosFacturacion">
+                        <h6><span class="fw-bold fs-5">Calle principal:</span> {{$persona->relacionDomicilio[1]->domicilio->calle1 ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Entre calle 1:</span> {{$persona->relacionDomicilio[1]->domicilio->calle2 ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Entre calle 2:</span> {{$persona->relacionDomicilio[1]->domicilio->calle3 ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Número exterior:</span> {{$persona->relacionDomicilio[1]->domicilio->numero_exterior ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Número interior:</span> {{$persona->relacionDomicilio[1]->domicilio->numero_interior ?? 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Colonia:</span> {{$persona->relacionDomicilio[1]->domicilio->colonia_id ? $persona->relacionDomicilio[1]->domicilio->colonia->nombre : 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Código postal:</span> {{$persona->relacionDomicilio[1]->domicilio->colonia_id ? $persona->relacionDomicilio[1]->domicilio->colonia->codigo_postal : 'SIN DATO'}}</h6>
+                        <h6><span class="fw-bold fs-5">Ciudad:</span> PENDIENTE</h6>
+                        <h6><span class="fw-bold fs-5">Municipio:</span> PENDIENTE</h6>
+                        <h6><span class="fw-bold fs-5">País:</span> PENDIENTE</h6>
+                        <h6><span class="fw-bold fs-5">Referencias:</span> {{$persona->relacion_domicilio[1]->domicilio->referencia ?? 'SIN DATO'}}</h6>
+                    </div>
+                    <div class="tab-pane container pt-3 fade" id="contenedorOtrosDatos">
                         <h6><span class="fw-bold fs-5">Etiquetas:</span> {{$persona->etiquetas ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Observaciones:</span> {{$persona->observaciones ?? 'SIN DATO'}}</h6>
                     </div>
@@ -102,13 +148,17 @@
                         {{-- <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#">Active</a>
                         </li> --}}
-                        <li class="nav-item active"> <a class="nav-link" id="linkDatosControl" href="#"> Datos de Control </a> </li>
-                        <li class="nav-item"> <a class="nav-link" id="linkDatosPersonales" href="#"> Datos Personales </a> </li>
-                        <li class="nav-item"> <a class="nav-link" id="linkDatosContacto" href="#"> Datos de Contacto </a> </li>
-                        <li class="nav-item"> <a class="nav-link" id="linkDatosDomicilio" href="#"> Datos de Domicilio </a> </li>
-                        <li class="nav-item"> <a class="nav-link" id="linkDatosIdentificacion" href="#"> Datos de Identificación </a> </li>
-                        <li class="nav-item"> <a class="nav-link" id="linkDatosRelacion" href="#"> Datos de Relación </a> </li>
-                        <li class="nav-item"> <a class="nav-link" id="linkOtrosDatos" href="#"> Otros datos </a> </li>
+                        <li class="nav-item active"> <a class="nav-link active" data-bs-toggle="tab" href="#contenedorDatosControl" href="#"> Datos de Control </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosPersonales" href="#"> Datos Personales </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosContacto" href="#"> Datos de Contacto </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosDomicilio" href="#"> Datos de Domicilio </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosIdentificacion" href="#"> Datos de Identificación </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosUbicacion" href="#"> Datos de Ubicación </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosRelacion" href="#"> Datos de Relación </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosEstructura" href="#"> Datos de Estructura </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosRelacionEmpresa" href="#"> Datos de Relación con Empresas </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosFacturacion" href="#"> Datos de Facturación </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorOtrosDatos" href="#"> Otros datos </a> </li>
                     </ul>
                 </div>
             </div>
@@ -144,64 +194,46 @@
 
 @section('scripts')
     <script text="text/javascript">
-
-        $(document).ready(function () {
-            $("#linkFichaTecnica").trigger('click');
-        });
-
-        $('.nav-link').click(function (e) {
-            $('ul.nav').children().each(function (index, element) {
-                console.log($(element).children());
-                $(element).children().removeClass('active');
-            });
-            $(this).addClass('active');
-            $('#contenedorFichaTecnica').hide();
-            $('#contenedorDatosControl').hide();
-            $('#contenedorDatosPersonales').hide();
-            $('#contenedorDatosContacto').hide();
-            $('#contenedorDatosDomicilio').hide();
-            $('#contenedorDatosIdentificacion').hide();
-            $('#contenedorDatosRelacion').hide();
-            $('#contenedorOtrosDatos').hide();
-            switch ($(this).attr('id')) {
-                case "linkFichaTecnica":
-                    $('#encabezadoRotadores').text('Ficha Técnica');
-                    $('#contenedorFichaTecnica').show();
-                    break;
-                case "linkDatosControl":
-                    $('#encabezadoRotadores').text('Datos de Control');
-                    $('#contenedorDatosControl').show();
-                    break;
-                case "linkDatosPersonales":
-                    $('#encabezadoRotadores').text('Datos Personales');
-                    $('#contenedorDatosPersonales').show();
-                    break;
-                case "linkDatosContacto":
-                    $('#encabezadoRotadores').text('Datos de Contacto');
-                    $('#contenedorDatosContacto').show();
-                    break;
-                case "linkDatosDomicilio":
-                    $('#encabezadoRotadores').text('Datos de Domicilio');
-                    $('#contenedorDatosDomicilio').show();
-                    break;
-                case "linkDatosIdentificacion":
-                    $('#encabezadoRotadores').text('Datos de Identificación');
-                    $('#contenedorDatosIdentificacion').show();
-                    break;
-                case "linkDatosRelacion":
-                    $('#encabezadoRotadores').text('Datos de Relación');
-                    $('#contenedorDatosRelacion').show();
-                    break;
-                case "linkOtrosDatos":
-                    $('#encabezadoRotadores').text('Otros Datos');
-                    $('#contenedorOtrosDatos').show();
+        $('.nav-item .nav-link').click(function(){
+            switch ($(this).attr('href')) {
+                case "#contenedorDatosControl":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosControl")
+                break;
+                case "#contenedorDatosPersonales":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosPersonales")
+                break;
+                case "#contenedorOtrosDatos":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=otrosDatos")
+                break;
+                case "#contenedorDatosContacto":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosContacto")
+                break;
+                case "#contenedorDatosDomicilio":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosDomicilio")
+                break;
+                case "#contenedorDatosIdentificacion":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosIdentificacion")
+                break;
+                case "#contenedorDatosUbicacion":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosUbicaciones")
+                break;
+                case "#contenedorDatosRelacion":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosRelacion")
+                break;
+                case "#contenedorDatosEstructura":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosEstructura")
+                break;
+                case "#contenedorDatosRelacionEmpresa":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosRelacionEmpresa")
+                break;
+                case "#contenedorDatosFacturacion":
+                    $('#enlaceAModificar').attr('href', "{{route('contactos.vistaModificar', $persona->id)}}?conjunto=datosFacturacion")
+                break;
+                default:
                     break;
             }
+
+
         });
-
-        function cargarDatos(){
-
-        }
-
     </script>
 @endsection

@@ -17,12 +17,15 @@ class domicilio extends Model
         'latitud',
         'longitud',
         'colonia_id',
-        'identificacion_id',
-        'empresa_id',
         'referencia',
+        'rfc'
     ];
     public function identificacion(){
         return $this->belongsTo(identificacion::class);
+    }
+
+    public function relacionPersona(){
+        return $this->hasMany(personaDomicilio::class);
     }
 
     public function colonia(){

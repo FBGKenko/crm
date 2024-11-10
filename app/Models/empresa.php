@@ -31,20 +31,20 @@ class empresa extends Model
 
     public static function crear($datos){
         $empresa = empresa::create($datos);
-        $datosDomicilio = [
-            'calle1' => $datos['calle1'],
-            'calle2' => $datos['calle2'],
-            'calle3' => $datos['calle3'],
-            'numero_exterior' => $datos['numero_exterior'],
-            'numero_interior' => $datos['numero_interior'],
-            'latitud' => null,
-            'longitud' => null,
-            'colonia_id' => $datos['colonia_id'],
-            'identificacion_id' => null,
-            'empresa_id' => $empresa->id,
-            'referencia' => $datos['referencia'],
-        ];
-        domicilio::create($datosDomicilio);
+        // $datosDomicilio = [
+        //     'calle1' => $datos['calle1'],
+        //     'calle2' => $datos['calle2'],
+        //     'calle3' => $datos['calle3'],
+        //     'numero_exterior' => $datos['numero_exterior'],
+        //     'numero_interior' => $datos['numero_interior'],
+        //     'latitud' => null,
+        //     'longitud' => null,
+        //     'colonia_id' => $datos['colonia_id'],
+        //     'identificacion_id' => null,
+        //     'empresa_id' => $empresa->id,
+        //     'referencia' => $datos['referencia'],
+        // ];
+        // domicilio::create($datosDomicilio);
     }
     public static function modificar($datos, $empresa){
         $empresa->update($datos);

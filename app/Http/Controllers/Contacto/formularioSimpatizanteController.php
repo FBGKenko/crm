@@ -160,11 +160,13 @@ class formularioSimpatizanteController extends Controller
                 $municipio = $coloniaAux->seccionColonia[0]->seccion->distritoLocal->municipio->id;
             }
             return [
+                    'codigoPostal' => $coloniaAux->codigo_postal,
                     'municipio' => $municipio,
                     'colonia' => $colonia,
-                    'codigoPostal' => $coloniaAux->codigo_postal,
                     'nombreMunicipio' => municipio::find($municipio)->nombre,
                     'nombreColonia' => $coloniaAux->nombre,
+                    'nombreEntidad' => $coloniaAux->seccionColonia[0]->seccion->distritoLocal->municipio->distritoFederal->entidad->nombre,
+                    'idEntidad' => $coloniaAux->seccionColonia[0]->seccion->distritoLocal->municipio->distritoFederal->entidad->id,
                 ];
         }
         catch(Exception $e){

@@ -14,38 +14,61 @@ return new class extends Migration
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained();
+            $table->boolean('supervisado')->default(0);
+
+            //DATOS DE CONTACTO
             $table->date('fecha_registro')->nullable();
             $table->string('folio')->nullable();
-            $table->foreignId('persona_id')->nullable()->constrained();
+            $table->unsignedBigInteger('promotor_id')->nullable();
+            $table->foreign('promotor_id')
+                ->references('id')->on('personas')->onDelete('set null');
             $table->string('origen')->nullable();
             $table->string('referenciaOrigen')->nullable();
             $table->string('referenciaCampania')->nullable();
             $table->string('etiquetasOrigen')->nullable();
             $table->string('estatus')->nullable()->default('PENDIENTE');
+
+            //DATOS PERSONALES
             $table->string('apodo')->nullable();
-            $table->string('nombres')->nullable();
             $table->string('apellido_paterno')->nullable();
             $table->string('apellido_materno')->nullable();
+            $table->string('nombres')->nullable();
             $table->string('genero')->nullable();
             $table->date('fecha_nacimiento')->nullable();
-            $table->string('edadPromedio')->nullable();
-            $table->string('telefonoCelular1')->nullable();
-            $table->string('telefonoCelular2')->nullable();
-            $table->string('telefonoCelular3')->nullable();
-            $table->string('telefono_fijo')->nullable();
-            $table->string('correo')->nullable();
-            $table->string('correoAlternativo')->nullable();
+            $table->string('rangoEdad')->nullable();
+
+            //DATOS DE CONTACTO
+            //MEDIANTE RELACIONES TELEFONO Y CORREO
             $table->string('nombre_en_facebook')->nullable();
             $table->string('twitter')->nullable();
             $table->string('instagram')->nullable();
-            $table->string('observaciones')->nullable();
-            $table->string('etiquetas')->nullable();
-            $table->boolean('supervisado')->default(0);
-            $table->string('tipo')->default('SIN DEFINIR');
+
+            //DATOS DE RELACION
+            $table->string('afiliado')->nullable();
+            $table->string('simpatizante')->nullable();
+            $table->string('programa')->nullable();
             $table->string('cliente')->nullable();
             $table->string('promotor')->nullable();
             $table->string('colaborador')->nullable();
-            $table->string('campoPersonalizado')->nullable();
+
+            //OTROS DATOS
+            $table->string('etiquetas')->nullable();
+            $table->string('observaciones')->nullable();
+
+            //DATOS DE ESTRUCTURA
+            $table->string('rolEstructura')->nullable();
+            $table->string('coordinadorDe')->nullable();
+            $table->string('funcionAsignada')->nullable();
+
+            //DATOS RELACION EMPRESA
+            //TABLA RELACION EMPRESA_PERSONAS
+
+            //DATOS DE FACTURA
+            //TABLA RELACION PERSONA_DOMICILIOS
+
+            //DATOS DE DOCUMENTOS
+            //PENDIENTEEEEEEE
+
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });

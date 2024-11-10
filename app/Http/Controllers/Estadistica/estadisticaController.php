@@ -80,17 +80,13 @@ class estadisticaController extends Controller
 
                 break;
         }
-
         $personas = persona::join('identificacions', 'identificacions.persona_id', '=', 'personas.id')
-        ->join('seccions', 'identificacions.seccion_id', '=', 'seccions.id')
-        ->whereIn('seccion_id', $seccionesParaBuscar)
+        ->leftJoin('seccions', 'identificacions.seccion_id', '=', 'seccions.id')
         ->select('seccion_id', 'poblacion', 'objetivo', DB::raw('COUNT(*) as conteoTotal'))
         ->groupBy('seccion_id', 'poblacion', 'objetivo')
         ->get();
 
-        $registrosPorFechas = persona::join('identificacions', 'identificacions.persona_id', '=', 'personas.id')
-        ->whereIn('seccion_id', $seccionesParaBuscar)
-        ->select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
+        $registrosPorFechas = persona::select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
         ->groupBy('fecha_registro')
         ->orderBy('fecha_registro', 'ASC')
         ->get();
@@ -114,7 +110,6 @@ class estadisticaController extends Controller
 
 
         $seccions = seccion::select('id', 'poblacion', 'objetivo')->get();
-
         return [
             'conteoSeparado' => $personas,
             'registrosPorFechas' => [

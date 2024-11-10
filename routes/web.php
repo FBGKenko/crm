@@ -8,6 +8,9 @@ use App\Http\Controllers\Contacto\formularioSimpatizanteController;
 use App\Http\Controllers\Contacto\mapaController;
 use App\Http\Controllers\Contacto\personaController;
 use App\Http\Controllers\Contacto\tablaSimpatizantesController;
+use App\Http\Controllers\cotizaciones\CotizacionController;
+use App\Http\Controllers\cotizaciones\FacturaController;
+use App\Http\Controllers\cotizaciones\InventarioController;
 use App\Http\Controllers\crudPromotoresController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\Encuestas\crudEncuestasController;
@@ -18,6 +21,7 @@ use App\Http\Controllers\Marketing\crudObjetivoController;
 use App\Http\Controllers\Marketing\crudOportunidadesController;
 use App\Http\Controllers\perfilUsuarioController;
 use App\Models\bitacora;
+use App\Models\inventario;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -137,16 +141,16 @@ Route::prefix('/')->middleware('auth')->group(function (){
             Route::post('/agregar/agregando', 'agregandoSimpatizante')
             ->name('agregarSimpatizante.agregandoSimpatizante')->middleware(['can:agregarSimpatizante.index']);
         });
-        Route::controller(crudPersonasController::class)->group(function() {
-            Route::get('/modificar-{persona}', 'index')
-            ->name('crudPersonas.index')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
-            Route::get('/modificar/cargarPersona-{persona}', 'cargarPersona')
-            ->name('crudPersonas.cargarPersona')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
-            Route::post('/modificar/modificarPersona-{persona}', 'modificarPersona')
-            ->name('crudPersonas.modificarPersona')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
-            Route::get('/consultar-{persona}', 'consultar')
-            ->name('crudPersonas.consultar')->middleware(['can:crudSimpatizantes.consultar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
-        });
+        // Route::controller(crudPersonasController::class)->group(function() {
+        //     Route::get('/modificar-{persona}', 'index')
+        //     ->name('crudPersonas.index')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+        //     Route::get('/modificar/cargarPersona-{persona}', 'cargarPersona')
+        //     ->name('crudPersonas.cargarPersona')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+        //     Route::post('/modificar/modificarPersona-{persona}', 'modificarPersona')
+        //     ->name('crudPersonas.modificarPersona')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+        //     Route::get('/consultar-{persona}', 'consultar')
+        //     ->name('crudPersonas.consultar')->middleware(['can:crudSimpatizantes.consultar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+        // });
     });
     Route::prefix('estadistica')->controller(estadisticaController::class)->group(function(){
         Route::get('/', 'index')
@@ -200,6 +204,22 @@ Route::prefix('/')->middleware('auth')->group(function (){
         ->name('objetivos.modificar');
         Route::post('/borrar-{objetivo}', 'borrar')
         ->name('objetivos.borrar');
+    });
+
+    Route::prefix('inventario')->controller(InventarioController::class)->group(function (){
+        route::get('/', 'index')->name('inventario.index');
+        route::get('/buscar-{inventario}', 'obtenerProducto')->name('inventario.obtenerProducto');
+        route::get('/inicializar', 'cargarTabla')->name('inventario.cargarTabla');
+        route::get('/agregar', 'vistaCrear')->name('inventario.vistaCrear');
+        route::post('/agregar', 'crear')->name('inventario.crear');
+        route::post('/cambiar-existencia', 'cambiarExistencia')->name('inventario.cambiarExistencia');
+        route::post('/eliminar-producto', 'eliminarProducto')->name('inventario.eliminarProducto');
+    });
+    Route::prefix('cotizaciones')->controller(CotizacionController::class)->group(function (){
+        route::get('/', 'index')->name('cotizacion.index');
+    });
+    Route::prefix('factura')->controller(FacturaController::class)->group(function (){
+        route::get('/', 'index')->name('factura.index');
     });
 
 

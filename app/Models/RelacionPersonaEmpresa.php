@@ -19,6 +19,9 @@ class RelacionPersonaEmpresa extends Model
     public function personas(){
         return $this->belongsTo(persona::class, 'persona_id');
     }
+    public function empresa(){
+        return $this->belongsTo(empresa::class);
+    }
 
     static function agregarNuevaRelacion($datos){
         $encontrarRelacion = RelacionPersonaEmpresa::where('persona_id', $datos['persona_id'])

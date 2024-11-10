@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('identificacions', function (Blueprint $table) {
             $table->id();
-            $table->string('clave_elector')->nullable();
-            $table->string('curp')->nullable();
-            $table->string('lugarNacimiento')->nullable();
             $table->foreignId('persona_id')->constrained();
+            //DATOS IDENTIFICACION
+            $table->string('curp')->nullable();
+            $table->string('rfc')->nullable();
+            $table->longText('ine')->nullable();
+            $table->string('lugarNacimiento')->nullable();
+            //DATOS DE ELECTORALES
+            $table->string('clave_elector')->nullable();
             $table->foreignId('seccion_id')->nullable()->constrained();
             $table->timestamps();
         });
@@ -30,3 +34,4 @@ return new class extends Migration
         Schema::dropIfExists('identificacions');
     }
 };
+
