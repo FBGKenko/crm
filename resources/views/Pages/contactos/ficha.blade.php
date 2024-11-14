@@ -5,8 +5,8 @@
 <br>
 <section class="container-fuild px-4">
     <h2>Ficha: {{$persona->apodo}}, {{$persona->nombres}}  {{$persona->apellidoPaterno}}  {{$persona->apellidoMaterno}}</h2>
-    <div class="d-flex">
-        <div class="col-8">
+    <div class="d-flex flex-column-reverse flex-sm-row">
+        <div class="col-sm-8">
             <div class="card m-3">
                 {{-- CONJUNTO DE DATOS PRINCIPALES --}}
                 <div class="card-header">
@@ -17,6 +17,7 @@
                     {{$persona->nombres}}  {{$persona->apellidoPaterno}}  {{$persona->apellidoMaterno}}</h6>
                     <h6> <span class="fw-bold fs-5">Alias:</span>
                     {{$persona->apodo}}</h6>
+                    <h6><span class="fw-bold fs-5">Número de Cliente:</span> {{$persona->id}}</h6>
                 </div>
 
             </div>
@@ -138,7 +139,7 @@
             </div>
         </div>
 
-        <aside class="col-4">
+        <aside class="col-sm-4">
             <div class="card">
                 <div class="card-header">
                     CONJUNTO DE DATOS
@@ -148,17 +149,17 @@
                         {{-- <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#">Active</a>
                         </li> --}}
-                        <li class="nav-item active"> <a class="nav-link active" data-bs-toggle="tab" href="#contenedorDatosControl" href="#"> Datos de Control </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosPersonales" href="#"> Datos Personales </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosContacto" href="#"> Datos de Contacto </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosDomicilio" href="#"> Datos de Domicilio </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosIdentificacion" href="#"> Datos de Identificación </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosUbicacion" href="#"> Datos de Ubicación </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosRelacion" href="#"> Datos de Relación </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosEstructura" href="#"> Datos de Estructura </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosRelacionEmpresa" href="#"> Datos de Relación con Empresas </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosFacturacion" href="#"> Datos de Facturación </a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorOtrosDatos" href="#"> Otros datos </a> </li>
+                        <li class="nav-item active"> <a class="nav-link active" data-bs-toggle="tab" href="#contenedorDatosControl"> Datos de Control </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosPersonales"> Datos de Personales </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosContacto"> Datos de Contacto </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosDomicilio"> Datos de Domicilio </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosIdentificacion"> Datos de Identificación </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosUbicacion"> Datos de Ubicación Electoral </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosRelacion"> Datos de Relación </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosEstructura"> Datos de Estructura </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosRelacionEmpresa"> Datos de Relación con Empresas </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorDatosFacturacion"> Datos de Facturación </a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-bs-toggle="tab" href="#contenedorOtrosDatos"> Otros datos </a> </li>
                     </ul>
                 </div>
             </div>
@@ -234,6 +235,46 @@
             }
 
 
+        });
+
+        $('.nav-link').click(function(){
+            switch ($(this).attr('href')) {
+                    case "#contenedorDatosControl":
+                        $('#encabezadoRotadores').text("Datos de Control");
+                        break;
+                    case "#contenedorDatosPersonales":
+                        $('#encabezadoRotadores').text("Datos de Personales");
+                        break;
+                    case "#contenedorDatosContacto":
+                        $('#encabezadoRotadores').text("Datos de Contacto");
+                        break;
+                    case "#contenedorDatosDomicilio":
+                        $('#encabezadoRotadores').text("Datos de Domicilio");
+                        break;
+                    case "#contenedorDatosIdentificacion":
+                        $('#encabezadoRotadores').text("Datos de Identificación");
+                        break;
+                    case "#contenedorDatosUbicacion":
+                        $('#encabezadoRotadores').text("Datos de Ubicación Electoral");
+                        break;
+                    case "#contenedorDatosRelacion":
+                        $('#encabezadoRotadores').text("Datos de Relación");
+                        break;
+                    case "#contenedorDatosEstructura":
+                        $('#encabezadoRotadores').text("Datos de Estructura");
+                        break;
+                    case "#contenedorDatosRelacionEmpresa":
+                        $('#encabezadoRotadores').text("Datos de Relación con Empresa");
+                        break;
+                    case "#contenedorDatosFacturacion":
+                        $('#encabezadoRotadores').text("Datos de Facturación");
+                        break;
+                    case "#contenedorOtrosDatos":
+                        $('#encabezadoRotadores').text("Otros Datos");
+                        break;
+                default:
+                    break;
+            }
         });
     </script>
 @endsection

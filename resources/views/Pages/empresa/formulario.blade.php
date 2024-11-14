@@ -44,7 +44,7 @@
     <div class="card-header d-flex justify-content-between">
         <h3>Agregar empresa</h3>
         <div>
-            <button id="BotonAgregarPersona" class="btn btn-primary">
+            <button id="BotonAgregarPersona" class="btn btn-primary BotonAgregarPersona">
                 Agregar
             </button>
         </div>
@@ -62,7 +62,7 @@
                         <h3>Datos de la empresa</h3>
                         <div class="row row-cols-1 row-cols-sm-3">
                             <div class="col">
-                                <h4>Representante de la empresa</h4>
+                                <label class="form-label">Representante de la empresa</label>
                                 <select class="form-select selectToo" id="personas" name="persona_id">
                                     <option value="0" selected>SIN DATO</option>
                                     @foreach ($listaPersonas as $persona)
@@ -71,39 +71,39 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <h4>Nombre de la empresa</h4>
+                                <label class="form-label">Nombre de la empresa</label>
                                 <input type="text" id="nombreEmpresa" name="nombreEmpresa" class="form-control" value="{{old('nombreEmpresa')}}">
                             </div>
                             <div class="col">
-                                <h4>Pagina web</h4>
+                                <label class="form-label">Pagina web</label>
                                 <input type="text" id="paginaWeb" name="paginaWeb" class="form-control" value="{{old('paginaWeb')}}">
                             </div>
                         </div>
                         <div class="row row-cols-1 row-cols-sm-3">
                             <div class="col">
-                                <h4>Telefono celular principal</h4>
+                                <label class="form-label">Telefono celular principal</label>
                                 <input type="text" id="telefono1" name="telefono1" class="form-control" value="{{old('telefono1')}}">
                             </div>
                             <div class="col">
-                                <h4>Telefono celular alternativo</h4>
+                                <label class="form-label">Telefono celular alternativo</label>
                                 <input type="text" id="telefono2" name="telefono2" class="form-control" value="{{old('telefono2')}}">
                             </div>
                             <div class="col">
-                                <h4>Telefono fijo</h4>
+                                <label class="form-label">Telefono fijo</label>
                                 <input type="text" id="telefono3" name="telefono3" class="form-control" value="{{old('telefono3')}}">
                             </div>
                         </div>
                         <div class="row row-cols-1 row-cols-sm-3">
                             <div class="col">
-                                <h4>Correo electrónico principal</h4>
+                                <label class="form-label">Correo electrónico principal</label>
                                 <input type="email" id="correo1" name="correo1" class="form-control" value="{{old('correo1')}}">
                             </div>
                             <div class="col">
-                                <h4>Correo electrónico alternativo 1</h4>
+                                <label class="form-label">Correo electrónico alternativo 1</label>
                                 <input type="email" id="correo2" name="correo2" class="form-control" value="{{old('correo2')}}">
                             </div>
                             <div class="col">
-                                <h4>Correo electrónico alternativo 2</h4>
+                                <label class="form-label">Correo electrónico alternativo 2</label>
                                 <input type="email" id="correo3" name="correo3" class="form-control" value="{{old('correo3')}}">
                             </div>
                         </div>
@@ -112,29 +112,29 @@
                         <h3>Domicilio de la empresa</h3>
                         <div class="row row-cols-1 row-cols-sm-3">
                             <div class="col">
-                                <h4>Calle principal</h4>
+                                <label class="form-label">Calle principal</label>
                                 <input type="text" id="calle1" name="calle1" class="form-control" value="{{old('calle1')}}">
                             </div>
                             <div class="col">
-                                <h4>Calle colindante 1</h4>
+                                <label class="form-label">Calle colindante 1</label>
                                 <input type="text" id="calle2" name="calle2" class="form-control" value="{{old('calle2')}}">
                             </div>
                             <div class="col">
-                                <h4>Calle colindante 2</h4>
+                                <label class="form-label">Calle colindante 2</label>
                                 <input type="text" id="calle3" name="calle3" class="form-control" value="{{old('calle3')}}">
                             </div>
                         </div>
                         <div class="row row-cols-1 row-cols-sm-3">
                             <div class="col">
-                                <h4>Número exterior</h4>
+                                <label class="form-label">Número exterior</label>
                                 <input type="text" id="numero_exterior" name="numero_exterior" class="form-control" value="{{old('numero_exterior')}}">
                             </div>
                             <div class="col">
-                                <h4>Número interior</h4>
+                                <label class="form-label">Número interior</label>
                                 <input type="text" id="numero_interior" name="numero_interior" class="form-control" value="{{old('numero_interior')}}">
                             </div>
                             <div class="col">
-                                <h4>Colonia</h4>
+                                <label class="form-label">Colonia</label>
                                 <select id="colonias" name="colonia_id" class="form-select selectToo" style="width: 100%">
                                     <option value="0">SIN DATO</option>
                                     @foreach ($listaColonias as $colonia)
@@ -144,7 +144,7 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <h4>Referencia de oficina</h4>
+                            <label class="form-label">Referencia de oficina</label>
                             <textarea id="referencia" name="referencia" class="form-control" rows="5"></textarea>
                         </div>
                     </div>
@@ -152,7 +152,7 @@
             <br>
             <div>
                 <center>
-                    <button id="BotonAgregarPersona" class="btn btn-primary">
+                    <button id="BotonAgregarPersona" class="btn btn-primary BotonAgregarPersona">
                         Agregar
                     </button>
                     <!-- <button class="btn btn-danger" type="button" class="cerrarFormulario">Limpiar</button> -->
@@ -167,6 +167,11 @@
 
 @section('scripts')
     <script text="text/javascript">
+
+        $('.BotonAgregarPersona').click(function (){
+            $('#formularioAgregarSimpatizante').trigger('submit');
+        });
+
     $(document).ready(function () {
         @if(!str_contains($urlFormulario, "agregar"))
             cargarFormulario();

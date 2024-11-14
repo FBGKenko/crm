@@ -7,6 +7,7 @@ use App\Models\empresa;
 use App\Models\persona;
 use App\Models\relacionPerfilUsuario;
 use App\Models\RelacionPersonaEmpresa;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,8 @@ use Illuminate\Support\Facades\Log;
 class EmpresaController extends Controller
 {
     function index(){
-        $query = empresa::with(['representante'])
+        $query = empresa::where('deleted_at', null)
+        ->with(['representante'])
         ->select('id', 'nombreEmpresa', 'persona_id');
 
         $usuarioActual = auth()->user();
@@ -125,7 +127,10 @@ class EmpresaController extends Controller
     function borrar(empresa $empresa){
         try {
             DB::transaction(function() use($empresa){
-                empresa::borrar($empresa);
+                $idEmpresa = $empresa->id;
+                $empresa->deleted_at = Carbon::now();
+                $empresa->save();
+                RelacionPersonaEmpresa::where('empresa_id', $idEmpresa)->delete();
             });
             session()->flash('mensajeExito', 'Se ha borrado una empresa exitosamente');
             return redirect()->route('empresas.index');

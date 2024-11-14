@@ -14,6 +14,9 @@
         overflow-x: auto;
         max-height: 825px;
     }
+    .select2-container .select2-selection--single {
+        height: 38px; /* Ajuste de altura para select2 */
+    }
 </style>
 @can('estadistica.cambiarMeta')
     <!-- Modal Agregar Usuario -->
@@ -38,88 +41,182 @@
     </div>
 @endcan
 <div class="container-fluid px-4">
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-start">
         <h1 class="mt-4">Estadística</h1>
         <div class="d-flex align-self-end iconoRefrescar" style="opacity: 0;">
             <i class="fas fa-exclamation-triangle me-1"></i>
             <h5>Refresque la pagina para reflejar los cambios </h5>
             <a href="#" onclick="location.reload(true)"> Click aqui</a>
         </div>
-        @can('estadistica.cambiarMeta')
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cargarMeta">Cargar Meta </button>
-        @endcan
     </div>
-    {{-- CONTROLADORES --}}
-    <div class="row">
-        <div class="col">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-calendar me-1"></i>
-                    Fecha de Inicio
-                </div>
-                <div class="card-body">
-                    <input id="fechaInicio" class="form-control" type="date"  />
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-calendar me-1"></i>
-                    Fecha de Final
-                </div>
-                <div class="card-body justify-content">
-                    <center>
-                        <input id="fechaFin" class="form-control" type="date"/>
-                    </center>
+        <div class="row">
+            <div class="col">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-calendar me-1"></i>
+                        Fecha de Inicio
+                    </div>
+                    <div class="card-body">
+                        <input id="fechaInicio" class="form-control" type="date"  />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card ">
-                <div class="card-header">
-                    <i class="fas fa-calendar me-1"></i>
-                    Sección
-                </div>
-                <div class="card-body justify-content">
-                    <center>
-                        <select id="tipoSeleccion" class="form-select" name="tipoSeleccion">
-                            <option value="COMPARATIVO" >Todas las secciones</option>
-                            <option value="AGRUPAR">Agrupar...</option>
-                        </select>
-                    </center>
+            <div class="col">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-calendar me-1"></i>
+                        Fecha de Final
+                    </div>
+                    <div class="card-body justify-content">
+                        <center>
+                            <input id="fechaFin" class="form-control" type="date"/>
+                        </center>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col" id="PorSeparado" style="display:none;">
-            <div class="card ">
-                <div class="card-header">
-                    <i class="fas fa-calendar me-1"></i>
-                    Selecciona la Sección
-                </div>
-                <div class="card-body justify-content" style="max-height:100px; overflow:auto;">
-                    <center>
-                        <select id="seccionarAgrupar" class="form-select selectToo" style="width:100%;" name="seccionesAgrupadas[]" multiple="multiple">
+            <div class="col">
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <i class="fas fa-search me-1"></i>
+                        Base de Datos
+                    </div>
+                    <div class="card-body">
+                        <input id="botonConsultar" class="btn btn-primary btn-block" type="button" value="Consultar" />
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#formularioCollapse" aria-expanded="false" aria-controls="formularioCollapse">
+                            Filtros
+                        </button>
+                        @can('estadistica.cambiarMeta')
 
-                        </select>
-                    </center>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cargarMeta">Cargar Meta </button>
+
+                        @endcan
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="collapse my-3" id="formularioCollapse">
+            <div class="card card-body mt-3">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-bar-chart me-1"></i>
+                                Entidad Federativa
+                            </div>
+                            <div class="card-body justify-content" style="max-height:100px; overflow:auto;">
+                                <center>
+                                    <select class="form-select selectToo" style="width:100%;" name="" multiple="multiple">
+                                        <option value="TODOS">TODOS</option>
+                                        @foreach ($listaEntidadFederativa as $item)
+                                            <option value="{{$item->id}}">{{$item->nombre}}</option>
+                                        @endforeach
+                                    </select>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-bar-chart me-1"></i>
+                                Distrito Federal
+                            </div>
+                            <div class="card-body justify-content" style="max-height:100px; overflow:auto;">
+                                <center>
+                                    <select class="form-select selectToo" style="width:100%;" name="" multiple="multiple">
+                                        <option value="TODOS">TODOS</option>
+                                        @foreach ($litaDistritoFederal as $item)
+                                            <option value="{{$item->id}}">{{$item->id}}</option>
+                                        @endforeach
+                                    </select>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-bar-chart me-1"></i>
+                                Distrito Local
+                            </div>
+                            <div class="card-body justify-content" style="max-height:100px; overflow:auto;">
+                                <center>
+                                    <select id="" class="form-select selectToo" style="width:100%;" name="" multiple="multiple">
+                                        <option value="TODOS">TODOS</option>
+                                        @foreach ($listaDistritoLocal as $item)
+                                            <option value="{{$item->id}}">{{$item->id}}</option>
+                                        @endforeach
+                                    </select>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" id="PorSeparado">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-bar-chart me-1"></i>
+                                Sección
+                            </div>
+                            <div class="card-body justify-content" style="max-height:100px; overflow:auto;">
+                                <center>
+                                    <select id="seccionarAgrupar" class="form-select selectToo" style="width:100%;" name="seccionesAgrupadas[]" multiple="multiple">
+                                        <option value="TODOS">TODOS</option>
+                                        @foreach ($listaSecciones as $item)
+                                            <option value="{{$item->id}}">{{$item->id}}</option>
+                                        @endforeach
+                                    </select>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-users me-1"></i>
+                                Tipo Relación
+                            </div>
+                            <div class="card-body justify-content" style="max-height:100px; overflow:auto;">
+                                <center>
+                                    <select class="form-select selectToo" style="width:100%;" name="" multiple="multiple">
+                                        <option value="TODOS">TODOS</option>
+                                        @foreach ($listaRelaciones as $item)
+                                            <option value="{{$item}}">{{$item}}</option>
+                                        @endforeach
+                                    </select>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-signal me-1"></i>
+                                Estatus
+                            </div>
+                            <div class="card-body justify-content" style="max-height:100px; overflow:auto;">
+                                <center>
+                                    <select class="form-select selectToo" style="width:100%;" name="" multiple="multiple">
+                                        <option value="TODOS">TODOS</option>
+                                        @foreach ($listaEstatus as $item)
+                                            <option value="{{$item->id}}">{{$item->concepto}}</option>
+                                        @endforeach
+                                    </select>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+
+                    </div>
+                    <div class="col" id="PorSeparado">
+
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card mb-2">
-                <div class="card-header">
-                    <i class="fas fa-search me-1"></i>
-                    Base de Datos
-                </div>
-                <div class="card-body">
-                    <input id="botonConsultar" class="btn btn-primary btn-block" type="button" value="Consultar" />
-                </div>
-            </div>
-
-        </div>
-    </div>
-
     <div class="row">
         <div class="col">
             <div class="card mb-4">
@@ -144,14 +241,8 @@
             </div>
         </div>
     </div>
-
-
-
-
-
 </div>
 @endsection
-
 @section('scripts')
         {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js"></script> --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
@@ -188,18 +279,8 @@
                     }
                 }
             };
-            $('#tipoSeleccion').on('change', function() {
-                if( this.value == 'AGRUPAR'){
-                    $('#PorSeparado').show();
-                }else{
-                    $('#seccionarAgrupar').val([]);
-                    $('#seccionarAgrupar').trigger('change');
-                    $('#PorSeparado').hide();
-                }
-            });
             $(document).ready(function () {
-                $('#PorSeparado').hide();
-                $('.selectToo').select2();
+                $('.selectToo, .select2').select2();
                 Swal.fire({
                     title: 'Cargando...',
                     allowOutsideClick: false,
@@ -213,6 +294,8 @@
                     data: [],
                     contentType: "application/x-www-form-urlencoded",
                     success: function (response) {
+                        if(response.conteoSeparado[0].seccion_id == null)
+                            response.conteoSeparado[0].seccion_id = "Sin Ubicar";
                         $.each(response.seccionesAccesibles, function (indexInArray, valueOfElement) {
                             $('#seccionarAgrupar').append($('<option>').html(valueOfElement))
                         });
@@ -548,12 +631,13 @@
                         data: datosAjax,
                         contentType: "application/x-www-form-urlencoded",
                         success: function (response) {
+                            if(response.conteoSeparado[0].seccion_id == null)
+                                response.conteoSeparado[0].seccion_id = "Sin Ubicar";
                             $('.contenedorSeccionesGraficas').html('');
                             $('#graficaTiempo').remove();
                             $('.contenedorGraficoTiempo').append(
                                 $('<canvas>').attr('id', `graficaTiempo`).attr('width', '100%').attr('height', '50px')
                             );
-                            console.log(response);
                             if(response.conteoSeparado.length <= 0){
                                 Swal.close();
                                 datosVacios = true;
@@ -953,7 +1037,6 @@
                     });
                 }
             });
-
             function componentToHex(c) {
                 var hex = c.toString(16); // Convertir el valor a hexadecimal
                 return hex.length == 1 ? "0" + hex : hex; // Asegurarse de que el resultado siempre tenga dos caracteres

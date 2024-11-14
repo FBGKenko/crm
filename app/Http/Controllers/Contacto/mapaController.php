@@ -8,6 +8,7 @@ use App\Models\distritoLocal;
 use App\Models\domicilio;
 use App\Models\entidad;
 use App\Models\persona;
+use App\Models\seccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

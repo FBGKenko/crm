@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
 use App\Models\entidad;
+use App\Models\estatus;
 use App\Models\meta;
 use App\Models\persona;
 use App\Models\seccion;
@@ -20,7 +21,14 @@ use PhpOffice\PhpSpreadsheet\Calculation\TextData\Format;
 class estadisticaController extends Controller
 {
     public function index(){
-        return view('Pages.estadistica.estadistica');
+        $listaSecciones = seccion::all();
+        $listaDistritoLocal = distritoLocal::all();
+        $litaDistritoFederal = distritoFederal::all();
+        $listaEntidadFederativa = entidad::all();
+        $listaEstatus = estatus::all();
+        $listaRelaciones = ['CLIENTE', 'PROMOTOR', 'COLABORADOR', 'AFILIADO', 'SIMPATIZANTE', 'RELACIÓN PERSONALIZADA'];
+        return view('Pages.estadistica.estadistica', compact('listaSecciones',  'listaDistritoLocal',
+        'litaDistritoFederal', 'listaEntidadFederativa', 'listaEstatus', 'listaRelaciones'));
     }
 
     public function inicializar(){
@@ -194,23 +202,29 @@ class estadisticaController extends Controller
 
                 break;
         }
+        Log::info([$banderaAgrupacion, $seccionesSeleccionadas, $fechaInicio, $fechaFin, $seccionesParaBuscar]);
         $queryPrincial = persona::where('deleted_at', null)
-        ->join('identificacions', 'identificacions.persona_id', '=', 'personas.id');
+        ->join('identificacions', 'identificacions.persona_id', '=', 'personas.id')
+        ->leftJoin('seccions', 'identificacions.seccion_id', '=', 'seccions.id');
         if(isset($fechaInicio)){
             $queryPrincial->whereDate('fecha_registro', '>=', $fechaInicio);
         }
         if(isset($fechaFin)){
             $queryPrincial->whereDate('fecha_registro', '<=', $fechaFin);
         }
+        if($user->getRoleNames()->first() != 'SUPER ADMINISTRADOR' && $user->getRoleNames()->first() != 'ADMINISTRADOR'){
+            $queryPrincial->whereIn('seccion_id', $seccionesParaBuscar);
+        }
         if($banderaAgrupacion  == 'COMPARATIVO'){
-            $personas = $queryPrincial->join('seccions', 'identificacions.seccion_id', '=', 'seccions.id')
-            ->whereIn('seccion_id', $seccionesParaBuscar)
-            ->select('seccion_id', 'poblacion', 'objetivo', DB::raw('COUNT(*) as conteoTotal'))
+
+
+            $personas = $queryPrincial ->select('seccion_id', 'poblacion', 'objetivo', DB::raw('COUNT(*) as conteoTotal'))
             ->groupBy('seccion_id', 'poblacion', 'objetivo')
             ->get();
 
-            $registrosPorFechas = $queryPrincial->whereIn('seccion_id', $seccionesParaBuscar)
-            ->select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
+
+
+            $registrosPorFechas = $queryPrincial->select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
             ->groupBy('fecha_registro')
             ->orderBy('fecha_registro', 'ASC')
             ->get();
@@ -231,9 +245,6 @@ class estadisticaController extends Controller
                 }
 
             }
-
-
-
             return [
                 'tipo' => 'COMPARATIVO',
                 'conteoSeparado' => $personas,
@@ -248,14 +259,12 @@ class estadisticaController extends Controller
             //CUANDO ES AGRUPACIÓN, DESPLEGAR UNA GRAFICA DE BARRAS PARA COMPARAR LA SUMA DE TODOS LOS REGISTROS
             //CONTRA SUS METAS SUMADAS Y POBLACIONES SUMADAS
             //Y UNA GRAFICA DE PIE PARA VER EL PORCETANJE DE REGISTROS POR CADA SECCIÓN SELECCIONADA
-            $personas = $queryPrincial->join('seccions', 'identificacions.seccion_id', '=', 'seccions.id')
-            ->whereIn('seccion_id', $seccionesSeleccionadas)
+            $personas = $queryPrincial
             ->select('seccion_id', 'poblacion', 'objetivo', DB::raw('COUNT(*) as conteoTotal'))
             ->groupBy('seccion_id', 'poblacion', 'objetivo')
             ->get();
 
-            $registrosPorFechas = $queryPrincial->whereIn('seccion_id', $seccionesSeleccionadas)
-            ->select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
+            $registrosPorFechas = $queryPrincial->select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
             ->groupBy('fecha_registro')
             ->orderBy('fecha_registro', 'ASC')
             ->get();

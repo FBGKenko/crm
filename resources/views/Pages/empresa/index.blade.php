@@ -119,9 +119,9 @@ Lista Empresas
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
         var table = $('#tablaEmpresas').DataTable( {
-            //scrollX: true,
+            scrollX: true,
             lengthChange: true,
-            // responsive: true,
+            scrollY: '50vh',
             language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
             },
@@ -129,7 +129,19 @@ Lista Empresas
     });
 
     $('.enviarFormularioBorrar').click(function (e) {
-        $(this).parent().trigger('submit');
+        Swal.fire({
+            title: '¿Estás seguro de eliminar el registro?',
+            text: "No podrás revertir esto!",
+            icon: 'warning',
+            showDenyButton: true,
+            denyButtonText: 'Eliminar',
+            denyButtonColor: "#28b779",
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Cancelar!'
+        }).then((result) => {
+            if(result.isDenied)
+            $(this).parent().trigger('submit');
+        });
     });
 
     $('.btnAsignarEmpresa').click(function (e) {

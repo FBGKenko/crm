@@ -76,7 +76,6 @@ class crudUsuariosController extends Controller
         session()->flash('formularioCrearErrores', true);
         $formulario->validate([
             'nombre' => 'required',
-            'apellido_paterno' => 'required',
             'correo' => 'required|email',
             'contrasenia' => 'required',
             'rolUsuario' => 'required|not_in:-1',
@@ -140,7 +139,6 @@ class crudUsuariosController extends Controller
         session()->flash('formularioModificarErrores', true);
         $formulario->validate([
             'nombre' => 'required',
-            'apellido_paterno' => 'required',
             'correo' => 'required|email',
             'rolUsuario' => 'not_in:-1',
             'nivelAcceso' => 'not_in:-1',

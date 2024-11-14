@@ -42,8 +42,8 @@ Tabla de Simpatizantes
                         <th>Número de Cliente</th>
                         <th>Estatus</th>
                         <th>Apodo</th>
-                        <th>Supervisión</th>
                         <th>Nombre Completo</th>
+                        <th>Supervisión</th>
                         <th>Opciones:</th>
                     </thead>
                     <tbody>
@@ -145,7 +145,9 @@ Tabla de Simpatizantes
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
         var table = $('#tablaUsuarios').DataTable( {
-            // responsive: true,
+            scrollX: true,
+            lengthChange: true,
+            scrollY: '50vh',
             language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
             },

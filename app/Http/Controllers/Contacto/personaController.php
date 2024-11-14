@@ -41,6 +41,13 @@ class personaController extends Controller
 
         $usuarioActual = auth()->user();
         if($usuarioActual->getRoleNames()->first() != 'SUPER ADMINISTRADOR' && $usuarioActual->getRoleNames()->first() != 'ADMINISTRADOR'){
+            if($usuarioActual->nivel_acceso != "TODOS" && $usuarioActual->niveles != ""){
+                $nivelesEncontrados = explode(',', $usuarioActual->niveles);
+                $query->whereHas('identificacion', function ($consulta) use ($nivelesEncontrados){
+                    $consulta->whereIn('seccion_id', $nivelesEncontrados);
+                });
+            }
+
             $modelosAsociados = relacionPerfilUsuario::join('perfils', 'perfils.id', '=', 'relacion_perfil_usuarios.perfil_id')
             ->join('perfil_modelo_relacionados', 'perfil_modelo_relacionados.perfil_id', '=', 'perfils.id')
             ->where([
@@ -53,13 +60,15 @@ class personaController extends Controller
                 'perfil_modelo_relacionados.idAsociado',
             )
             ->get();
-
-            $query->where(function($consulta) use ($modelosAsociados) {
+            $query->orWhere(function($consulta) use ($modelosAsociados) {
                 foreach ($modelosAsociados as $modelo) {
                     $consulta->orWhere('personas.id', $modelo->idAsociado);
                 }
             });
+
+
         }
+
 
         $personas = $query->get();
         return view('Pages.contactos.index', compact('personas'));
@@ -91,6 +100,11 @@ class personaController extends Controller
     function agregar(Request $request){
         try{
             DB::beginTransaction();
+            $temporalRolesNumericos = $request->datosEstructura["rolEstructura"] != -1 ? $request->datosEstructura["rolNumero"] : [];
+            $cordinadorDe = "";
+            foreach ($temporalRolesNumericos as $depende) {
+                $cordinadorDe .= ','.$depende;
+            }
             $datos = [
                 'user_id' => Auth::id(),
                 'fecha_registro' => $request->datosControl["fecha_registro"],
@@ -119,7 +133,7 @@ class personaController extends Controller
                 'etiquetas' => $request->datosOtrosDatos["etiquetas"],
                 'observaciones' => trim(strtoupper($request->datosOtrosDatos["observaciones"])),
                 'rolEstructura' => $request->datosEstructura["rolEstructura"],
-                'coordinadorDe' => $request->datosEstructura["rolEstructura"] != -1 ? $request->datosEstructura["rolNumero"] : null,
+                'coordinadorDe' => substr($cordinadorDe, 1),
                 'funcionAsignada' => $request->datosEstructura["funcionAsignada"],
             ];
             $persona = persona::crear($datos);
@@ -168,15 +182,15 @@ class personaController extends Controller
             ]);
 
             if($request->reutilizarDomicilio != "true"){
-                $coordeandas = explode(',',$request->datosFacturacion["coordenadas"]);
+                //$coordeandas = explode(',',$request->datosFacturacion["coordenadas"]);
                 $datosDomicilio = [
                     'calle1' => $request->datosFacturacion["calle1"],
                     'calle2' => $request->datosFacturacion["calle2"],
                     'calle3' => $request->datosFacturacion["calle3"],
                     'numero_exterior' => $request->datosFacturacion["numero_exterior"],
                     'numero_interior' => $request->datosFacturacion["numero_interior"],
-                    'latitud' => count($coordeandas) > 1 ? $coordeandas[0] : null,
-                    'longitud' => count($coordeandas) > 1 ? $coordeandas[1] : null,
+                    //'latitud' => count($coordeandas) > 1 ? $coordeandas[0] : null,
+                    //'longitud' => count($coordeandas) > 1 ? $coordeandas[1] : null,
                     'colonia_id' => $request->datosFacturacion["colonia"] > 0 ? $request->datosFacturacion["colonia"] : null,
                     'referencia' => $request->datosFacturacion["referencia"],
                 ];
@@ -243,6 +257,11 @@ class personaController extends Controller
     function modificar(persona $persona, Request $request){
         try{
             DB::beginTransaction();
+            $temporalRolesNumericos = $request->datosEstructura["rolEstructura"] != -1 ? $request->datosEstructura["rolNumero"] : [];
+            $cordinadorDe = "";
+            foreach ($temporalRolesNumericos as $depende) {
+                $cordinadorDe .= ','.$depende;
+            }
             $datos = [
                 'user_id' => Auth::id(),
                 'fecha_registro' => $request->datosControl["fecha_registro"],
@@ -270,7 +289,7 @@ class personaController extends Controller
                 'etiquetas' => $request->datosOtrosDatos["etiquetas"],
                 'observaciones' => trim(strtoupper($request->datosOtrosDatos["observaciones"])),
                 'rolEstructura' => $request->datosEstructura["rolEstructura"],
-                'coordinadorDe' => $request->datosEstructura["rolEstructura"] != -1 ? $request->datosEstructura["rolNumero"] : null,
+                'coordinadorDe' => substr($cordinadorDe, 1),
                 'funcionAsignada' => $request->datosEstructura["funcionAsignada"],
             ];
             $persona->update($datos);
@@ -348,15 +367,15 @@ class personaController extends Controller
             $domicilio->update($datosDomicilio);
 
             if($request->reutilizarDomicilio != "true"){
-                $coordeandas = explode(',',$request->datosFacturacion["coordenadas"]);
+                //$coordeandas = explode(',',$request->datosFacturacion["coordenadas"]);
                 $datosDomicilio = [
                     'calle1' => $request->datosFacturacion["calle1"],
                     'calle2' => $request->datosFacturacion["calle2"],
                     'calle3' => $request->datosFacturacion["calle3"],
                     'numero_exterior' => $request->datosFacturacion["numero_exterior"],
                     'numero_interior' => $request->datosFacturacion["numero_interior"],
-                    'latitud' => count($coordeandas) > 1 ? $coordeandas[0] : null,
-                    'longitud' => count($coordeandas) > 1 ? $coordeandas[1] : null,
+                    //'latitud' => count($coordeandas) > 1 ? $coordeandas[0] : null,
+                    //'longitud' => count($coordeandas) > 1 ? $coordeandas[1] : null,
                     'colonia_id' => $request->datosFacturacion["colonia"] > 0 ? $request->datosFacturacion["colonia"] : null,
                     'referencia' => $request->datosFacturacion["referencia"],
                 ];

@@ -68,7 +68,7 @@
                         <a class="nav-link" data-bs-toggle="tab" href="#datosIdentificacion">DATOS DE IDENTIFICACIÓN</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#datosUbicaciones">DATOS DE UBICACIÓN</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#datosUbicaciones">DATOS DE UBICACIÓN ELECTORAL</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#datosRelacion">DATOS DE RELACIÓN</a>
@@ -333,7 +333,7 @@
                     </div>
                     <div class="tab-pane container pt-3 fade" id="datosUbicaciones">
                         <div id="datosIdentificacion" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
-                            <h3>Datos de Ubicación</h3>
+                            <h3>Datos de Ubicación Electoral</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
                                 <x-inputFormulario tipo="text" identificador="clave_elector" nombre="datosUbicacion[clave_elector]" label="Clave Electoral"
                                     valor="{{ old('datosUbicacion[clave_elector]') }}" />
@@ -472,7 +472,7 @@
                                     <div class="d-flex">
                                         <label class="form-label mt-3" id="rolNumeroEncabezado">Seleccione un rol en estructura</label>
                                     </div>
-                                    <select class="form-select selectToo" id="rolNumero" name="datosEstructura[rolNumero]" style="width:100%" disabled>
+                                    <select class="form-select selectToo" id="rolNumero" name="datosEstructura[rolNumero][]" multiple style="width:100%" disabled>
                                         <option value="0">SIN DATO</option>
                                     </select>
                                 </div>
@@ -578,17 +578,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            <br>
-                            <label class="form-label mt-3">¿Donde vive la persona? (Dar double click para crear una marca)</label>
-                            <center>
-                                <input type="hidden" id="coordenadasFacturacion" name="datosFacturacion[coordenadas]" value="{{old('datosFacturacion[coordenadas]')}}">
-                            </center>
-                            <center>
-                                <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
-                                @error('datosFacturacion[coordenadas]')
-                                        <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                @enderror
-                            </center>
                         </div>
                     </div>
                     <div class="tab-pane container pt-3 fade" id="otrosDatos">
@@ -1059,11 +1048,11 @@
         }
     });
     $('#btnAgregarTelefono').click(function(e) {
-        nuevoRenglon(`datosContacto[telefonos][${contadorTelefono}][telefono]`, "6120000000", '#contenedorTelefono', 'Número Telefonico', 'telefonos', contadorTelefono);
+        nuevoRenglon(`datosContacto[telefonos][${contadorTelefono}][telefono]`, "6120000000", '#contenedorTelefono', 'Telefono', 'telefonos', contadorTelefono);
         contadorTelefono++;
     });
     $('#btnAgregarCorreo').click(function(e) {
-        nuevoRenglon(`datosContacto[correos][${contadorCorreo}][correo]`, "example@mail.com", "#contenedorCorreo", 'Correo Electrónico', 'correos', contadorCorreo);
+        nuevoRenglon(`datosContacto[correos][${contadorCorreo}][correo]`, "example@mail.com", "#contenedorCorreo", 'Correo', 'correos', contadorCorreo);
         contadorCorreo++;
     });
     $('#btnAgregarRelacion').click(function(){
@@ -1072,15 +1061,15 @@
     })
     function nuevoRenglon(nombre, placeholder, contenedor, label, conjuntoDatos, contador){
         var nuevoRenglon = $('<div class="row mx-0 mb-2">').append(
-            $('<div class="col-3">').append(
+            $('<div class="col-sm-3">').append(
                 $('<label class="form-label">').text(label),
                 $('<input type="text">').attr({name: nombre, class:"form-control", placeholder:placeholder}),
             ),
-            $('<div class="col-3">').append(
+            $('<div class="col-sm-3">').append(
                 $('<label class="form-label">').text('Descripción'),
                 $('<input type="text">').attr({name: `datosContacto[${conjuntoDatos}][${contador}][descripcion]`, class:"form-control", placeholder: 'Etiqueta'}),
             ),
-            $('<div class="col-2">').append(
+            $('<div class="col-sm-2">').append(
                 $('<button type="button">').addClass('btn btn-danger borrarInput').text('Borrar').on('click', borrarRenglon)
             )
         );
@@ -1088,7 +1077,7 @@
     }
     function nuevoRenglonEmpresa(){
         var nuevoRenglon = $('<div class="row mx-0 mb-2">').append(
-            $('<div class="col-8">').append(
+            $('<div class="col-sm-8">').append(
                 $('<div class="row row-cols-2">').append(
                     $('<div class="col-5">').append(
                         $('<label class="form-label">').text('Empresa'),
@@ -1097,7 +1086,7 @@
                             $('<option>').val(0).text('SIN DATO'),
                         )
                     ),
-                    $('<div class="col-5">').append(
+                    $('<div class="col-sm-5">').append(
                         $('<label class="form-label">').text('Cargo'),
                         $('<input type="text">').attr({name: `datosRelacionEmpresa[${contadorRelacion}][cargo]`, class:"form-control", placeholder: ""})
                     )
@@ -1193,7 +1182,9 @@
             $("#colaborador").trigger('change');
             $("#rolEstructura").val(datosFormulario.rolEstructura);
             $('#rolEstructura').trigger('change');
-            $("#rolNumero").val(datosFormulario.coordinadorDe ?? 0);
+            console.log(datosFormulario);
+
+            $("#rolNumero").val(datosFormulario.coordinadorDe.split(',') ?? []);
             if(datosFormulario.coordinadorDe > 0)
                 $("#rolNumero").prop('disabled', false);
             $("#funcionAsignada").val(datosFormulario.funcionAsignada);
@@ -1207,16 +1198,15 @@
             $("#coloniasFacturacion").val(relacionDomicilio[1].domicilio.colonia_id ?? 0);
             $("#coloniasFacturacion").trigger('change');
             $("#referenciaFacturacion").val(relacionDomicilio[1].domicilio.referencia);
-                $("#coordenadasFacturacion").val();
             $("#comment").val(datosFormulario.observaciones);
             correos.forEach(correo => {
-                nuevoRenglon(`datosContacto[correos][${contadorCorreo}][correo]`, "example@mail.com", "#contenedorCorreo", 'Correo Electrónico', 'correos', contadorCorreo);
+                nuevoRenglon(`datosContacto[correos][${contadorCorreo}][correo]`, "example@mail.com", "#contenedorCorreo", 'Correo', 'correos', contadorCorreo);
                 $(`[name="datosContacto[correos][${contadorCorreo}][correo]"]`).val(correo.correo);
                 $(`[name="datosContacto[correos][${contadorCorreo}][descripcion]"]`).val(correo.etiqueta);
                 contadorCorreo++;
             });
             telefonos.forEach(telefono => {
-                nuevoRenglon(`datosContacto[telefonos][${contadorTelefono}][telefono]`, "6120000000", '#contenedorTelefono', 'Número Telefonico', 'telefonos', contadorTelefono);
+                nuevoRenglon(`datosContacto[telefonos][${contadorTelefono}][telefono]`, "6120000000", '#contenedorTelefono', 'Telefono', 'telefonos', contadorTelefono);
                 $(`[name="datosContacto[telefonos][${contadorTelefono}][telefono]"]`).val(telefono.telefono);
                 $(`[name="datosContacto[telefonos][${contadorTelefono}][descripcion]"]`).val(telefono.etiqueta);
                 contadorTelefono++;

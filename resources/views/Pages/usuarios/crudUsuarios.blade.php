@@ -173,7 +173,7 @@
                                 <div class="col">
                                     <h4>Nombre</h4>
                                     <input type="text" class="form-control" id="modificarNombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
-                                    @error('nombre')
+                                   @error('nombre')
                                         <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
@@ -323,6 +323,7 @@
                 order: [[0, 'desc']],
                 scrollX: true,
                 lengthChange: true,
+                scrollY: '50vh',
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
                 },
