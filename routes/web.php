@@ -3,6 +3,7 @@
 use App\Http\Controllers\Configuracion\bitacoraController;
 use App\Http\Controllers\Configuracion\crudUsuariosController;
 use App\Http\Controllers\Configuracion\permisosController;
+use App\Http\Controllers\Configuracion\personalizarController;
 use App\Http\Controllers\Contacto\crudPersonasController;
 use App\Http\Controllers\Contacto\formularioSimpatizanteController;
 use App\Http\Controllers\Contacto\mapaController;
@@ -83,6 +84,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
     });
     Route::prefix('contactos')->controller(personaController::class)->group(function() {
         Route::get('/', 'index')->name('contactos.index');
+        Route::get('/cargar-tabla', 'cargarTabla')->name('contactos.cargarTabla');
         Route::get('/agregar', 'vistaAgregar')->name('contactos.vistaAgregar');
         Route::post('/agregar', 'agregar')->name('contactos.agregar');
         Route::get('/modificar-{persona}', 'vistaModificar')->name('contactos.vistaModificar');
@@ -96,6 +98,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
     });
     Route::prefix('empresas')->controller(EmpresaController::class)->group(function() {
         Route::get('/', 'index')->name('empresas.index');
+        Route::get('/cargar-tabla', 'cargarTabla')->name('empresas.cargarTabla');
         Route::get('/agregar', 'vistaAgregar')->name('empresas.vistaAgregar');
         Route::post('/agregar', 'crear')->name('empresas.agregar');
         Route::get('/modificar-{empresa}', 'vistaModificar')->name('empresas.vistaModificar');
@@ -220,6 +223,11 @@ Route::prefix('/')->middleware('auth')->group(function (){
     });
     Route::prefix('factura')->controller(FacturaController::class)->group(function (){
         route::get('/', 'index')->name('factura.index');
+    });
+    Route::prefix('configuracion')->group(function(){
+        route::prefix('personalizar')->controller(personalizarController::class)->group(function (){
+            route::get('/', 'index')->name('personalizar.index');
+        });
     });
 
 

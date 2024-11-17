@@ -13,4 +13,13 @@ class empresaDomicilio extends Model
         'empresa_id',
         'domicilio_id',
     ];
+
+
+    public function empresa(){
+        return $this->belongsTo(empresa::class);
+    }
+
+    public function domicilio(){
+        return $this->belongsTo(domicilio::class);
+    }
 }

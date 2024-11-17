@@ -37,7 +37,30 @@ Tabla de Simpatizantes
             </div>
             <div class="card-body">
                 {{-- TABLA DE USUARIOS --}}
-                <table id="tablaUsuarios" class="table table-striped table-bordered" style="width:100%">
+
+
+
+
+                <table id="tablaUsuarios" class="wrap table table-striped" style="width: 100%;">
+                    <thead>
+                        <th>Número de Cliente</th>
+                        <th>Estatus</th>
+                        <th>Apodo</th>
+                        <th>Nombre Completo</th>
+                        <th>Supervisión</th>
+                        <th>Opciones:</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+
+
+
+
+
+                {{-- <table id="tablaUsuarios" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <th>Número de Cliente</th>
                         <th>Estatus</th>
@@ -52,11 +75,6 @@ Tabla de Simpatizantes
                                 <td>{{$persona->id}}</td>
                                 <td>
                                     <span>{{$persona->estatus}}</span>
-                                    {{-- @if ($persona->supervisado)
-                                        <div class="bg-success bg-gradient text-white fw-bold rounded p-3 py-1">Supervisado</div>
-                                    @else
-                                        <div class="bg-danger bg-gradient text-white fw-bold rounded p-3 py-1"> No Supervisado </div>
-                                    @endif --}}
                                 </td>
                                 <td>{{($persona->apodo) ? $persona->apodo : 'SIN REGISTRO'}}</td>
                                 <td>{{($persona->nombre_completo) ? $persona->nombre_completo : 'SIN REGISTRO'}}</td>
@@ -87,21 +105,7 @@ Tabla de Simpatizantes
                                             <li>
                                                 <a class="dropdown-item" href="{{route('contactos.fichaTecnica', $persona->id)}}"> Ver </a>
                                             </li>
-                                            {{-- <li>
-                                                <a class="dropdown-item" href="#">
-                                                    @if ($persona->supervisado)
-                                                        <form action="{{route('contactos.supervisar', $persona->id)}}" id="formularioSupervisar" method="post">
-                                                            @csrf
-                                                            <button id="botonSubmitSupervisar" class="btn btn-danger">Cancelar Supervisado</button>
-                                                        </form>
-                                                    @else
-                                                        <form action="{{route('contactos.supervisar', $persona->id)}}" id="formularioSupervisar" method="post">
-                                                            @csrf
-                                                            <button id="botonSubmitSupervisar" class="btn btn-success">Supervisar</button>
-                                                        </form>
-                                                    @endif
-                                                </a>
-                                            </li> --}}
+
                                             @if (Auth::user()->getRoleNames()->first() != 'CAPTURISTA' || (Auth::user()->getRoleNames()->first() == 'CAPTURISTA' && !$persona->supervisado))
                                                 <li>
                                                     <a class="dropdown-item" href="{{route('contactos.vistaModificar', $persona->id)}}"> Editar </a>
@@ -126,7 +130,7 @@ Tabla de Simpatizantes
                 </table>
                 @error('errorBorrar')
                 <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                @enderror
+                @enderror --}}
             </div>
         </div>
     </div>
@@ -135,6 +139,7 @@ Tabla de Simpatizantes
 @section('scripts')
 <script src="//cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css"></script>
 <script text="text/javascript">
+    var rolUsuarioActual = @json(Auth::user()->getRoleNames()->first());
     @if (session()->has('personaModificarDenegada'))
         Swal.fire({
             'title':"Error",
@@ -144,14 +149,135 @@ Tabla de Simpatizantes
     @endif
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
-        var table = $('#tablaUsuarios').DataTable( {
-            scrollX: true,
-            lengthChange: true,
-            scrollY: '50vh',
+        $('#tablaUsuarios').DataTable({
+            searching: true,
+            paging: true,
+            pageLength: 10,
             language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
             },
-        } );
+            order: [],
+            scrollX: true,
+            scrollY: '450px',
+            "processing": true,
+            "serverSide": true,
+            ajax: {
+                url: "{{route('contactos.cargarTabla')}}",
+                data: function (d) {
+                    // d.FechaInicio = $('#FechaInicio').val();
+                    // d.FechaFinal = $('#FechaFinal').val();
+                    // d.TieneDenuncia = $('#TieneDenuncia').val();
+                    // d.Riesgo = $('#Riesgo').val();
+                    // d.Dependencias = $('#Dependencias').val();
+                },
+                error: function(xhr, error, thrown){
+                    if(thrown == 'Unauthorized'){
+                        alertaCargando();
+                        location.reload();
+                    }
+                }
+            },
+            columns: [
+                { data: 'id' },
+                { data: null,
+                    render: function(data, type, row){
+                        return  $('<span>').text(data.estatus).prop('outerHTML');
+                    }
+                },
+                { data: null,
+                    render: function(data, type, row){
+                        return  (data.apodo && data.apodo != '') ? data.apodo : 'SIN REGISTRO';
+                    }
+                },
+                { data: null,
+                    render: function(data, type, row){
+                        return  (data.nombre_completo && data.nombre_completo != '') ? data.nombre_completo : 'SIN REGISTRO';
+                    }
+                },
+                { data: null,
+                    render: function(data, type, row){
+                        var botonSupervisar = "";
+                        if(data.supervisado)
+                            botonSupervisar = $('<button>').addClass('btn btn-success fw-bold btnSupervisar').text('Supervisado');
+                        else
+                            botonSupervisar = $('<button>').addClass('btn btn-danger fw-bold btnSupervisar').text('Sin Supervisar');
+                        @if (Auth::user()->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || Auth::user()->getRoleNames()->first() == 'ADMINISTRADOR' || Auth::user()->getRoleNames()->first() == 'SUPERVISOR')
+                            return $('<form method="post">').attr('action','{{url("/")}}/contactos/supervisar-' + data.id).append(
+                                $('<input type="hidden">').attr({name: '_token', value: '{{csrf_token()}}'}),
+                                botonSupervisar
+                            ).prop('outerHTML');
+                        @else
+                            return botonSupervisar.prop('outerHTML');
+                        @endif
+                    }
+                },
+                { data: null,
+                    render: function(data, type, row){
+                        var botonEditar = "";
+                        var botonBorrar = "";
+
+                        if(rolUsuarioActual != 'CAPTURISTA' || (rolUsuarioActual == 'CAPTURISTA' && !data.supervisado)){
+                            botonEditar = $('<li>').append($('<a class="dropdown-item">').attr('href', '{{url("/")}}/contactos/modificar-' + data.id).text('Editar'));
+                        }
+                        if(rolUsuarioActual != 'CAPTURISTA' || (rolUsuarioActual == 'CAPTURISTA' && !data.supervisado)){
+                            botonBorrar = $('<li>').append(
+                                $('<a class="dropdown-item">').append(
+                                    $('<form method="post">').attr('action', '{{url("/")}}/contactos/borrar-' + data.id).append(
+                                        $('<input type="hidden">').attr({name: '_token', value: '{{csrf_token()}}'}),
+                                        $('<span class="botonBorrar">').text('Borrar')
+                                    )
+                                )
+                            );
+                        }
+                        return $('<div class="dropdown">').append(
+                            $('<button type="button">').addClass('btn btn-secondary dropdown-toggle').attr({id: 'dropdownMenuButton1', 'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'}).text('Acciones'),
+                            $('<ul aria-labelledby="dropdownMenuButton1">').addClass('dropdown-menu').append(
+                                $('<li>').append($('<a class="dropdown-item">').attr('href', '{{url("/")}}/contactos/ficha-' + data.id).text('Ver')),
+                                botonEditar,
+                                botonBorrar,
+                            )
+                        ).prop('outerHTML');
+                    }
+                },
+            ],
+            columnDefs: [
+                { className: 'text-center', targets: '_all' }
+            ],
+            rowCallback: function(row, data, index){
+
+
+            }
+        });
+
+        $('#tablaUsuarios tbody').on('click', 'span.botonBorrar', function (e) {
+            Swal.fire({
+                title: '¿Estás seguro de eliminar el registro?',
+                text: "No podrás revertir esto!",
+                icon: 'warning',
+                showDenyButton: true,
+                denyButtonText: 'Eliminar',
+                denyButtonColor: "#28b779",
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Cancelar!'
+            }).then((result) => {
+                if(result.isDenied)
+                    $(this).parent().trigger('submit');
+            });
+        });
+
+
+
+
+
+
+        // var table = $('#tablaUsuarios').DataTable( {
+        //     scrollX: true,
+        //     lengthChange: true,
+        //     scrollY: '50vh',
+        //     language: {
+        //     url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
+        //     },
+        // } );
 
         // table.buttons().container()
         // .appendTo( '#example_wrapper .col-md-6:eq(0)' );
@@ -197,21 +323,7 @@ Tabla de Simpatizantes
 
     });
 
-    $('.botonBorrar').click(function (e) {
-        Swal.fire({
-            title: '¿Estás seguro de eliminar el registro?',
-            text: "No podrás revertir esto!",
-            icon: 'warning',
-            showDenyButton: true,
-            denyButtonText: 'Eliminar',
-            denyButtonColor: "#28b779",
-            confirmButtonColor: '#d33',
-            confirmButtonText: 'Cancelar!'
-        }).then((result) => {
-            if(result.isDenied)
-                $(this).parent().trigger('submit');
-        });
-    });
+
     $('#btnFiltrar').click(function (e) {
         $(this).next().slideToggle();
     });

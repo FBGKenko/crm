@@ -180,7 +180,7 @@
         function cargarFormulario(){
             var valores = @json($empresa);
             console.log(valores);
-            $('#personas').val(valores.persona_id);
+            $('#personas').val(valores.persona_id ?? 0);
             $('#nombreEmpresa').val(valores.nombreEmpresa);
             $('#paginaWeb').val(valores.paginaWeb);
             $('#telefono1').val(valores.telefono1);
@@ -189,13 +189,13 @@
             $('#correo1').val(valores.correo1);
             $('#correo2').val(valores.correo2);
             $('#correo3').val(valores.correo3);
-            $('#calle1').val(valores.domicilio.calle1);
-            $('#calle2').val(valores.domicilio.calle2);
-            $('#calle3').val(valores.domicilio.calle3);
-            $('#numero_exterior').val(valores.domicilio.numero_exterior);
-            $('#numero_interior').val(valores.domicilio.numero_interior);
-            $('#colonias').val(valores.domicilio.colonia_id);
-            $('#referencia').val(valores.domicilio.referencia);
+            $('#calle1').val(valores.relacion_domicilio[0].domicilio.calle1);
+            $('#calle2').val(valores.relacion_domicilio[0].domicilio.calle2);
+            $('#calle3').val(valores.relacion_domicilio[0].domicilio.calle3);
+            $('#numero_exterior').val(valores.relacion_domicilio[0].domicilio.numero_exterior);
+            $('#numero_interior').val(valores.relacion_domicilio[0].domicilio.numero_interior);
+            $('#colonias').val(valores.relacion_domicilio[0].domicilio.colonia_id ?? 0);
+            $('#referencia').val(valores.relacion_domicilio[0].domicilio.referencia);
         }
     </script>
 @endsection

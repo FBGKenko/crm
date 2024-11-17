@@ -21,9 +21,10 @@ class empresa extends Model
         'persona_id'
     ];
 
-    public function domicilio(){
-        return $this->hasOne(domicilio::class);
+    public function relacionDomicilio(){
+        return $this->hasMany(empresaDomicilio::class);
     }
+
 
     public function representante(){
         return $this->belongsTo(persona::class, 'persona_id');
@@ -38,7 +39,7 @@ class empresa extends Model
             'numero_exterior' => $datos['numero_exterior'],
             'numero_interior' => $datos['numero_interior'],
             'colonia_id' => $datos['colonia_id'],
-            'identificacion_id' => null,
+            //'identificacion_id' => null,
             'referencia' => $datos['referencia'],
         ];
         $domicilio = domicilio::create($datosDomicilio);
@@ -55,15 +56,14 @@ class empresa extends Model
             'calle3' => $datos['calle3'],
             'numero_exterior' => $datos['numero_exterior'],
             'numero_interior' => $datos['numero_interior'],
-            'latitud' => null,
-            'longitud' => null,
+            // 'latitud' => null,
+            // 'longitud' => null,
             'colonia_id' => $datos['colonia_id'],
-            'identificacion_id' => null,
-            'empresa_id' => $empresa->id,
+            //'empresa_id' => $empresa->id,
             'referencia' => $datos['referencia'],
         ];
-        $domicilio = domicilio::where('empresa_id', $empresa->id)->first();
-        $domicilio->update($datosDomicilio);
+        $relacion = empresaDomicilio::where('empresa_id', $empresa->id)->first();
+        domicilio::where('id', $relacion->domicilio_id)->update($datosDomicilio);
     }
 
     public static function borrar($empresa){

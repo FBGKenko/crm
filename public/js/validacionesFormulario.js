@@ -254,31 +254,31 @@ function validar() {
         $("#BotonValidador").prop("disabled", true);
         $("#BotonAgregarPersona").prop("disabled", false);
         $("#BotonAgregarPersona").click();
-        $('#formularioAgregarSimpatizante').trigger('submit');
+        //$('#formularioAgregarSimpatizante').trigger('submit');
         //AVISO DE CARGANDO
-        let timerInterval;
-        Swal.fire({
-        title: "CARGANDO...",
-        html: "",
-        timer: 10000,
-        timerProgressBar: true,
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            // timerInterval = setInterval(() => {
-            // timer.textContent = Swal.getTimerLeft();
-            // }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
-        }
-        }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-            console.log("I was closed by the timer");
-        }
-        });
+        // let timerInterval;
+        // Swal.fire({
+        // title: "CARGANDO...",
+        // html: "",
+        // timer: 10000,
+        // timerProgressBar: true,
+        // allowOutsideClick: false,
+        // didOpen: () => {
+        //     Swal.showLoading();
+        //     const timer = Swal.getPopup().querySelector("b");
+        //     // timerInterval = setInterval(() => {
+        //     // timer.textContent = Swal.getTimerLeft();
+        //     // }, 100);
+        // },
+        // willClose: () => {
+        //     clearInterval(timerInterval);
+        // }
+        // }).then((result) => {
+        // /* Read more about handling dismissals below */
+        // if (result.dismiss === Swal.DismissReason.timer) {
+        //     console.log("I was closed by the timer");
+        // }
+        // });
 
 
     }else{

@@ -26,6 +26,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class personaController extends Controller
 {
@@ -73,6 +74,92 @@ class personaController extends Controller
         $personas = $query->get();
         return view('Pages.contactos.index', compact('personas'));
     }
+
+    function cargarTabla(Request $formulario){
+
+        $draw = ($formulario->get('draw') != null) ? $formulario->get('draw') : 1;
+        $start = ($formulario->get('start') != null) ? $formulario->get('start') : 0;
+        $length = ($formulario->get('length') != null) ? $formulario->get('length') : 10;
+        $filter = $formulario->get('search');
+        $search = (isset($filter['value']))? $filter['value'] : false;
+
+        $query = persona::where('deleted_at', null)
+        ->select(
+            'personas.id',
+            'estatus',
+            'apodo',
+            DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
+            'supervisado',
+        );
+        $usuarioActual = auth()->user();
+        if($usuarioActual->getRoleNames()->first() != 'SUPER ADMINISTRADOR' && $usuarioActual->getRoleNames()->first() != 'ADMINISTRADOR'){
+            if($usuarioActual->nivel_acceso != "TODOS" && $usuarioActual->niveles != ""){
+                $nivelesEncontrados = explode(',', $usuarioActual->niveles);
+                $query->whereHas('identificacion', function ($consulta) use ($nivelesEncontrados){
+                    $consulta->whereIn('seccion_id', $nivelesEncontrados);
+                });
+            }
+
+            $modelosAsociados = relacionPerfilUsuario::join('perfils', 'perfils.id', '=', 'relacion_perfil_usuarios.perfil_id')
+            ->join('perfil_modelo_relacionados', 'perfil_modelo_relacionados.perfil_id', '=', 'perfils.id')
+            ->where([
+                ['user_id', '=', $usuarioActual->id],
+                ['modelo', '=', 'App\Models\persona']
+            ])
+            ->distinct()
+            ->select(
+                'perfil_modelo_relacionados.modelo',
+                'perfil_modelo_relacionados.idAsociado',
+            )
+            ->get();
+            $query->orWhere(function($consulta) use ($modelosAsociados) {
+                foreach ($modelosAsociados as $modelo) {
+                    $consulta->orWhere('personas.id', $modelo->idAsociado);
+                }
+            });
+        }
+
+            //FILTRAR EN CASO DE QUE EL BUSCADOR TENGA UN VALOR SE FILTRARA
+            // if ($search != false) {
+            //     Bitacora::registrarBitacora(
+            //         'Buscó un incidente que concida con: ' . $search,
+            //         'GET',
+            //         null,
+            //         null,
+            //         'BUSCAR'
+            //     );
+            //     $consulta->where(function($query) use ($search, $formulario) {
+            //         $query->where(DB::raw("CONCAT(DATE_FORMAT(Incidentes.FechaInicio, '%d-%m-%Y'), ' ', DATE_FORMAT(Incidentes.Hora, '%H:%i'))"), 'LIKE', '%' . $search . '%')
+            //         ->orWhere("Incidentes.Ticket", 'LIKE', '%' . $search . '%')
+            //         ->orWhere(DB::raw("IFNULL(Incidentes.NumeroDenuncia, 'SIN REGISTRO')"), 'LIKE', '%' . $search . '%')
+            //         ->orWhere("CatalogoIncidentes.Nombre", 'LIKE', '%' . $search . '%')
+            //         ->orWhere("Incidentes.Riesgo", 'LIKE', '%' . $search . '%')
+            //         ->orWhere("Dependencias.Nombre", 'LIKE', '%' . $search . '%')
+            //         ->orWhere(DB::raw("IF(
+            //             TRIM(CONCAT(IFNULL(Personas.Nombres, ''), ' ', IFNULL(Personas.PrimerApellido, ''), ' ', IFNULL(Personas.SegundoApellido, ''))) = '',
+            //             'SIN NOMBRE',
+            //             CONCAT(IFNULL(Personas.Nombres, ''), ' ', IFNULL(Personas.PrimerApellido, ''), ' ', IFNULL(Personas.SegundoApellido, ''))
+            //         )"), 'LIKE', '%' . $search . '%');
+            //     });
+            // }
+
+        $total = $query->count();
+        $datos = $query->orderBy('id', 'desc')
+        ->skip($start)
+        ->take($length)
+        ->get();
+
+        return [
+            'data' => $datos,
+            'length' => $length,
+            'recordsTotal' => $total,
+            'recordsFiltered' => $total,
+            'start' => $start,
+            'draw' => $draw,
+        ];
+
+    }
+
 
     function cargarEmpresasAsignadas(Request $request, $idPersona){
         return RelacionPersonaEmpresa::where('persona_id', $idPersona)->get();
@@ -137,19 +224,23 @@ class personaController extends Controller
                 'funcionAsignada' => $request->datosEstructura["funcionAsignada"],
             ];
             $persona = persona::crear($datos);
-            foreach ($request->datosContacto["telefonos"] as $telefono) {
-                telefono::create([
-                    'telefono' => $telefono["telefono"],
-                    'etiqueta' => $telefono["descripcion"],
-                    'persona_id' => $persona->id,
-                ]);
+            if(isset($request->datosContacto["telefonos"])){
+                foreach ($request->datosContacto["telefonos"] as $telefono) {
+                    telefono::create([
+                        'telefono' => $telefono["telefono"],
+                        'etiqueta' => $telefono["descripcion"],
+                        'persona_id' => $persona->id,
+                    ]);
+                }
             }
-            foreach ($request->datosContacto["correos"] as $correo) {
-                correo::create([
-                    'correo' => $correo["correo"],
-                    'etiqueta' => $correo["descripcion"],
-                    'persona_id' => $persona->id,
-                ]);
+            if(isset($request->datosContacto["correos"])){
+                foreach ($request->datosContacto["correos"] as $correo) {
+                    correo::create([
+                        'correo' => $correo["correo"],
+                        'etiqueta' => $correo["descripcion"],
+                        'persona_id' => $persona->id,
+                    ]);
+                }
             }
             $datos = [
                 'persona_id' => $persona->id,
@@ -213,16 +304,24 @@ class personaController extends Controller
                     }
                 }
             }
-            session()->flash('mensajeExito', 'Se ha agregado la persona con éxito');
             bitacora::crearRegistro('Se ha agregado la persona con éxito', $request->ip(), 'ÉXITO');
             DB::commit();
-            return redirect()->route('contactos.index');
+            return [
+                'titulo' => 'Éxito',
+                'texto' => 'Se ha agregado la persona con éxito',
+                'icono' => 'success',
+                'exito' => true
+            ];
         }
         catch(Exception $e){
             DB::rollBack();
             bitacora::crearRegistro($e->getLine(). ' :: ' .$e->getMessage(), $request->ip(), 'ERROR');
-            session()->flash('mensajeError', 'Ocurrió un error al intentar agregar una persona');
-            return back()->withInput();
+            return [
+                'titulo' => 'Error',
+                'texto' => 'Ocurrió un error al intentar agregar una persona',
+                'icono' => 'error',
+                'exito' => false
+            ];
         }
     }
 
@@ -293,52 +392,60 @@ class personaController extends Controller
                 'funcionAsignada' => $request->datosEstructura["funcionAsignada"],
             ];
             $persona->update($datos);
-
             $telefonosExistentes = telefono::where('persona_id', $persona->id)->get();
             foreach ($telefonosExistentes as $telefono) {
                 $borrar = true;
-                foreach ($request->datosContacto["telefonos"] as $nuevo) {
-                    if($telefono->telefono == $nuevo["telefono"]){
-                        $borrar = false;
+                if(isset($request->datosContacto["telefonos"])){
+                    foreach ($request->datosContacto["telefonos"] as $nuevo) {
+                        if($telefono->telefono == $nuevo["telefono"]){
+                            $borrar = false;
+                        }
                     }
                 }
                 if($borrar){
                     $telefono->delete();
                 }
             }
-            foreach ($request->datosContacto["telefonos"] as $telefono) {
-                $telefonoBuscado = telefono::where('telefono', $telefono["telefono"])->where('persona_id', $persona->id)->first();
-                if(!isset($telefonoBuscado)){
-                    telefono::create([
-                        'telefono' => $telefono["telefono"],
-                        'etiqueta' => $telefono["descripcion"],
-                        'persona_id' => $persona->id,
-                    ]);
+            if(isset($request->datosContacto["telefonos"])){
+                Log::info($request->datosContacto);
+                foreach ($request->datosContacto["telefonos"] as $telefono) {
+                    $telefonoBuscado = telefono::where('telefono', $telefono["telefono"])->where('persona_id', $persona->id)->first();
+                    if(!isset($telefonoBuscado)){
+                        telefono::create([
+                            'telefono' => $telefono["telefono"],
+                            'etiqueta' => $telefono["descripcion"],
+                            'persona_id' => $persona->id,
+                        ]);
+                    }
                 }
             }
-
             $correosExistentes = correo::where('persona_id', $persona->id)->get();
             foreach ($correosExistentes as $correo) {
                 $borrar = true;
-                foreach ($request->datosContacto["correos"] as $nuevo) {
-                    if($correo->correo == $nuevo["correo"]){
-                        $borrar = false;
+                if(isset($request->datosContacto["correos"])){
+                    foreach ($request->datosContacto["correos"] as $nuevo) {
+                        if($correo->correo == $nuevo["correo"]){
+                            $borrar = false;
+                        }
                     }
                 }
                 if($borrar){
                     $correo->delete();
                 }
             }
-            foreach ($request->datosContacto["correos"] as $correo) {
-                $correoBuscado = correo::where('correo', $correo["correo"])->where('persona_id', $persona->id)->first();
-                if(!isset($correoBuscado)){
-                    correo::create([
-                        'correo' => $correo["correo"],
-                        'etiqueta' => $correo["descripcion"],
-                        'persona_id' => $persona->id,
-                    ]);
+            if(isset($request->datosContacto["correos"])){
+                foreach ($request->datosContacto["correos"] as $correo) {
+                    $correoBuscado = correo::where('correo', $correo["correo"])->where('persona_id', $persona->id)->first();
+                    if(!isset($correoBuscado)){
+                        correo::create([
+                            'correo' => $correo["correo"],
+                            'etiqueta' => $correo["descripcion"],
+                            'persona_id' => $persona->id,
+                        ]);
+                    }
                 }
             }
+
             $datos = [
                 'persona_id' => $persona->id,
                 'curp' => trim(strtoupper($request->datosIdentificacion["curp"])),
@@ -387,15 +494,18 @@ class personaController extends Controller
             $relacionEmpresasExistentes = RelacionPersonaEmpresa::where('persona_id', $persona->id)->get();
             foreach ($relacionEmpresasExistentes as $relacion) {
                 $borrar = true;
-                foreach ($request->datosRelacionEmpresa as $nuevo) {
-                    if($relacion->empresa_id == $nuevo["empresa_id"]){
-                        $borrar = false;
+                if(isset($request->datosRelacionEmpresa)){
+                    foreach ($request->datosRelacionEmpresa as $nuevo) {
+                        if($relacion->empresa_id == $nuevo["empresa_id"]){
+                            $borrar = false;
+                        }
                     }
                 }
                 if($borrar){
                     $relacion->delete();
                 }
             }
+
             if($request->datosRelacionEmpresa){
                 foreach ($request->datosRelacionEmpresa as $relacionEmpresa) {
                     $telefonoBuscado = RelacionPersonaEmpresa::where('empresa_id', $relacionEmpresa["empresa_id"])->where('persona_id', $persona->id)->first();
@@ -410,16 +520,24 @@ class personaController extends Controller
                 }
             }
 
-            session()->flash('mensajeExito', 'Se ha modificado la persona con éxito');
             bitacora::crearRegistro('Se ha modificado la persona con éxito', $request->ip(), 'ÉXITO');
             DB::commit();
-            return redirect()->route('contactos.index');
+            return [
+                'titulo' => 'Éxito',
+                'texto' => 'Se ha modificado la persona con éxito',
+                'icono' => 'success',
+                'exito' => true
+            ];
         }
         catch(Exception $e){
             DB::rollBack();
             bitacora::crearRegistro($e->getLine(). ' :: ' .$e->getMessage(), $request->ip(), 'ERROR');
-            session()->flash('mensajeError', 'Ocurrió un error al intentar modificar una persona');
-            return back()->withInput();
+            return [
+                'titulo' => 'Error',
+                'texto' => 'Ocurrió un error al intentar modificar una persona',
+                'icono' => 'error',
+                'exito' => false
+            ];
         }
     }
 

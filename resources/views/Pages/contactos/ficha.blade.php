@@ -27,9 +27,11 @@
                     <span id="encabezadoRotadores" class="align-self-center">
                         Datos de Control
                     </span>
-                    <a href="{{route('contactos.vistaModificar', $persona->id)}}" id="enlaceAModificar" class="btn btn-primary">
-                        Modificar
-                    </a>
+                    @if (Auth::user()->getRoleNames()->first() != 'CAPTURISTA' || (Auth::user()->getRoleNames()->first() == 'CAPTURISTA' && !$persona->supervisado))
+                        <a href="{{route('contactos.vistaModificar', $persona->id)}}" id="enlaceAModificar" class="btn btn-primary">
+                            Modificar
+                        </a>
+                    @endif
                 </div>
                 <div class="card-body tab-content">
                     <div class="tab-pane container pt-3 active" id="contenedorDatosControl">

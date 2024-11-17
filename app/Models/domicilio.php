@@ -32,10 +32,9 @@ class domicilio extends Model
         return $this->belongsTo(colonia::class);
     }
 
-    public function empresa(){
-        return $this->belongsTo(empresa::class);
+    public function relacionDomicilio(){
+        return $this->hasMany(empresaDomicilio::class);
     }
-
     public static function crear($response){
         $coordenadas = explode(',',$response['coordenadas']);
         $domicilio = new domicilio();

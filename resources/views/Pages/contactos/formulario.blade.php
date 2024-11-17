@@ -43,7 +43,12 @@
 
 <div class="card" class="m-3">
     <div class="card-header">
-        <h3> {{ str_contains(url()->current(), 'agregar') ? 'Agregar Persona' : 'Modificar Persona' }} </h3>
+        <div class="d-flex justify-content-start">
+            <h3 class="me-4"> {{ str_contains(url()->current(), 'agregar') ? 'Agregar Persona' : 'Modificar Persona' }} </h3>
+            <div>
+                <a href="{{route('contactos.index')}}" class="btn btn-secondary">Regresar</a>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <form id="formularioAgregarSimpatizante" action=" {{  str_contains(url()->current(), 'agregar') ? route('contactos.agregar') : route('contactos.modificar', $persona->id) }}" method="post" style="">
@@ -91,8 +96,7 @@
                         <div id="datosControl" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Datos de control </h3>
                             <div class="row row-cols-1 row-cols-sm-3">
-                                <x-inputFormulario tipo="date" identificador="fecha_registro" nombre="datosControl[fecha_registro]" label="Fecha de registro"
-                                    valor="{{ old('datosControl[fecha_registro]') }}" />
+                                <x-inputFormulario tipo="date" identificador="fecha_registro" nombre="datosControl[fecha_registro]" label="Fecha de registro" valor="{{Carbon\Carbon::now()->format('Y-m-d')}}"/>
                                 <x-inputFormulario tipo="number" identificador="folio" nombre="datosControl[folio]" label="Folio"
                                     valor="{{ old('datosControl[folio]') }}" />
                                 <div class="col">
@@ -156,7 +160,7 @@
                         <div id="datosPersonales" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                             <h3>Datos personales</h3>
                             <div class="row row-cols-1 row-cols-sm-3">
-                                <x-inputFormulario tipo="text" identificador="apodo" nombre="datosPersonales[apodo]" label="Apodo"
+                                <x-inputFormulario tipo="text" identificador="apodo" nombre="datosPersonales[apodo]" label="Apodo*"
                                     valor="{{ old('datosPersonales[apodo]') }}" />
                                 <x-inputFormulario tipo="text" identificador="nombres" nombre="datosPersonales[nombres]" label="Nombre(s)"
                                     valor="{{ old('datosPersonales[nombres]') }}" />
@@ -902,9 +906,8 @@
             $("#btnAgregarCorreo").trigger('click');
         @endif
 
-        @if (old('fechaRegistro'))
-            $('#fechaRegistro').val("{{old('fechaRegistro')}}");
-        @endif
+
+
         @if (old('etiquetas'))
             let etiquetasCrudas = @json(old('etiquetas'));
             let etiquedasPreprocesar = (etiquetasCrudas != null) ? etiquetasCrudas.split(',') : [];
@@ -977,47 +980,85 @@
         createTag(tagInput.value);
     });
     $('#formularioAgregarSimpatizante').submit(function (e) {
-
-        let txtCelular = $("#telefonoCelular").val();
-        let telefonoFijo = $("#telefonoFijo").val();
-        let nombres = $("#nombre").val();
-        let apellidoPaterno = $("#apellido_paterno").val();
-        let correo = $("#correo").val();
-        let calle = $("#calle").val();
-        let numeroExterior = $("#numeroExterior").val();
-        let colonia = $("#colonias").val();
-        let codigoPostal = $("#codigoPostal").val();
-        let municipio = $("#municipios").val();
-        if(true){
-            if($('#inputEtiquetaCrear').is(':focus')){
-                return false;
-            }
-            else{
-                if($('#formularioAgregarSimpatizante #etiquetas').length == 0){
-                    let etiquetas = "";
-                    $.each(tags, function (i, value) {
-                        etiquetas += `${value.childNodes[0].innerHTML},`;
-                        if(etiquetas.length > 0 && tags.length - 1 == i){
-                            etiquetas = etiquetas.slice(0, -1);
-                        }
-                    });
-                    $('#formularioAgregarSimpatizante').append(
-                        $('<input>').attr('name', 'datosOtrosDatos[etiquetas]').attr('id', 'etiquetas').attr('type', 'hidden')
-                        .val(etiquetas)
-                    );
-
-                }
-            }
-        }
-        else{
+        e.preventDefault();
+        console.log('CORRER');
+        let apodo = $('#apodo').val();
+        if(apodo.trim().length == 0){
             Swal.close();
             Swal.fire({
                 'title':"Error",
-                'text':"Verifique los datos de contacto ingresados.",
+                'text':"El campo apodo es obligatorio.",
                 'icon':"error"
             });
             return false;
         }
+        if($('#inputEtiquetaCrear').is(':focus')){
+            return false;
+        }
+        if($('#formularioAgregarSimpatizante #etiquetas').length == 0){
+            let etiquetas = "";
+            $.each(tags, function (i, value) {
+                etiquetas += `${value.childNodes[0].innerHTML},`;
+                if(etiquetas.length > 0 && tags.length - 1 == i){
+                    etiquetas = etiquetas.slice(0, -1);
+                }
+            });
+            $('#formularioAgregarSimpatizante').append(
+                $('<input>').attr('name', 'datosOtrosDatos[etiquetas]').attr('id', 'etiquetas').attr('type', 'hidden')
+                .val(etiquetas)
+            );
+        }
+        var datosFormulario = $('#formularioAgregarSimpatizante').serializeArray();
+        var rutas = $('#formularioAgregarSimpatizante').attr('action');
+
+        $.when(
+            $.ajax({
+                type: "post",
+                url: rutas,
+                data: datosFormulario,
+                contentType: "application/x-www-form-urlencoded",
+                success: function (response) {
+                    Swal.fire({
+                        'title': response.titulo,
+                        'text': response.texto,
+                        'icon': response.icono,
+                    }).then((result) => {
+                        if(result.isConfirmed){
+                            var currentUrl = window.location.href;
+                            if (currentUrl.includes('agregar')) {
+                                window.location.href = '{{route("contactos.index")}}';
+                            }
+                        }
+                    });
+                    if(response.exito){
+
+                    }
+                },
+                error: function( data, textStatus, jqXHR){
+                    if (jqXHR.status === 0) {
+                        console.log('Not connect: Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        console.log('Requested page not found [404]');
+                    } else if (jqXHR.status == 500) {
+                        console.log('Internal Server Error [500].');
+                    } else if (textStatus === 'parsererror') {
+                        console.log('Requested JSON parse failed.');
+                    } else if (textStatus === 'timeout') {
+                        console.log('Time out error.');
+                    } else if (textStatus === 'abort') {
+                        console.log('Ajax request aborted.');
+                    } else {
+                        console.log('Uncaught Error: ' + jqXHR.responseText);
+                    }
+                }
+            })
+        ).then(
+            function( data, textStatus, jqXHR ) {
+                // Swal.close();
+        });
+
+
+
     });
     $('#fechaNacimiento').change(function (e) {
         var fechaNacimiento = new Date($('#fechaNacimiento').val());
@@ -1128,7 +1169,7 @@
         let relacionesEmpresas = @json($relacionesEmpresa);
         cargarFormulario();
         function cargarFormulario(){
-            $("#fecha_registro").val(datosFormulario.fecha_registro);
+            //$("#fecha_registro").val(datosFormulario.fecha_registro);
             $("#folio").val(datosFormulario.folio);
             $("#promotores").val(datosFormulario.promotor_id ?? 0);
             $("#promotores").trigger('change');

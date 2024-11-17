@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\configuracion;
 use App\Models\User;
 use Closure;
 use Exception;
@@ -24,11 +25,12 @@ class compartirUsuarioLogeado
             if(isset($user)){
                 $usuario = User::where('email', $user->email)->first();
                 $rol = $usuario->getRoleNames()->first();
-
+                $nombreEmpresa = configuracion::first()->nombreEmpresa;
                 View::share(
                     [
                         'user' => $usuario,
                         'role' => $rol,
+                        'nombrePropietario' => $nombreEmpresa,
                     ]);
             }
         }
