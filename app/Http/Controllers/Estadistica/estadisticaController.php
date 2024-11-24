@@ -84,7 +84,7 @@ class estadisticaController extends Controller
 
         $filtroEntidades = $formulario->entidades;
         $filtroDistritoFederal = $formulario->distritosFederales;
-        $filtroDistritoLocal = $formulario->distritoLocales;
+        $filtroDistritoLocal = $formulario->distritosLocales;
         $filtroSeccion = $formulario->secciones;
         $filtroFechaInicio = $formulario->fechaInicio;
         $filtroFechaFin = $formulario->fechaFin;
@@ -96,6 +96,7 @@ class estadisticaController extends Controller
         ->leftJoin('municipios', 'municipios.id', '=', 'distrito_locals.municipio_id')
         ->leftJoin('distrito_federals', 'distrito_federals.id', '=', 'municipios.distrito_federal_id')
         ->where('personas.deleted_at', null);
+
         if(isset($filtroEntidades) && count($filtroEntidades) > 0 && !in_array('TODOS', $filtroEntidades)){
             $query->whereIn('entidad_id', $filtroEntidades);
         }
@@ -105,6 +106,7 @@ class estadisticaController extends Controller
         if(isset($filtroDistritoLocal) && count($filtroDistritoLocal) > 0 && !in_array('TODOS', $filtroDistritoLocal)){
             $query->whereIn('distrito_local_id', $filtroDistritoLocal);
         }
+        Log::info($formulario);
         if(isset($filtroSeccion) && count($filtroSeccion) > 0 && !in_array('TODOS', $filtroSeccion)){
             $query->whereIn('seccion_id', $filtroSeccion);
         }
@@ -139,7 +141,6 @@ class estadisticaController extends Controller
         }
 
         Log::info($query->toSql());
-        Log::info($formulario);
         $primerResultado = clone $query;
         $segundoResultado = clone $query;
         $tercerResultado = clone $query;
@@ -182,10 +183,10 @@ class estadisticaController extends Controller
         $dias = [];
         $maximo = 0;
         foreach ($registrosPorFechas as $registro) {
-            $fechaActual = Carbon::parse($registro->fecha_registro)->format('d-F');
+            $fechaActual = Carbon::parse($registro->fecha_registro)->format('d-F-Y');
             $fecha = Carbon::parse($fechaActual);
             $mes = $meses[($fecha->format('n')) - 1];
-            $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
+            $fechaFormateada = $fecha->format('d') . ' de ' . $mes . ' ' . $fecha->format('Y');
             array_push($dias, $fechaFormateada);
             array_push($conteos, $registro->conteoTotal);
             if($maximo < $registro->conteoTotal){

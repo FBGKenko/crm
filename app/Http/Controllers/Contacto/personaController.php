@@ -22,6 +22,7 @@ use App\Models\relacionPerfilUsuario;
 use App\Models\RelacionPersonaEmpresa;
 use App\Models\seccion;
 use App\Models\telefono;
+use App\Models\tipoFuncionPersonalizada;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -180,8 +181,9 @@ class personaController extends Controller
         $listaEmpresas = empresa::where('deleted_at', null)->get();
         $listaDistritoLocal = distritoLocal::get();
         $listaDistritoFederal = distritoFederal::get();
+        $listaFuncionesPersonalida = tipoFuncionPersonalizada::get();
         return view('Pages.contactos.formulario', compact('listaPersonas', 'listaPromotores', 'listaColonias', 'listaMunicipios', 'listaEstatus',
-            'listaEstados', 'listaSecciones', 'listaEmpresas', 'listaDistritoLocal', 'listaDistritoFederal'));
+            'listaEstados', 'listaSecciones', 'listaEmpresas', 'listaDistritoLocal', 'listaDistritoFederal', 'listaFuncionesPersonalida'));
     }
 
     function agregar(Request $request){
@@ -342,6 +344,7 @@ class personaController extends Controller
         $relacionesEmpresa = RelacionPersonaEmpresa::where('persona_id', $persona->id)->get();
         $listaDistritoLocal = distritoLocal::get(['id']);
         $listaDistritoFederal = distritoFederal::get(['id']);
+        $listaFuncionesPersonalida = tipoFuncionPersonalizada::get();
         $conjunto = $request->conjunto;
         return view('Pages.contactos.formulario', [
             'listaPersonas' => $listaPersonas, 'persona' => $persona, 'telefonos' => $registro->telefonos, 'correos' => $registro->correos,
@@ -349,7 +352,7 @@ class personaController extends Controller
             'listaPromotores' => $listaPromotores, 'listaColonias' => $listaColonias, 'listaMunicipios' => $listaMunicipios,
             'listaEstatus' => $listaEstatus, 'listaEstados' => $listaEstados, 'listaSecciones' => $listaSecciones,
             'relacionesEmpresa' => $relacionesEmpresa, 'listaDistritoLocal' => $listaDistritoLocal, 'listaDistritoFederal' => $listaDistritoFederal,
-            'conjunto' => $conjunto
+            'conjunto' => $conjunto, 'listaFuncionesPersonalida' => $listaFuncionesPersonalida
         ]);
     }
 

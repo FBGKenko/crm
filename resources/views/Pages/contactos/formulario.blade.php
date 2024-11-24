@@ -419,8 +419,9 @@
                                     <label class="form-label mt-3">Relación Personalizada</label>
                                     <select class="form-select selectToo" name="datosRelaciones[programa]" style="width:100%">
                                         <option value="NINGUNO">SIN DATO</option>
-                                        <option value="PROGRAMA 1">Programa 1</option>
-                                        <option value="PROGRAMA 2">Programa 2</option>
+                                        @foreach ($listaFuncionesPersonalida as $tipo)
+                                            <option value="{{$tipo->id}}">{{$tipo->Nombre}}</option>
+                                        @endforeach
                                     </select>
                                     @error('datosRelaciones[programa]') <div id="programaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div> @enderror
                                 </div>

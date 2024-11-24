@@ -49,24 +49,31 @@
         <h3>Personalizar Sistema</h3>
     </div>
     <div class="col-11 mx-auto card-body">
-        <form action="" method="post">
+        <form action="{{route('personalizar.cambiar')}}" method="post" enctype="multipart/form-data">
+                @csrf
             <div class="row row-cols-1 row-cols-sm-2">
                 <div class="col">
                     <label class="form-label mt-3">Nombre Empresa Propietaria</label>
-                    <input type="text" id="nombreEmpresaPropietaria" name="nombreEmpresaPropietaria" class="form-control" value="">
+                    <input type="text" id="nombreEmpresaPropietaria" name="nombreEmpresaPropietaria" class="form-control" value="{{ $nombreEmpresa }}">
                 </div>
                 <div class="col d-flex justify-content-center">
                     <div>
                         <label class="form-label mt-3">Imagen Actual</label>
                         <br>
-                        <img src="{{url('/')}}/img/logotipo.png" alt="" class="imgLogotipoEmpresa">
+                        <img src="{{$rutaLogo}}" alt="" class="imgLogotipoEmpresa">
                     </div>
                 </div>
                 <div class="col">
                     <label class="form-label mt-3">Imagen del Proyecto</label>
-                    <input type="file" id="imagenesProyecto" name="imagenesProyecto" class="form-control" value="">
+                    <input type="file" id="imagenesProyecto" name="imagenesProyecto" class="form-control" accept="image/*">
                 </div>
-                <div class="col"> </div>
+                <div class="col d-flex justify-content-center align-items-center">
+                    <div class="align-self-end">
+                        <button id="botonGuardarPersonalizacion" class="btn btn-primary">
+                            Guardar cambios
+                        </button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -77,6 +84,7 @@
 
 @section('scripts')
     <script text="text/javascript">
+
     </script>
 @endsection
 

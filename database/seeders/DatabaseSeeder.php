@@ -14,6 +14,7 @@ use App\Imports\personasYDatosImport;
 use App\Imports\seccionColoniaImport;
 use App\Imports\seccionImport;
 use App\Models\colonia;
+use App\Models\configuracion;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
 use App\Models\domicilio;
@@ -27,6 +28,7 @@ use App\Models\oportunidad;
 use App\Models\persona;
 use App\Models\seccion;
 use App\Models\seccionColonia;
+use App\Models\tipoFuncionPersonalizada;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Date;
@@ -43,6 +45,24 @@ class DatabaseSeeder extends Seeder
     {
         // DB::unprepared(file_get_contents(storage_path('app/carga inicial detector.sql')));
         $this->call(RoleSeeder::class);
+
+        configuracion::create([
+            'nombreEmpresa' => 'INGENIA SI',
+            'colorPrimario' => '',
+            'colorSecundario' => '',
+        ]);
+
+        $array = [
+            'DISTRIBUIDOR',
+            'MAYORISTA',
+        ];
+
+        foreach ($array as $tipo) {
+            tipoFuncionPersonalizada::create([
+                'Nombre' => $tipo
+            ]);
+        }
+
 
         $ivan = User::Create([
             'nombre' => 'IVAN',

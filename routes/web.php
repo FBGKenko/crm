@@ -227,6 +227,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
     Route::prefix('configuracion')->group(function(){
         route::prefix('personalizar')->controller(personalizarController::class)->group(function (){
             route::get('/', 'index')->name('personalizar.index');
+            route::post('/cambiar', 'configurar')->name('personalizar.cambiar');
         });
     });
 

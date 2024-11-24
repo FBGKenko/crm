@@ -220,11 +220,14 @@
     <div class="row">
         <div class="col">
             <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-chart-bar me-1"></i>
-                    Secciones
+                <div class="card-header d-flex justify-content-between" data-bs-toggle="collapse" data-bs-target="#graficaSeccionesCollapse" aria-expanded="false" aria-controls="graficaSeccionesCollapse">
+                    <div>
+                        <i class="fas fa-chart-bar me-1"></i>
+                        Secciones
+                    </div>
+                    <i class="fa-solid fa-arrow-down"></i>
                 </div>
-                <div class="card-body contenedorSeccionesGraficas">
+                <div id="graficaSeccionesCollapse" class="card-body collapse my-3 contenedorSeccionesGraficas">
 
                 </div>
             </div>
@@ -289,7 +292,8 @@
                             const datapoints = ctx.chart.data.datasets[0].data
                             const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
                             const percentage = value / total * 100
-                            return percentage.toFixed(2) + "%";
+                            // return percentage.toFixed(2) + "%";
+                            return value;
                         },
                         color: '#000',
                         backgroundColor: '#fff',
@@ -317,9 +321,10 @@
                     data: [],
                     contentType: "application/x-www-form-urlencoded",
                     success: function (response) {
-                        console.log(response);
-                        if(response.conteoSeparado[0].seccion_id == null)
-                            response.conteoSeparado[0].seccion_id = "Sin Ubicar";
+                        if(response.conteoSeparado.length > 0){
+                            if(response.conteoSeparado[0].seccion_id == null)
+                                response.conteoSeparado[0].seccion_id = "Sin Ubicar";
+                        }
                         $.each(response.seccionesAccesibles, function (indexInArray, valueOfElement) {
                             $('#seccionarAgrupar').append($('<option>').html(valueOfElement))
                         });
@@ -463,14 +468,15 @@
                             if(datos[2] > maximoActual){
                                 maximoActual = datos[2];
                             }
+                            let labelsGrafica = [ "Registros Hechos", "Registros Objetivos", "Lista Nominal" ];
+                            if(valueOfElement.seccion_id == 'Sin Ubicar'){
+                                labelsGrafica = ["Registros Hechos"];
+                                datos = [valueOfElement.conteoTotal];
+                            }
                             var myLineChart = new Chart(ctx3, {
                                 type: 'bar',
                                 data: {
-                                    labels: [
-                                        "Registros Hechos",
-                                        "Registros Objetivos",
-                                        "Lista Nominal",
-                                        ],
+                                    labels: labelsGrafica,
                                     datasets: [{
                                         label: "Conteo",
                                         backgroundColor: "rgba(2,117,216,1)",
@@ -511,7 +517,8 @@
                                                 const datapoints = ctx.chart.data.datasets[0].data
                                                 const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
                                                 const percentage = value / total * 100
-                                                return percentage.toFixed(2) + "%";
+                                                // return percentage.toFixed(2) + "%";
+                                                return value;
                                             },
                                             color: '#000',
                                             backgroundColor: '#fff',
@@ -632,7 +639,8 @@
                                             const datapoints = ctx.chart.data.datasets[0].data
                                             const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
                                             const percentage = value / total * 100
-                                            return percentage.toFixed(2) + "%";
+                                            // return percentage.toFixed(2) + "%";
+                                            return value;
                                         },
                                         color: '#000',
                                         backgroundColor: '#fff',
@@ -690,7 +698,8 @@
                                             const datapoints = ctx.chart.data.datasets[0].data
                                             const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
                                             const percentage = value / total * 100
-                                            return percentage.toFixed(2) + "%";
+                                            // return percentage.toFixed(2) + "%";
+                                            return value;
                                         },
                                         color: '#000',
                                         backgroundColor: '#fff',
@@ -820,14 +829,15 @@
                             if(datos[2] > maximoActual){
                                 maximoActual = datos[2];
                             }
+                            let labelsGrafica = [ "Registros Hechos", "Registros Objetivos", "Lista Nominal" ];
+                            if(valueOfElement.seccion_id == 'Sin Ubicar'){
+                                labelsGrafica = ["Registros Hechos"];
+                                datos = [valueOfElement.conteoTotal];
+                            }
                             var myLineChart = new Chart(ctx3, {
                                 type: 'bar',
                                 data: {
-                                    labels: [
-                                        "Registros Hechos",
-                                        "Registros Objetivos",
-                                        "Lista Nominal",
-                                        ],
+                                    labels: labelsGrafica,
                                     datasets: [{
                                         label: "Conteo",
                                         backgroundColor: "rgba(2,117,216,1)",
@@ -868,7 +878,8 @@
                                                 const datapoints = ctx.chart.data.datasets[0].data
                                                 const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
                                                 const percentage = value / total * 100
-                                                return percentage.toFixed(2) + "%";
+                                                // return percentage.toFixed(2) + "%";
+                                                return value;
                                             },
                                             color: '#000',
                                             backgroundColor: '#fff',
@@ -930,7 +941,8 @@
                                             const datapoints = ctx.chart.data.datasets[0].data
                                             const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
                                             const percentage = value / total * 100
-                                            return percentage.toFixed(2) + "%";
+                                            // return percentage.toFixed(2) + "%";
+                                            return value;
                                         },
                                         color: '#000',
                                         backgroundColor: '#fff',
@@ -990,7 +1002,8 @@
                                             const datapoints = ctx.chart.data.datasets[0].data
                                             const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
                                             const percentage = value / total * 100
-                                            return percentage.toFixed(2) + "%";
+                                            // return percentage.toFixed(2) + "%";
+                                            return value;
                                         },
                                         color: '#000',
                                         backgroundColor: '#fff',
@@ -1114,3 +1127,4 @@
             }
         </script>
 @endsection
+
