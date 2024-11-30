@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Configuracion\bitacoraController;
+use App\Http\Controllers\Configuracion\catalogosController;
 use App\Http\Controllers\Configuracion\crudUsuariosController;
+use App\Http\Controllers\Configuracion\importarDatosController;
 use App\Http\Controllers\Configuracion\permisosController;
 use App\Http\Controllers\Configuracion\personalizarController;
 use App\Http\Controllers\Contacto\crudPersonasController;
@@ -63,11 +65,9 @@ Route::post("/iniciar-sesion/recuperar-clave-{token}",
 
 Route::prefix('/')->middleware('auth')->group(function (){
     Route::post('cerrando-sesion', [iniciarSesionController::class, 'cerrarSesion'])->name('logout');
-
     Route::prefix('permisos')->controller(permisosController::class)->group(function () {
         Route::get('/', 'index')->name('permisos.index');
     });
-
     Route::prefix('gestor-usuarios')->controller(crudUsuariosController::class)->group(function () {
         Route::get('/', 'index')
         ->name('crudUsuario.index')->middleware(['can:crudUsuarios.index']);
@@ -107,7 +107,6 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::get('/asignar-contactos-{empresa}', 'cargarContactosAsignados')->name('empresas.cargarContactosAsignados');
         Route::post('/asignar-contactos-{empresa}', 'guardarContactosAsignados')->name('empresas.guardarContactosAsignados');
     });
-
     Route::prefix('perfil')->controller(perfilUsuarioController::class)->group(function () {
         Route::get('/gestionar-grupos/{usuario}', 'index')->name('perfil.index');
         Route::get('/buscarRelaciones', 'buscarRelaciones')->name('perfil.buscarRelaciones');
@@ -189,7 +188,6 @@ Route::prefix('/')->middleware('auth')->group(function (){
             Route::post('/vincular-{respuesta}-{persona}', "vincularPersona")->name('respuestas.vincularPersona');
         });
     });
-
     Route::prefix('objetivos')->controller(crudObjetivoController::class)->group(function(){
         Route::get('/', 'index')
         ->name('objetivos.index');
@@ -208,7 +206,6 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::post('/borrar-{objetivo}', 'borrar')
         ->name('objetivos.borrar');
     });
-
     Route::prefix('inventario')->controller(InventarioController::class)->group(function (){
         route::get('/', 'index')->name('inventario.index');
         route::get('/buscar-{inventario}', 'obtenerProducto')->name('inventario.obtenerProducto');
@@ -229,13 +226,15 @@ Route::prefix('/')->middleware('auth')->group(function (){
             route::get('/', 'index')->name('personalizar.index');
             route::post('/cambiar', 'configurar')->name('personalizar.cambiar');
         });
+        route::prefix('catalogos')->controller(catalogosController::class)->group(function () {
+            route::get('/', 'index')->name('catalogos.index');
+        });
+        route::prefix('importar')->controller(importarDatosController::class)->group(function () {
+            route::get('/', 'index')->name('importar.index');
+        });
     });
-
-
-
     Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);
     Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['can:bitacora.index']);
-
     Route::get("/crudOportunidades", [crudOportunidadesController::class, 'index'])->name("oportunidades.index");
     Route::get("/crudOportunidades/inicializar", [crudOportunidadesController::class, 'inicializar'])->name("oportunidades.inicializar");
     Route::get("/crudOportunidades/exportarParaPromotor", [crudOportunidadesController::class, 'exportarParaPromotor'])->name("oportunidades.exportarParaPromotor");
@@ -244,16 +243,5 @@ Route::prefix('/')->middleware('auth')->group(function (){
     Route::post("/crudOportunidades/crearOportunidad", [crudOportunidadesController::class, 'agregar'])->name("oportunidades.agregar");
     Route::post("/crudOportunidades/cambiarOportunidad", [crudOportunidadesController::class, 'cambiarEstado'])->name("oportunidades.cambiarEstatus");
     Route::post("/crudOportunidades/agregar-actividad-{oportunidad}", [crudOportunidadesController::class, 'agregarActividad'])->name("oportunidades.agregarActividad");
-
-    // Route::get("/promotores/cargarTabla", [crudPromotoresController::class, 'cargarPromotores'])->name("promotores.cargarPromotores");
-
-
-
-
-     //  Route::get("/crudPromotores", function(){
-    //     return View::make("crudPromotores");
-    //  });
-
-
 });
 

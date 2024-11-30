@@ -191,6 +191,7 @@ class formularioSimpatizanteController extends Controller
                     'entidad' => $entidad,
                     'distritoFederal' => $distritoFederal,
                     'distritoLocal' => $distritoLocal,
+                    'municipio' => $seccionEncotrada->distritoLocal->municipio->id,
                     'seccion' => $seccion
                 ];
         } catch (Exception $e) {

@@ -52,20 +52,31 @@
         <form action="{{route('personalizar.cambiar')}}" method="post" enctype="multipart/form-data">
                 @csrf
             <div class="row row-cols-1 row-cols-sm-2">
-                <div class="col">
-                    <label class="form-label mt-3">Nombre Empresa Propietaria</label>
-                    <input type="text" id="nombreEmpresaPropietaria" name="nombreEmpresaPropietaria" class="form-control" value="{{ $nombreEmpresa }}">
+                <div class="col d-flex justify-content-center">
+                    <div>
+                        <label class="form-label mt-3">Logotipo Actual</label>
+                        <br>
+                        <img src="{{$rutaLogo}}" alt="" class="imgLogotipoEmpresa">
+                    </div>
                 </div>
                 <div class="col d-flex justify-content-center">
                     <div>
-                        <label class="form-label mt-3">Imagen Actual</label>
+                        <label class="form-label mt-3">Fondo Inicio de sesión</label>
                         <br>
-                        <img src="{{$rutaLogo}}" alt="" class="imgLogotipoEmpresa">
+                        <img src="{{$rutaFondo}}" alt="" class="imgLogotipoEmpresa">
                     </div>
                 </div>
                 <div class="col">
                     <label class="form-label mt-3">Imagen del Proyecto</label>
                     <input type="file" id="imagenesProyecto" name="imagenesProyecto" class="form-control" accept="image/*">
+                </div>
+                <div class="col">
+                    <label class="form-label mt-3">Fondo de Iniciar Sesión</label>
+                    <input type="file" id="fondoInicio" name="fondoInicio" class="form-control" accept="image/*">
+                </div>
+                <div class="col">
+                    <label class="form-label mt-3">Nombre Empresa Propietaria</label>
+                    <input type="text" id="nombreEmpresaPropietaria" name="nombreEmpresaPropietaria" class="form-control" value="{{ $nombreEmpresa }}">
                 </div>
                 <div class="col d-flex justify-content-center align-items-center">
                     <div class="align-self-end">

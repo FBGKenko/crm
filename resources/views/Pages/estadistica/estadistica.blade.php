@@ -1,11 +1,8 @@
 @extends('Pages.plantilla')
-
 @section('tittle')
    Estadística
 @endsection
-
 @section('cuerpo')
-
 <style>
     .select2-container .select2-selection--multiple {
     /* width: 120px; */
@@ -167,6 +164,12 @@
                                     @endforeach
                                 </select>
                             </center>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="checkBoxAgruparSeccion">
+                                <label class="form-check-label" for="checkBoxAgruparSeccion">
+                                    Agrupar conteos, metas y lista nominal
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -282,6 +285,9 @@
             var configurarSecciones;
             var datosVacios = false;
             var cambioMeta = false;
+            var graficaSupervisado;
+            var graficaRegistrosEstatus;
+            var graficaTiempo;
             var options = {
                 tooltips: {
                     enabled: false
@@ -303,9 +309,6 @@
                     }
                 }
             };
-            var graficaSupervisado;
-            var graficaRegistrosEstatus;
-            var graficaTiempo;
             $(document).ready(function () {
                 $('.selectToo, .select2').select2();
                 Swal.fire({
@@ -653,6 +656,20 @@
                             plugins: [ChartDataLabels],
 
                         });
+                        var etiquetasColores = [];
+                        response.conteoEstatus.labels.forEach(element => {
+                            switch (element) {
+                                case 'FRIO':
+                                    etiquetasColores.push('#25c7f6');
+                                break;
+                                case 'TIBIO':
+                                    etiquetasColores.push('#e3c807');
+                                break;
+                                case 'CALIENTE':
+                                    etiquetasColores.push('#e33207');
+                                break;
+                            }
+                        });
                         var graficaRegistrosPorEstatus = document.getElementById("graficaRegistrosPorEstatus");
                         graficaRegistrosEstatus = new Chart(graficaRegistrosPorEstatus, {
                             type: 'bar',
@@ -660,7 +677,7 @@
                                 labels: response.conteoEstatus.labels,
                                 datasets: [{
                                     label: "Conteo",
-                                    backgroundColor: "rgba(2,117,216,1)",
+                                    backgroundColor: etiquetasColores,
                                     borderColor: "rgba(2,117,216,1)",
                                     data: response.conteoEstatus.datos,
                                 }],
@@ -771,12 +788,6 @@
                     showConfirmButton: false,
                     html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
                 });
-                Swal.fire({
-                    title: 'Cargando...',
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-                });
                 $.when(
                 $.ajax({
                     type: "get",
@@ -786,42 +797,35 @@
                     success: function (response) {
                         if(response.conteoSeparado.length > 0 && response.conteoSeparado[0].seccion_id == null)
                             response.conteoSeparado[0].seccion_id = "Sin Ubicar";
+
                         let columnas = 0;
                         var grafico = '';
-                        $('.contenedorSeccionesGraficas').html('');
-                        var renglon = $('<div>').addClass('row');
-                        $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
-                            grafico = $('<div>').addClass('col-lg-6').html(
-                                $('<div>').addClass('card').addClass('mb-4').append(
-                                    $('<div>').addClass('card-header').append(
-                                        $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
-                                        $('<span>').text(`Conteo sección ${valueOfElement.seccion_id}`)
-                                    ),
-                                    $('<div>').addClass('card-body').html(
-                                        $('<canvas>').attr('id', `graficaBarra_${valueOfElement.seccion_id}`).attr('width', '100%').attr('height', '50px')
+                        if($('#checkBoxAgruparSeccion').is(':checked')){
+                            $('.contenedorSeccionesGraficas').html('');
+                            var encabezados = "Conteo de secciones: ";
+                            var datos = [0, 0, 0];
+                            $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
+                                encabezados = `${valueOfElement.seccion_id}, `;
+                                datos[0] += valueOfElement.conteoTotal;
+                                datos[1] += valueOfElement.objetivo;
+                                datos[2] += valueOfElement.poblacion;
+                            });
+                            let renglon = $('<div class="row">').append(
+                                $('<div class="col-lg-12">').append(
+                                    $('<div>').addClass('card').addClass('mb-4').append(
+                                        $('<div>').addClass('card-header').append(
+                                            $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
+                                            $('<span>').text(encabezados)
+                                        ),
+                                        $('<div>').addClass('card-body').html(
+                                            $('<canvas>').attr('id', `graficaBarra_Agrupado`).attr('width', '100%').attr('height', '50px')
+                                        )
                                     )
                                 )
                             );
-                            if(columnas >= 2){
-                                columnas = 0;
-                                $('.contenedorSeccionesGraficas').append(renglon);
-                                renglon = $('<div>').addClass('row');
-                                renglon.append(grafico);
-                                columnas++;
-                            }
-                            else{
-                                renglon.append(grafico);
-                                columnas++;
-                            }
-                        });
-                        if(columnas > 0){
-                                columnas = 0;
-                                $('.contenedorSeccionesGraficas').append(renglon);
-                            }
-
-                        $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
-                            var ctx3 = document.getElementById(`graficaBarra_${valueOfElement.seccion_id}`);
-                            var datos = [valueOfElement.conteoTotal, valueOfElement.objetivo, valueOfElement.poblacion];
+                            $('.contenedorSeccionesGraficas').append(renglon);
+                            //AGREGAR GRAFICA DE SECCIONES AGRUPADAS
+                            var ctx3 = document.getElementById(`graficaBarra_Agrupado`);
                             var maximoActual = datos[0];
                             if(datos[1] > maximoActual){
                                 maximoActual = datos[1];
@@ -830,10 +834,10 @@
                                 maximoActual = datos[2];
                             }
                             let labelsGrafica = [ "Registros Hechos", "Registros Objetivos", "Lista Nominal" ];
-                            if(valueOfElement.seccion_id == 'Sin Ubicar'){
-                                labelsGrafica = ["Registros Hechos"];
-                                datos = [valueOfElement.conteoTotal];
-                            }
+                            // if(valueOfElement.seccion_id == 'Sin Ubicar'){
+                            //     labelsGrafica = ["Registros Hechos"];
+                            //     datos = [valueOfElement.conteoTotal];
+                            // }
                             var myLineChart = new Chart(ctx3, {
                                 type: 'bar',
                                 data: {
@@ -892,8 +896,116 @@
                                 plugins: [ChartDataLabels],
 
                             });
-                        });
+                        }
+                        else{
+                            //AGREGAR CONTENEDORES INDIVIDUALES
+                            $('.contenedorSeccionesGraficas').html('');
+                            var renglon = $('<div>').addClass('row');
+                            $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
+                                grafico = $('<div>').addClass('col-lg-6').html(
+                                    $('<div>').addClass('card').addClass('mb-4').append(
+                                        $('<div>').addClass('card-header').append(
+                                            $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
+                                            $('<span>').text(`Conteo sección ${valueOfElement.seccion_id}`)
+                                        ),
+                                        $('<div>').addClass('card-body').html(
+                                            $('<canvas>').attr('id', `graficaBarra_${valueOfElement.seccion_id}`).attr('width', '100%').attr('height', '50px')
+                                        )
+                                    )
+                                );
+                                if(columnas >= 2){
+                                    columnas = 0;
+                                    $('.contenedorSeccionesGraficas').append(renglon);
+                                    renglon = $('<div>').addClass('row');
+                                    renglon.append(grafico);
+                                    columnas++;
+                                }
+                                else{
+                                    renglon.append(grafico);
+                                    columnas++;
+                                }
+                            });
+                            if(columnas > 0){
+                                columnas = 0;
+                                $('.contenedorSeccionesGraficas').append(renglon);
+                            }
+                            //AGREGAR GRAFICA DE SECCIONES POR SEPARADO
+                            $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
+                                var ctx3 = document.getElementById(`graficaBarra_${valueOfElement.seccion_id}`);
+                                var datos = [valueOfElement.conteoTotal, valueOfElement.objetivo, valueOfElement.poblacion];
+                                var maximoActual = datos[0];
+                                if(datos[1] > maximoActual){
+                                    maximoActual = datos[1];
+                                }
+                                if(datos[2] > maximoActual){
+                                    maximoActual = datos[2];
+                                }
+                                let labelsGrafica = [ "Registros Hechos", "Registros Objetivos", "Lista Nominal" ];
+                                if(valueOfElement.seccion_id == 'Sin Ubicar'){
+                                    labelsGrafica = ["Registros Hechos"];
+                                    datos = [valueOfElement.conteoTotal];
+                                }
+                                var myLineChart = new Chart(ctx3, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: labelsGrafica,
+                                        datasets: [{
+                                            label: "Conteo",
+                                            backgroundColor: "rgba(2,117,216,1)",
+                                            borderColor: "rgba(2,117,216,1)",
+                                            data: datos,
+                                        }],
+                                    },
+                                    options: {
+                                        scales: {
+                                        xAxes: [{
+                                            time: {
+                                                unit: 'month'
+                                            },
+                                            gridLines: {
+                                                display: false
+                                            },
+                                            ticks: {
+                                                maxTicksLimit: 4
+                                            }
+                                        }],
+                                        yAxes: [{
+                                            ticks: {
+                                                min: 0,
+                                                max: maximoActual,
+                                                maxTicksLimit: 5
+                                            },
+                                            gridLines: {
+                                                display: true
+                                            }
+                                        }],
+                                        },
+                                        legend: {
+                                            display: false
+                                        },
+                                        plugins: {
+                                            datalabels: {
+                                                formatter: (value, ctx) => {
+                                                    const datapoints = ctx.chart.data.datasets[0].data
+                                                    const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                                                    const percentage = value / total * 100
+                                                    // return percentage.toFixed(2) + "%";
+                                                    return value;
+                                                },
+                                                color: '#000',
+                                                backgroundColor: '#fff',
+                                                borderWidth: '1',
+                                                borderColor: '#aaa',
+                                                borderRadius: '5'
+                                            }
+                                        }
+                                    },
+                                    plugins: [ChartDataLabels],
 
+                                });
+                            });
+                        }
+                        //AGREGAR GRAFICA DE SUPERVISADOS
                         $("#graficaRegistrosSupervisados").html('');
                         var graficaRegistrosSupervisados = document.getElementById("graficaRegistrosSupervisados");
                         graficaSupervisado.destroy();
@@ -955,16 +1067,31 @@
                             plugins: [ChartDataLabels],
 
                         });
+                        //GRAFICA DE ESTATUS
                         $("#graficaRegistrosPorEstatus").html('');
                         var graficaRegistrosPorEstatus = document.getElementById("graficaRegistrosPorEstatus");
                         graficaRegistrosEstatus.destroy();
+                        var etiquetasColores = [];
+                        response.conteoEstatus.labels.forEach(element => {
+                            switch (element) {
+                                case 'FRIO':
+                                    etiquetasColores.push('#25c7f6');
+                                break;
+                                case 'TIBIO':
+                                    etiquetasColores.push('#e3c807');
+                                break;
+                                case 'CALIENTE':
+                                    etiquetasColores.push('#e33207');
+                                break;
+                            }
+                        });
                         graficaRegistrosEstatus = new Chart(graficaRegistrosPorEstatus, {
                             type: 'bar',
                             data: {
                                 labels: response.conteoEstatus.labels,
                                 datasets: [{
                                     label: "Conteo",
-                                    backgroundColor: "rgba(2,117,216,1)",
+                                    backgroundColor: etiquetasColores,
                                     borderColor: "rgba(2,117,216,1)",
                                     data: response.conteoEstatus.datos,
                                 }],
@@ -1016,6 +1143,7 @@
                             plugins: [ChartDataLabels],
 
                         });
+                        //GRAFICA DE GRAFICA DE TIEMPO
                         $("#graficaTiempo").html('');
                         var ctx = document.getElementById("graficaTiempo");
                         graficaTiempo.destroy();
@@ -1119,11 +1247,6 @@
 
             function generarEstadistica(){
 
-            }
-
-            function componentToHex(c) {
-                var hex = c.toString(16); // Convertir el valor a hexadecimal
-                return hex.length == 1 ? "0" + hex : hex; // Asegurarse de que el resultado siempre tenga dos caracteres
             }
         </script>
 @endsection

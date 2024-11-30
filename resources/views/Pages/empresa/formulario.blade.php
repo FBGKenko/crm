@@ -147,6 +147,18 @@
                             <label class="form-label">Referencia de oficina</label>
                             <textarea id="referencia" name="referencia" class="form-control" rows="5"></textarea>
                         </div>
+                        <div class="col">
+                            <label class="form-label mt-3">¿Donde vive la persona? (Dar double click para crear una marca)</label>
+                            <center>
+                                <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
+                            </center>
+                            <center>
+                                <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
+                                @error('coordenadas')
+                                        <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                            </center>
+                        </div>
                     </div>
                 </div>
             <br>
@@ -166,8 +178,90 @@
 
 
 @section('scripts')
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
     <script text="text/javascript">
+    var marker;
+    var marker2;
+    var currentUrl = window.location.href;
+    const myLatLng = { lat: 24.123954, lng: - 110.311664 };
+    var map;
+    $('.selectToo').select2({
+        language: {
 
+            noResults: function() {
+
+            return "No hay resultado";
+            },
+            searching: function() {
+
+            return "Buscando..";
+            }
+        }
+    });
+    function placeMarker(location) {
+            if (marker == undefined) {
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: "Ubicación",
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 15,
+                        fillColor: "#F00",
+                        fillOpacity: 0.4,
+                        strokeWeight: 0.4,
+                    },
+                    animation: google.maps.Animation.DROP,
+                });
+                marker2 = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: "Ubicación",
+                    animation: google.maps.Animation.DROP,
+                });
+            }
+            else {
+                marker.setPosition(location);
+                marker2.setPosition(location);
+            }
+            map.setCenter(location);
+    }
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            disableDoubleClickZoom: true,
+            zoom: 17,
+            center: myLatLng,
+            title: "Ubicación",
+        });
+
+        google.maps.event.addListener(map, 'dblclick', function (event) {
+            placeMarker(event.latLng);
+            document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
+        });
+    }
+    window.initMap = initMap;
+    function buscarUbicacion(nombre) {
+        var apiKey = 'AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ';
+        var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(nombre) + '&key=' + apiKey;
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // Verificar si la respuesta tiene resultados
+            if (data.results.length > 0) {
+                // Obtener las coordenadas de la primera ubicación encontrada
+                var ubicacion = data.results[0].geometry.location;
+                var latitud = ubicacion.lat;
+                var longitud = ubicacion.lng;
+
+
+                document.getElementById("coordenadas").value = latitud + "," + longitud;
+                placeMarker({lat: latitud, lng: longitud});
+            }
+        })
+        .catch(error => {
+            console.error('Error al buscar la ubicación:', error);
+        });
+    }
         $('.BotonAgregarPersona').click(function (){
             $('#formularioAgregarSimpatizante').trigger('submit');
         });
@@ -196,6 +290,14 @@
             $('#numero_interior').val(valores.relacion_domicilio[0].domicilio.numero_interior);
             $('#colonias').val(valores.relacion_domicilio[0].domicilio.colonia_id ?? 0);
             $('#referencia').val(valores.relacion_domicilio[0].domicilio.referencia);
+            setTimeout(function () {
+                if(valores.relacion_domicilio[0].domicilio.latitud != null){
+                    $("#coordenadas").val(valores.relacion_domicilio[0].domicilio.latitud + ',' + valores.relacion_domicilio[0].domicilio.longitud);
+                    console.log({lat: valores.relacion_domicilio[0].domicilio.latitud, lng: valores.relacion_domicilio[0].domicilio.longitud});
+                    placeMarker({lat: valores.relacion_domicilio[0].domicilio.latitud, lng: valores.relacion_domicilio[0].domicilio.longitud});
+                }
+            }, 2000);
+
         }
     </script>
 @endsection

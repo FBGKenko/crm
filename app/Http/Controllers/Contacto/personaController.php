@@ -182,8 +182,9 @@ class personaController extends Controller
         $listaDistritoLocal = distritoLocal::get();
         $listaDistritoFederal = distritoFederal::get();
         $listaFuncionesPersonalida = tipoFuncionPersonalizada::get();
+        $supervisado = false;
         return view('Pages.contactos.formulario', compact('listaPersonas', 'listaPromotores', 'listaColonias', 'listaMunicipios', 'listaEstatus',
-            'listaEstados', 'listaSecciones', 'listaEmpresas', 'listaDistritoLocal', 'listaDistritoFederal', 'listaFuncionesPersonalida'));
+            'listaEstados', 'listaSecciones', 'listaEmpresas', 'listaDistritoLocal', 'listaDistritoFederal', 'listaFuncionesPersonalida', 'supervisado'));
     }
 
     function agregar(Request $request){
@@ -200,9 +201,10 @@ class personaController extends Controller
                 'folio' => $request->datosControl["folio"],
                 'promotor_id' => $request->datosControl["promotor"] > 0 ? $request->datosControl["promotor"] : null,
                 'origen' => $request->datosControl["origen"],
+                'identificadorOrigen' => $request->datosControl["identificadorOrigen"] ?? null,
                 'referenciaOrigen' => $request->datosControl["referenciaOrigen"] > 0 ? $request->datosControl["referenciaOrigen"] : null,
-                'etiquetasOrigen' => trim($request->datosOtrosDatos["etiquetas"]),
-                'estatus' => $request->datosControl["estatus"] > 0 ? $request->datosControl["estatus"] : "PENDIENTE",
+                'etiquetasOrigen' => trim(strtoupper($request->datosControl['etiquetasOrigen'])),
+                'estatus' => $request->datosControl["estatus"] > 0 ? $request->datosControl["estatus"] : "FRIO",
                 'apodo' => trim(strtoupper($request->datosPersonales["apodo"])),
                 'apellido_paterno' => trim(strtoupper($request->datosPersonales["apellido_paterno"])),
                 'apellido_materno' => trim(strtoupper($request->datosPersonales["apellido_materno"])),
@@ -310,9 +312,10 @@ class personaController extends Controller
             DB::commit();
             return [
                 'titulo' => 'Éxito',
-                'texto' => 'Se ha agregado la persona con éxito',
+                'texto' => 'Se ha agregado la persona con éxito. ¿Desea seguir modificando el formulario?',
                 'icono' => 'success',
-                'exito' => true
+                'exito' => true,
+                'id' => $persona->id,
             ];
         }
         catch(Exception $e){
@@ -340,7 +343,6 @@ class personaController extends Controller
         $listaMunicipios = municipio::get(['id', 'nombre']);
         $listaSecciones = seccion::get(['id']);
         $listaEmpresas = empresa::where('deleted_at', null)->get();
-        $listaMunicipios = municipio::get(['id', 'nombre']);
         $relacionesEmpresa = RelacionPersonaEmpresa::where('persona_id', $persona->id)->get();
         $listaDistritoLocal = distritoLocal::get(['id']);
         $listaDistritoFederal = distritoFederal::get(['id']);
@@ -352,7 +354,7 @@ class personaController extends Controller
             'listaPromotores' => $listaPromotores, 'listaColonias' => $listaColonias, 'listaMunicipios' => $listaMunicipios,
             'listaEstatus' => $listaEstatus, 'listaEstados' => $listaEstados, 'listaSecciones' => $listaSecciones,
             'relacionesEmpresa' => $relacionesEmpresa, 'listaDistritoLocal' => $listaDistritoLocal, 'listaDistritoFederal' => $listaDistritoFederal,
-            'conjunto' => $conjunto, 'listaFuncionesPersonalida' => $listaFuncionesPersonalida
+            'conjunto' => $conjunto, 'listaFuncionesPersonalida' => $listaFuncionesPersonalida, 'supervisado' => $registro->supervisado
         ]);
     }
 
@@ -370,8 +372,10 @@ class personaController extends Controller
                 'folio' => $request->datosControl["folio"],
                 'promotor_id' => $request->datosControl["promotor"] > 0 ? $request->datosControl["promotor"] : null,
                 'origen' => $request->datosControl["origen"],
+                'identificadorOrigen' => $request->datosControl["identificadorOrigen"] ?? null,
                 'referenciaOrigen' => $request->datosControl["referenciaOrigen"] > 0 ? $request->datosControl["referenciaOrigen"] : null,
-                'estatus' => $request->datosControl["estatus"] > 0 ? $request->datosControl["estatus"] : "PENDIENTE",
+                'etiquetasOrigen' => trim(strtoupper($request->datosControl['etiquetasOrigen'])),
+                'estatus' => $request->datosControl["estatus"] > 0 ? $request->datosControl["estatus"] : "FRIO",
                 'apodo' => trim(strtoupper($request->datosPersonales["apodo"])),
                 'apellido_paterno' => trim(strtoupper($request->datosPersonales["apellido_paterno"])),
                 'apellido_materno' => trim(strtoupper($request->datosPersonales["apellido_materno"])),
@@ -527,7 +531,7 @@ class personaController extends Controller
             DB::commit();
             return [
                 'titulo' => 'Éxito',
-                'texto' => 'Se ha modificado la persona con éxito',
+                'texto' => 'Se ha modificado la persona con éxito. ¿Desea seguir modificando el formulario?',
                 'icono' => 'success',
                 'exito' => true
             ];
@@ -587,7 +591,12 @@ class personaController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('contactos.index');
+            if(str_contains(url()->previous(), 'modificar')){
+                return redirect()->route('contactos.modificar', $persona->id);
+            }
+            else{
+                return redirect()->route('contactos.index');
+            }
         }
         catch(Exception $e){
             DB::rollBack();

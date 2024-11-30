@@ -38,9 +38,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         // DB::unprepared(file_get_contents(storage_path('app/carga inicial detector.sql')));
@@ -272,24 +269,19 @@ class DatabaseSeeder extends Seeder
         }
 
         estatus::create([
-            'concepto' =>  'PENDIENTE',
+            'concepto' =>  'FRIO',
+            'color' => '#33ceff',
             'nivel' => '0'
         ]);
         estatus::create([
-            'concepto' =>  'INICIADO',
+            'concepto' =>  'TIBIO',
+            'color' => '#f9da28',
             'nivel' => '1'
         ]);
         estatus::create([
-            'concepto' =>  'COMPROMISO',
+            'concepto' =>  'CALIENTE',
+            'color' => '#ed1717',
             'nivel' => '2'
-        ]);
-        estatus::create([
-            'concepto' =>  'CONCLUIDO',
-            'nivel' => '3'
-        ]);
-        estatus::create([
-            'concepto' =>  'CANCELADO',
-            'nivel' => '-1'
         ]);
         // $datos = Excel::toCollection(new personasYDatosImport, storage_path('app/Catalogos/FORMATO CARGA INICIAL OK.xlsx'));
         // foreach ($datos[0] as $dato) {

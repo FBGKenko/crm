@@ -23,10 +23,11 @@ return new class extends Migration
             $table->foreign('promotor_id')
                 ->references('id')->on('personas')->onDelete('set null');
             $table->string('origen')->nullable();
+            $table->string('identificadorOrigen')->nullable();
             $table->string('referenciaOrigen')->nullable();
             $table->string('referenciaCampania')->nullable();
             $table->string('etiquetasOrigen')->nullable();
-            $table->string('estatus')->nullable()->default('PENDIENTE');
+            $table->string('estatus')->nullable()->default('FRIO');
 
             //DATOS PERSONALES
             $table->string('apodo')->nullable();

@@ -41,6 +41,8 @@ class empresa extends Model
             'colonia_id' => $datos['colonia_id'],
             //'identificacion_id' => null,
             'referencia' => $datos['referencia'],
+            'latitud' => $datos['latitud'],
+            'longitud' => $datos['longitud'],
         ];
         $domicilio = domicilio::create($datosDomicilio);
         empresaDomicilio::create([
@@ -61,6 +63,8 @@ class empresa extends Model
             'colonia_id' => $datos['colonia_id'],
             //'empresa_id' => $empresa->id,
             'referencia' => $datos['referencia'],
+            'latitud' => $datos['latitud'],
+            'longitud' => $datos['longitud'],
         ];
         $relacion = empresaDomicilio::where('empresa_id', $empresa->id)->first();
         domicilio::where('id', $relacion->domicilio_id)->update($datosDomicilio);

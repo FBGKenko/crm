@@ -16,6 +16,7 @@ class persona extends Model
         'folio',
         'promotor_id',
         'origen',
+        'identificadorOrigen',
         'referenciaOrigen',
         'referenciaCampania',
         'etiquetasOrigen',

@@ -157,6 +157,13 @@ class EmpresaController extends Controller
                     $datos = $datos->merge([
                         'colonia_id' => null
                     ]);
+                if(strlen($datos['coordenadas']) > 0){
+                    $arrayCoordenadas = explode(',', $datos['coordenadas']);
+                    $datos = $datos->merge([
+                        'latitud' => $arrayCoordenadas[0],
+                        'longitud' => $arrayCoordenadas[1],
+                    ]);
+                }
                 empresa::crear($datos->all());
             });
             session()->flash('mensajeExito', 'Se ha creado una empresa exitosamente');
@@ -194,7 +201,14 @@ class EmpresaController extends Controller
                     $datos = $datos->merge([
                         'colonia_id' => null
                     ]);
-                    empresa::modificar($datos->all(), $empresa);
+                if(strlen($datos['coordenadas']) > 0){
+                    $arrayCoordenadas = explode(',', $datos['coordenadas']);
+                    $datos = $datos->merge([
+                        'latitud' => $arrayCoordenadas[0],
+                        'longitud' => $arrayCoordenadas[1],
+                    ]);
+                }
+                empresa::modificar($datos->all(), $empresa);
             });
             session()->flash('mensajeExito', 'Se ha modificado una empresa exitosamente');
             return redirect()->route('empresas.index');

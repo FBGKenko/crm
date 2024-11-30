@@ -45,8 +45,18 @@
     <div class="card-header">
         <div class="d-flex justify-content-start">
             <h3 class="me-4"> {{ str_contains(url()->current(), 'agregar') ? 'Agregar Persona' : 'Modificar Persona' }} </h3>
-            <div>
-                <a href="{{route('contactos.index')}}" class="btn btn-secondary">Regresar</a>
+            <div class="ms-3">
+                @if (!str_contains(url()->current(), 'agregar') && (Auth::user()->getRoleNames()->first() == 'SUPER ADMINISTRADOR'
+                    || Auth::user()->getRoleNames()->first() == 'ADMINISTRADOR' || Auth::user()->getRoleNames()->first() == 'SUPERVISOR'))
+                    <form action="{{route('contactos.supervisar', $persona->id)}}" method="post">
+                        @csrf
+                        @if ($supervisado)
+                            <button class="btn btn-success fw-bold btnSupervisar">Supervisado</button>
+                        @else
+                            <button class="btn btn-danger fw-bold btnSupervisar">Sin Supervisar</button>
+                        @endif
+                    </form>
+                @endif
             </div>
         </div>
     </div>
@@ -124,6 +134,10 @@
                                     @enderror
                                 </div>
                                 <div class="col">
+                                    <x-inputFormulario tipo="text" identificador="identificadorOrigen" nombre="datosControl[identificadorOrigen]" label="Identificador de Origen(Opcional)"
+                                     deshabilitar="1" valor="{{ old('datosControl[identificadorOrigen]') }}" />
+                                </div>
+                                <div class="col">
                                     <label class="form-label mt-3">Estatus</label>
                                     <select id="estatus" name="datosControl[estatus]" class="form-select selectToo" >
                                         <option value="0">SIN DATO</option>
@@ -135,7 +149,6 @@
                                         <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
-                                <div class="col"></div>
                                 <div class="col">
                                     <label class="form-label mt-3">Referencia de Origen</label>
                                     <select id="referenciaOrigen" name="datosControl[referenciaOrigen]" class="form-select selectToo" >
@@ -151,7 +164,7 @@
                                 </div>
                                 <x-inputFormulario tipo="text" identificador="referenciaCampania" nombre="datosControl[referenciaCampania]" deshabilitar="1" label="Referencia de Campaña"
                                     valor="{{ old('datosControl[referenciaCampania]') }}" />
-                                <x-inputFormulario tipo="text" identificador="etiquetasOrigen" nombre="datosControl[etiquetasOrigen]" deshabilitar="1" label="Etiquetas de Origen"
+                                <x-inputFormulario tipo="text" identificador="etiquetasOrigen" nombre="datosControl[etiquetasOrigen]" label="Etiquetas de Origen"
                                     valor="{{ old('datosControl[etiquetasOrigen]') }}" />
                             </div>
                         </div>
@@ -355,7 +368,6 @@
                                         <div id="seccionError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
-                                <div class="col"></div>
                                 <div class="col">
                                     <div class="d-flex">
                                         <label class="form-label mt-3">Distrito Local</label>
@@ -364,6 +376,17 @@
                                         <option value="0">SIN DATO</option>
                                         @foreach ($listaDistritoLocal as $seccion)
                                             <option>{{$seccion->id}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <div class="d-flex">
+                                        <label class="form-label mt-3">Municipio</label>
+                                    </div>
+                                    <select class="form-select selectToo" id="municipiosUbicacion" style="width:100%">
+                                        <option value="0">SIN DATO</option>
+                                        @foreach ($listaMunicipios as $municipio)
+                                            <option value="{{$municipio->id}}">{{$municipio->nombre}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -620,8 +643,13 @@
             <br>
             <div>
                 <center>
-                    <button id="BotonAgregarPersona" class="btn btn-primary" hidden></button>
-                    <a id="BotonValidador" onclick="validar()" class="btn btn-primary" > {{ (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ? 'Agregar Persona' : 'Modificar Persona' }} </a>
+                    <div class="d-flex justify-content-between col-2">
+                        <button id="BotonAgregarPersona" class="btn btn-primary" hidden></button>
+                        <div>
+                            <a href="{{route('contactos.index')}}" class="btn btn-secondary">Regresar</a>
+                        </div>
+                        <a id="BotonValidador" onclick="validar()" class="btn btn-primary" > {{ (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ? 'Agregar Persona' : 'Modificar Persona' }} </a>
+                    </div>
                     <!-- <button class="btn btn-danger" type="button" class="cerrarFormulario">Limpiar</button> -->
                 </center>
             </div>
@@ -630,11 +658,15 @@
 </div>
 @endsection
 @section('scripts')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
+{{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script> --}}
+<script async
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap">
+</script>
 <script src="{{url('/')}}/js/validacionesFormulario.js" text="text/javascript"></script>
 <script text="text/javascript">
     var marker;
     var marker2;
+    var currentUrl = window.location.href;
     var contadorTelefono = 1;
     var contadorCorreo = 1;
     var contadorRelacion = 1;
@@ -655,7 +687,7 @@
         }
     });
     function placeMarker(location) {
-            if (marker == undefined) {
+            if (!marker) {
                 marker = new google.maps.Marker({
                     position: location,
                     map: map,
@@ -690,7 +722,7 @@
             title: "Ubicación",
         });
 
-        google.maps.event.addListener(map, 'dblclick', function (event) {
+        map.addListener(map, 'dblclick', function (event) {
             placeMarker(event.latLng);
             document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
         });
@@ -829,8 +861,6 @@
     }
     $('#colonias').on('change', { Facturacion: false}, filtrarColonia);
     $('#coloniasFacturacion').on('change', { Facturacion: true}, filtrarColonia);
-
-
     function filtrarSeccion(e){
         let seccion = $(this).val();
         $.when(
@@ -840,6 +870,9 @@
                 data: [],
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
+                    console.log(response);
+                    $('#municipiosUbicacion').val(response.municipio);
+                    $("#municipiosUbicacion").trigger('change');
                     $("#distritoLocals").val(response.distritoLocal);
                     $("#distritoLocals").trigger('change');
                     $("#distritoFederals").val(response.distritoFederal);
@@ -895,20 +928,10 @@
         return resultado;
     }
     $(document).ready(function () {
-        // Swal.fire({
-        //     title: 'Cargando...',
-        //     allowOutsideClick: false,
-        //     showConfirmButton: false,
-        //     html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-        // });
-
         @if (str_contains(url()->current(), 'agregar'))
             $("#btnAgregarTelefono").trigger('click');
             $("#btnAgregarCorreo").trigger('click');
         @endif
-
-
-
         @if (old('etiquetas'))
             let etiquetasCrudas = @json(old('etiquetas'));
             let etiquedasPreprocesar = (etiquetasCrudas != null) ? etiquetasCrudas.split(',') : [];
@@ -982,7 +1005,6 @@
     });
     $('#formularioAgregarSimpatizante').submit(function (e) {
         e.preventDefault();
-        console.log('CORRER');
         let apodo = $('#apodo').val();
         if(apodo.trim().length == 0){
             Swal.close();
@@ -1019,21 +1041,40 @@
                 data: datosFormulario,
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
-                    Swal.fire({
-                        'title': response.titulo,
-                        'text': response.texto,
-                        'icon': response.icono,
-                    }).then((result) => {
-                        if(result.isConfirmed){
-                            var currentUrl = window.location.href;
-                            if (currentUrl.includes('agregar')) {
+                    if(response.icono == "success"){
+                        Swal.fire({
+                            'title': response.titulo,
+                            'text': response.texto,
+                            'icon': response.icono,
+                            showCancelButton: true,
+                            confirmButtonText: 'Sí',
+                            cancelButtonText: 'No',
+                            allowOutsideClick: false,
+                        }).then((result) => {
+                            if(result.isConfirmed){
+                                if (currentUrl.includes('agregar')) {
+                                    window.location.href = '{{url("/")}}/contactos/modificar-' + response.id;
+                                }
+                            } else if (result.dismiss === Swal.DismissReason.cancel) {
                                 window.location.href = '{{route("contactos.index")}}';
                             }
-                        }
-                    });
-                    if(response.exito){
-
+                        });
+                        Swal.getPopup().addEventListener('click', (e) => {
+                            if (e.target === Swal.getPopup()) {
+                                if (currentUrl.includes('agregar')) {
+                                    window.location.href = '{{route("contactos.index")}}';
+                                }
+                            }
+                        });
                     }
+                    else{
+                        Swal.fire({
+                            'title': response.titulo,
+                            'text': response.texto,
+                            'icon': response.icono,
+                        })
+                    }
+
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -1100,7 +1141,26 @@
     $('#btnAgregarRelacion').click(function(){
         nuevoRenglonEmpresa();
         contadorRelacion++;
-    })
+    });
+    $('[name="reutilizarDomicilio"]').change(function () {
+        if($("#reutilizarDomicilioSi").is(":checked")){
+            $('.campoFacturacion').prop('disabled', true);
+        }
+        else{
+            $('.campoFacturacion').prop('disabled', false);
+        }
+    });
+    $('#origen').change(function (e) {
+        var valor = $(this).val();
+        if(valor == 0){
+            $('#identificadorOrigen').prop('disabled', true);
+            $('#identificadorOrigen').val('');
+        }
+        else{
+            $('#identificadorOrigen').prop('disabled', false);
+        }
+    });
+
     function nuevoRenglon(nombre, placeholder, contenedor, label, conjuntoDatos, contador){
         var nuevoRenglon = $('<div class="row mx-0 mb-2">').append(
             $('<div class="col-sm-3">').append(
@@ -1149,15 +1209,6 @@
         $(this).parent().parent().remove();
     }
 
-    $('[name="reutilizarDomicilio"]').change(function () {
-        if($("#reutilizarDomicilioSi").is(":checked")){
-            $('.campoFacturacion').prop('disabled', true);
-        }
-        else{
-            $('.campoFacturacion').prop('disabled', false);
-        }
-    });
-
     @if (str_contains(url()->current(), 'modificar') && !session()->has('mensajeError'))
         var tabTrigger = new bootstrap.Tab($('[href="#{{$conjunto}}"]'));
         if("{{$conjunto}}" != "")
@@ -1184,6 +1235,7 @@
             $("#etiquetasOrigen").val(datosFormulario.etiquetasOrigen);
             $("#apodo").val(datosFormulario.apodo);
             $("#nombres").val(datosFormulario.nombres);
+            $('#identificadorOrigen').val(datosFormulario.identificadorOrigen);
             $("#apellido_paterno").val(datosFormulario.apellido_paterno);
             $("#apellido_materno").val(datosFormulario.apellido_materno);
             $("#genero").val(datosFormulario.genero);
@@ -1201,7 +1253,14 @@
             $("#colonias").val(relacionDomicilio[0].domicilio.colonia_id ?? 0);
             $("#colonias").trigger('change');
             $("#referencia").val(relacionDomicilio[0].domicilio.referencia);
-                $("#coordenadas").val();
+            setTimeout(function () {
+                if(relacionDomicilio[0].domicilio.latitud != null){
+                    $("#coordenadas").val(relacionDomicilio[0].domicilio.latitud + ',' + relacionDomicilio[0].domicilio.longitud);
+                    console.log({lat: relacionDomicilio[0].domicilio.latitud, lng: relacionDomicilio[0].domicilio.longitud});
+                    placeMarker({lat: relacionDomicilio[0].domicilio.latitud, lng: relacionDomicilio[0].domicilio.longitud});
+                }
+            }, 2000);
+
             $("#curp").val(identificacion.curp);
             $("#rfc").val(identificacion.rfc);
             $("#lugarNacimiento").val(identificacion.lugarNacimiento ?? 0);
@@ -1271,5 +1330,5 @@
         }
 
     @endif
-    </script>
+</script>
 @endsection

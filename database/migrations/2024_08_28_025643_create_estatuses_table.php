@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('estatuses', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('color');
             $table->string('concepto');
             $table->integer('nivel');
         });

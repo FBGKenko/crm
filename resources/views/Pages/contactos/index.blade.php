@@ -11,6 +11,21 @@ Tabla de Simpatizantes
             opacity: 0.5;
             cursor: not-allowed;
         }
+        .estatus{
+            border-radius: 10px;
+            padding: 0.5rem;
+            font-weight: bold;
+        }
+        .estatus-frio{
+            background: #25c7f6;
+        }
+        .estatus-tibio{
+            background: #e3c807;
+        }
+        .estatus-caliente{
+            background: #e33207;
+            color: white;
+        }
     </style>
     @if (session()->has('mensaje'))
         <script>
@@ -181,7 +196,19 @@ Tabla de Simpatizantes
                 { data: 'id' },
                 { data: null,
                     render: function(data, type, row){
-                        return  $('<span>').text(data.estatus).prop('outerHTML');
+                        var clases = "estatus ";
+                        switch (data.estatus) {
+                            case 'FRIO':
+                                clases += "estatus-frio";
+                            break;
+                            case 'TIBIO':
+                                clases += "estatus-tibio";
+                            break;
+                            case 'CALIENTE':
+                                clases += "estatus-caliente";
+                            break;
+                        }
+                        return  $('<span>').text(data.estatus).addClass(clases).prop('outerHTML');
                     }
                 },
                 { data: null,
