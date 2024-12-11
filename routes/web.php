@@ -106,6 +106,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::post('/borrar-{empresa}', 'borrar')->name('empresas.borrar');
         Route::get('/asignar-contactos-{empresa}', 'cargarContactosAsignados')->name('empresas.cargarContactosAsignados');
         Route::post('/asignar-contactos-{empresa}', 'guardarContactosAsignados')->name('empresas.guardarContactosAsignados');
+        Route::get('/relacionados-{empresa}', 'verListaPersonas')->name('empresas.verListaPersonas');
     });
     Route::prefix('perfil')->controller(perfilUsuarioController::class)->group(function () {
         Route::get('/gestionar-grupos/{usuario}', 'index')->name('perfil.index');

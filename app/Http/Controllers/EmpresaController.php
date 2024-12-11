@@ -257,4 +257,32 @@ class EmpresaController extends Controller
         }
 
     }
+
+    function verListaPersonas($empresa){
+        $empresa = Empresa::with([
+            'relacionEmpresaPersonas' => function ($query) {
+                $query->select(
+                    'id',
+                    'persona_id',
+                    'empresa_id',
+                    'puesto',
+                );
+            },
+            'relacionEmpresaPersonas.personas' => function ($query) {
+                $query->select(
+                    'id',
+                    'apodo',
+                    'nombres',
+                    'apellido_paterno',
+                    'apellido_materno',
+
+                );
+            }
+        ])->select(
+            'id',
+            'nombreEmpresa'
+        )
+        ->find($empresa);
+        return $empresa;
+    }
 }

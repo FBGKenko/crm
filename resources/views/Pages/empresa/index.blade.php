@@ -13,7 +13,24 @@ Lista Empresas
         }
     </style>
     <br>
- 
+
+
+    <div class="modal fade" id="modalPersonasRelacioandas" tabindex="-1" aria-labelledby="tituloModalVer" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="tituloModalVer">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="contenedorBody" class="modal-body">
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
     <div class="container-fluid px-4">
         <h1 class="mt-4">Tabla de Empresas</h1>
         <div class="card mb-4">
@@ -116,6 +133,7 @@ Lista Empresas
                         return $('<div class="dropdown">').append(
                             $('<button type="button">').addClass('btn btn-secondary dropdown-toggle').attr({id: 'dropdownMenuButton1', 'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'}).text('Acciones'),
                             $('<ul aria-labelledby="dropdownMenuButton1">').addClass('dropdown-menu').append(
+                                $('<li>').append($('<a id="btnVerEmpresa_'+data.id+'" class="dropdown-item verPersonas">').text('Ver Lista Relacionados')),
                                 $('<li>').append($('<a class="dropdown-item">').attr('href', '{{url("/")}}/empresas/modificar-' + data.id).text('Modificar')),
                                 $('<li>').append(
                                     $('<a class="dropdown-item">').append(
@@ -154,8 +172,33 @@ Lista Empresas
                 $(this).parent().trigger('submit');
             });
         });
+        $('#tablaEmpresas tbody').on('click', 'a.verPersonas', function (e) {
+            var idEmpresa = $(this).attr('id').split('_')[1];
+            peticionAjax('{{url("/")}}/empresas/relacionados-' + idEmpresa, cargarPersonas, 'GET');
+        });
 
     });
+
+    function cargarPersonas(response){
+        $('#contenedorBody').html('');
+        if(response.relacion_empresa_personas.length == 0){
+            $('#contenedorBody').append(
+                $('<h6>').append('Sin Personas Relacionadas')
+            )
+        }
+        $('#tituloModalVer').text('Ver Lista de Personas de La Empresa: ' + (response.nombreEmpresa ?? 'SIN REGISTRO'));
+        response.relacion_empresa_personas.forEach(relacion => {
+            $('#contenedorBody').append(
+                $('<h6>').append(
+                    $('<span class="fw-bold fs-5">').text(
+                        `${relacion.personas.apodo != null ? (relacion.personas.apodo + ', ') : ''}${relacion.personas.nombres != '' && relacion.personas.nombres!= null ? relacion.personas.nombres : 'SIN NOMBRE'} ${relacion.personas.apellido_paterno != '' && relacion.personas.apellido_paterno!= null ? relacion.personas.apellido_paterno : 'SIN APELLIDO P.'}: `
+                    ),
+                    relacion.puesto
+                )
+            )
+        });
+        $('#modalPersonasRelacioandas').modal('show');
+    }
 
 
 

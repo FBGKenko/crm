@@ -43,11 +43,11 @@
 
     let timerInterval;
     Swal.fire({
-    title: "Cargando",
-    html: "",
-    timer: 5000,
-    timerProgressBar: true,
-    didOpen: () => {
+        title: "Cargando",
+        html: "",
+        timer: 5000,
+        timerProgressBar: true,
+        didOpen: () => {
         Swal.showLoading();
         const timer = Swal.getPopup().querySelector("b");
         timerInterval = setInterval(() => {

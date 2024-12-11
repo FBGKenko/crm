@@ -117,7 +117,7 @@
                     </div>
                     <div class="tab-pane container pt-3 fade" id="contenedorDatosRelacionEmpresa">
                         @foreach ($persona->relacionPersonaEmpresa as $relacion)
-                            <h6><span class="fw-bold fs-5">Puesta en Empresa ({{$relacion->empresa->nombreEmpresa}}):</span> {{$relacion->puesto ?? 'SIN DATO'}}</h6>
+                            <h6><span class="fw-bold fs-5">{{$relacion->empresa->nombreEmpresa}}:</span> {{$relacion->puesto ?? 'SIN DATO'}}</h6>
                         @endforeach
                     </div>
                     <div class="tab-pane container pt-3 fade" id="contenedorDatosFacturacion">

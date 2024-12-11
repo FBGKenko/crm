@@ -225,13 +225,13 @@
                                                 Personalizar
                                             </a>
                                     </li>
-                                    {{-- <li class="w-100">
+                                    <li class="w-100 d-none">
                                         <a class="nav-link" href="{{route('catalogos.index')}}">
                                             <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                                             Catalogos
                                         </a>
                                     </li>
-                                    <li class="w-100">
+{{--                                     <li class="w-100">
                                         <a class="nav-link" href="{{route('importar.index')}}">
                                             <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
                                             Importar datos

@@ -24,10 +24,11 @@ class empresa extends Model
     public function relacionDomicilio(){
         return $this->hasMany(empresaDomicilio::class);
     }
-
-
     public function representante(){
         return $this->belongsTo(persona::class, 'persona_id');
+    }
+    public function relacionEmpresaPersonas(){
+        return $this->hasMany(RelacionPersonaEmpresa::class);
     }
 
     public static function crear($datos){
