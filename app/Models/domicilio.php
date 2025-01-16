@@ -18,7 +18,8 @@ class domicilio extends Model
         'longitud',
         'colonia_id',
         'referencia',
-        'rfc'
+        'rfc',
+        'tipo'
     ];
     public function identificacion(){
         return $this->belongsTo(identificacion::class);

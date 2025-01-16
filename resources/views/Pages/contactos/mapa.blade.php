@@ -64,39 +64,69 @@
     }
     });
     var addressPoints = @json($domicilioArray);
-
+    console.log(addressPoints);
 
     var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
-        }),
-        latlng = L.latLng(24.13571, -110.308914);
+        maxZoom: 18,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
+    }),
+    latlng = L.latLng(24.13571, -110.308914);
 
-    var map = L.map('map', {center: latlng, zoom: 13, layers: [tiles]});
+var map = L.map('map', { center: latlng, zoom: 13, layers: [tiles] });
 
-    var markers = L.markerClusterGroup();
+var markers = L.markerClusterGroup();
 
-    for (var i = 0; i < addressPoints.length; i++) {
-        var a = addressPoints[i];
-        var title = a[2];
-        var marker = L.marker(new L.LatLng(a[0], a[1]), { title: title });
-        marker.bindPopup(title);
-        markers.addLayer(marker);
+// Define different icons based on the title
+var iconRed = L.icon({
+    iconUrl: 'img/hombre.png',
+    iconSize: [41, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    shadowSize: [41, 41]
+});
+
+var iconBlue = L.icon({
+    iconUrl: 'img/hotel.png',
+    iconSize: [41, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    shadowSize: [41, 41]
+});
+
+// Iterate over the points
+for (var i = 0; i < addressPoints.length; i++) {
+    var a = addressPoints[i];
+    var title = a[2];
+
+    // Determine icon based on title
+    var icon;
+    if (title == "persona") {
+        icon = iconRed;
+    } else if (title == "empresa") {
+        icon = iconBlue;
+    } else {
+        icon = L.Icon.Default.prototype; // Default icon
     }
 
-    map.addLayer(markers);
-    // Instantiate KMZ layer (async)
-    var kmz = L.kmzLayer().addTo(map);
+    var marker = L.marker(new L.LatLng(a[0], a[1]), { title: title, icon: icon });
+    marker.bindPopup(title);
+    markers.addLayer(marker);
+}
 
-    kmz.on('load', function(e) {
+map.addLayer(markers);
+
+// Instantiate KMZ layer (async)
+var kmz = L.kmzLayer().addTo(map);
+
+kmz.on('load', function(e) {
     control.addOverlay(e.layer, e.name);
-    // e.layer.addTo(map);
-    });
+});
 
-    // Add remote KMZ files as layers (NB if they are 3rd-party servers, they MUST have CORS enabled)
-    kmz.load('/Plantilla/assets/Distritacion.kml');
+kmz.load('/Plantilla/assets/Distritacion.kml');
 
-    var control = L.control.layers(null, null, { collapsed:false }).addTo(map);
+var control = L.control.layers(null, null, { collapsed: false }).addTo(map);
 </script>
 {{-- <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet-src.js" integrity="sha512-WXoSHqw/t26DszhdMhOXOkI7qCiv5QWXhH9R7CgvgZMHz1ImlkVQ3uNsiQKu5wwbbxtPzFXd1hK4tzno2VqhpA==" crossorigin=""></script>
 <script src="https://leaflet.github.io/Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>

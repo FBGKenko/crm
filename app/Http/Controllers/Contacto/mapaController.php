@@ -67,11 +67,11 @@ class mapaController extends Controller
         }
 
         $puntos = domicilio::where('latitud', '!=', null)
-        ->get(['latitud', 'longitud']);
+        ->get(['latitud', 'longitud', 'tipo']);
         $domicilioArray = [];
 
         foreach ($puntos as $punto) {
-            $coordenadas = array($punto->latitud, $punto->longitud);
+            $coordenadas = array($punto->latitud, $punto->longitud, $punto->tipo);
             $domicilioArray[] = $coordenadas;
         };
         return view('Pages.contactos.mapa', compact('domicilioArray'));

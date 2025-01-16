@@ -687,7 +687,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02
         }
     });
     function placeMarker(location) {
-            if (!marker) {
+            if (marker == undefined) {
                 marker = new google.maps.Marker({
                     position: location,
                     map: map,
@@ -722,7 +722,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02
             title: "Ubicación",
         });
 
-        map.addListener(map, 'dblclick', function (event) {
+        google.maps.event.addListener(map, 'dblclick', function (event) {
             placeMarker(event.latLng);
             document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
         });

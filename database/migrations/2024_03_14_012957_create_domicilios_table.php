@@ -23,6 +23,7 @@ return new class extends Migration
             $table->float('latitud', 20, 15)->nullable();
             $table->float('longitud', 20, 15)->nullable();
             $table->string('referencia')->nullable();
+            $table->string('tipo')->default('persona');
             $table->timestamps();
         });
     }

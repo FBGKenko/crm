@@ -44,6 +44,7 @@ class empresa extends Model
             'referencia' => $datos['referencia'],
             'latitud' => $datos['latitud'],
             'longitud' => $datos['longitud'],
+            'tipo' => 'empresa'
         ];
         $domicilio = domicilio::create($datosDomicilio);
         empresaDomicilio::create([

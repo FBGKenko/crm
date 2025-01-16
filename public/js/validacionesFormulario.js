@@ -151,17 +151,17 @@ $('#numeroExterior').blur(function(){
 });
 
 //Validar Fecha de registro es mayor a la fecha actual
-document.getElementById("fechaRegistro").addEventListener("change",()=>{
-    let d = document.getElementById("fechaRegistro").valueAsDate.getTime();
-    let ahora = new Date().getTime()
-    if(ahora - d >= 0){console.log("FECHA REGISTRO  CORRECTA")}else{
-        Swal.fire({
-            title: "Fecha de Registro supera la fecha actual",
-            text: "Verifica el campo",
-            icon: "error"
-            });
-    }
-  })
+// document.getElementById("fechaRegistro").addEventListener("change",()=>{
+//     let d = document.getElementById("fechaRegistro").valueAsDate.getTime();
+//     let ahora = new Date().getTime()
+//     if(ahora - d >= 0){console.log("FECHA REGISTRO  CORRECTA")}else{
+//         Swal.fire({
+//             title: "Fecha de Registro supera la fecha actual",
+//             text: "Verifica el campo",
+//             icon: "error"
+//             });
+//     }
+//   })
 
 //Validar Folio Max 7 min 0 caracterees
 var input = document.getElementById('folio');
