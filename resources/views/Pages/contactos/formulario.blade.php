@@ -271,12 +271,13 @@
                                     <select class="form-select selectToo" id="colonias" name="datosDomicilio[colonia]" style="width: 100%">
                                         <option value="0">SIN DATO</option>
                                         @foreach ($listaColonias as $colonia)
-                                            <option value="{{$colonia->id}}">{{$colonia->nombre}}, {{$colonia->seccionColonia[0]->seccion->distritoLocal->municipio->nombre}}</option>
+                                            <option value="{{$colonia->id}}">{{$colonia->nombre}}</option>
                                         @endforeach
                                     </select>
                                     @error('datosDomicilio[colonia]')
                                         <div id="coloniaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
+                                    <button type="button" id="btnAbrirModalCrearColonia" class="btn btn-success d-none">Agregar Colonia</button>
                                 </div>
                                 <x-inputFormulario tipo="number" identificador="codigoPostal" nombre="datosDomicilio[codigoPostal]" label="Código Postal"
                                     valor="{{ old('codigoPostal') }}" />
@@ -565,7 +566,7 @@
                                     <select class="form-select selectToo campoFacturacion" id="coloniasFacturacion" name="datosFacturacion[colonia]" style="width: 100%">
                                         <option value="0">SIN DATO</option>
                                         @foreach ($listaColonias as $colonia)
-                                            <option value="{{$colonia->id}}">{{$colonia->nombre}}, {{$colonia->seccionColonia[0]->seccion->distritoLocal->municipio->nombre}}</option>
+                                            <option value="{{$colonia->id}}">{{$colonia->nombre}}</option>
                                         @endforeach
                                     </select>
                                     @error('datosFacturacion[colonia]')
@@ -656,6 +657,30 @@
         </div>
     </form>
 </div>
+<div class="modal fade" id="modalGuardarColonia" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar Colonia</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                    <label class="form-label mt-3">Nombre de la Colonia</label>
+                    <input type="text" class="form-control" id="nombreColonia" name="nombreColonia">
+                    <label class="form-label mt-3">Ciudad</label>
+                    <input type="text" class="form-control" id="seleccionarCiudad" name="seleccionarCiudad">
+                    <label class="form-label mt-3">Estado</label>
+                    <input type="text" class="form-control" id="seleciconarEstado" name="seleciconarEstado">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('scripts')
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script> --}}
@@ -722,7 +747,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_SEN6wP2RzPdhZKjFPAW6M-i
             title: "Ubicación",
         });
 
-        google.maps.event.addListener(map, 'dblclick', function (event) {
+        google.maps.event.addListener(map, 'click', function (event) {
             placeMarker(event.latLng);
             document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
         });
@@ -789,6 +814,10 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_SEN6wP2RzPdhZKjFPAW6M-i
                 cargarSelect2([], "#rolNumero");
                 break;
         }
+    });
+
+    $('#btnAbrirModalCrearColonia').click(function (e){
+        $('#modalGuardarColonia').modal('show');
     });
 
     function cargarSelect2(lista, select2){
