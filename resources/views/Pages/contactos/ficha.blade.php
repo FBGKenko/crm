@@ -120,7 +120,7 @@
                             <h6><span class="fw-bold fs-5">{{$relacion->empresa->nombreEmpresa}}:</span> {{$relacion->puesto ?? 'SIN DATO'}}</h6>
                         @endforeach
                     </div>
-                    <div class="tab-pane container pt-3 fade" id="contenedorDatosFacturacion">
+                    {{-- <div class="tab-pane container pt-3 fade" id="contenedorDatosFacturacion">
                         <h6><span class="fw-bold fs-5">Calle principal:</span> {{$persona->relacionDomicilio[1]->domicilio->calle1 ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Entre calle 1:</span> {{$persona->relacionDomicilio[1]->domicilio->calle2 ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Entre calle 2:</span> {{$persona->relacionDomicilio[1]->domicilio->calle3 ?? 'SIN DATO'}}</h6>
@@ -132,7 +132,7 @@
                         <h6><span class="fw-bold fs-5">Municipio:</span> PENDIENTE</h6>
                         <h6><span class="fw-bold fs-5">País:</span> PENDIENTE</h6>
                         <h6><span class="fw-bold fs-5">Referencias:</span> {{$persona->relacion_domicilio[1]->domicilio->referencia ?? 'SIN DATO'}}</h6>
-                    </div>
+                    </div> --}}
                     <div class="tab-pane container pt-3 fade" id="contenedorOtrosDatos">
                         <h6><span class="fw-bold fs-5">Etiquetas:</span> {{$persona->etiquetas ?? 'SIN DATO'}}</h6>
                         <h6><span class="fw-bold fs-5">Observaciones:</span> {{$persona->observaciones ?? 'SIN DATO'}}</h6>
