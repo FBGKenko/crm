@@ -231,7 +231,7 @@
                                             Catalogos
                                         </a>
                                     </li>
-{{--                                     <li class="w-100">
+                                    {{--                                     <li class="w-100">
                                         <a class="nav-link" href="{{route('importar.index')}}">
                                             <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
                                             Importar datos
@@ -245,6 +245,11 @@
                                     </li>
                                 </ul>
                             </li>
+
+                            <a class="nav-link" href="{{route('integracion.index')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-globe"></i></div>
+                                Integraciones
+                            </a>
                         @endcan
 
 

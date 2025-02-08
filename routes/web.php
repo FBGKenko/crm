@@ -19,6 +19,7 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\Encuestas\crudEncuestasController;
 use App\Http\Controllers\Encuestas\crudResultadosController;
 use App\Http\Controllers\Estadistica\estadisticaController;
+use App\Http\Controllers\integracionesController;
 use App\Http\Controllers\Login\iniciarSesionController;
 use App\Http\Controllers\Marketing\crudObjetivoController;
 use App\Http\Controllers\Marketing\crudOportunidadesController;
@@ -233,6 +234,12 @@ Route::prefix('/')->middleware('auth')->group(function (){
         route::prefix('importar')->controller(importarDatosController::class)->group(function () {
             route::get('/', 'index')->name('importar.index');
         });
+    });
+    Route::prefix('integraciones')->controller(integracionesController::class)->group(function(){
+        route::get('/', 'index')->name('integracion.index');
+        route::post('/crear', 'crear')->name('integracion.crear');
+        route::post('/editar-{integracion}', 'editar')->name('integracion.editar');
+        route::post('/borrar-{integracion}', 'borrar')->name('integracion.borrar');
     });
     Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);
     Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['can:bitacora.index']);
