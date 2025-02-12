@@ -138,7 +138,7 @@
                                 <select id="colonias" name="colonia_id" class="form-select selectToo" style="width: 100%">
                                     <option value="0">SIN DATO</option>
                                     @foreach ($listaColonias as $colonia)
-                                        <option value="{{$colonia->id}}">{{$colonia->nombre}}, {{$colonia->seccionColonia[0]->seccion->distritoLocal->municipio->nombre}}</option>
+                                        <option value="{{$colonia->id}}">{{$colonia->nombre}}</option>
                                     @endforeach
                                 </select>
                             </div>

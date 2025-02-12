@@ -15,18 +15,20 @@
                     <thead>
                         <tr>
                             <th>Nombre</th>
+                            <th>Descripción</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(count($sitios) == 0)
                             <tr>
-                                <td colspan="2">No hay integraciones registradas</td>
+                                <td colspan="3">No hay integraciones registradas</td>
                             </tr>
                         @endif
                         @foreach ($sitios as $sitio)
                             <tr>
                                 <td>{{$sitio->nombre}}</td>
+                                <td>{{$sitio->descripcion}}</td>
                                 <td class="d-flex">
                                     <a href="{{$sitio->url}}" target="_blank" class="btn btn-secondary me-3">Acceder</a>
                                     <form action="{{route('integracion.borrar', $sitio->id)}}" method="POST">
@@ -56,6 +58,8 @@
                     <input type="text" class="form-control" name="nombreSitioIntegracion" id="nombreSitioIntegracion">
                     <label for="">Url:</label>
                     <input type="text" class="form-control" name="urlSitio" id="urlSitio">
+                    <label for="">Descripción (opcional):</label>
+                    <textarea name="descripcion" id="descripcion" class="form-control" cols="30" rows="4"></textarea>
                 </form>
             </div>
             <div class="modal-footer">
@@ -97,7 +101,6 @@
 
         function integracionAgregada(data){
             alertaCargando(false);
-            console.log(data);
             if(data.resultado){
                 swal.fire({
                     title: "Integración agregada",
@@ -111,6 +114,7 @@
                 $('#tablaIntegraciones tbody').append(
                     $('<tr>').append(
                         $('<td>').text(data.sitio.nombre),
+                        $('<td>').text(data.sitio.descripcion),
                         $('<td class="d-flex">').append(
                             $('<a>').attr('href', data.sitio.url).attr('target', '_blank').addClass('btn btn-secondary me-3').text('Acceder'),
                             $('<form>').attr('action', '{{url("/")}}/integraciones/borrar-' + data.sitio.id).attr('method', 'POST').append(
@@ -167,7 +171,7 @@
                 if($('#tablaIntegraciones tbody tr').length == 0){
                     $('#tablaIntegraciones tbody').append(
                         $('<tr>').append(
-                            $('<td>').attr('colspan', 2).text('No hay integraciones registradas')
+                            $('<td>').attr('colspan', 3).text('No hay integraciones registradas')
                         )
                     )
                 }

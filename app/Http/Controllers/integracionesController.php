@@ -25,6 +25,7 @@ class integracionesController extends Controller
             $sitioIntegracion = new \App\Models\sitioIntegracion();
             $sitioIntegracion->nombre = $form->nombreSitioIntegracion;
             $sitioIntegracion->url = $form->urlSitio;
+            $sitioIntegracion->descripcion = $form->descripcion;
             $sitioIntegracion->save();
             $resultado['resultado'] = true;
             $resultado['mensaje'] = 'Sitio de integración creado correctamente';

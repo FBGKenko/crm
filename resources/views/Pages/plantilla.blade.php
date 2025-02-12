@@ -246,12 +246,65 @@
                                 </ul>
                             </li>
 
-                            <a class="nav-link" href="{{route('integracion.index')}}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-globe"></i></div>
-                                Integraciones
-                            </a>
                         @endcan
+                        <a class="nav-link" href="{{route('integracion.index')}}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-globe"></i></div>
+                            Integraciones
+                        </a>
 
+                        <div class="sb-sidenav-menu-heading">Cotizaciones y Ventas</div>
+                        <li>
+                            <a href="#menuCatalogo" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
+                                <i class="fas fa-chart-bar"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Productos</span> </a>
+                            <ul class="collapse  nav flex-column ms-1" id="menuCatalogo" data-bs-parent="#menu">
+                                <li class="w-100">
+                                    <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                                        Catálogo
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <a class="nav-link" href="{{route('integracion.index')}}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-globe"></i></div>
+                            Tablero de Ventas
+                        </a>
+                        <li>
+                            <a href="#menuVentas" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
+                                <i class="fas fa-chart-bar"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Ventas</span> </a>
+                            <ul class="collapse  nav flex-column ms-1" id="menuVentas" data-bs-parent="#menu">
+                                <li class="w-100">
+                                    <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                                        Cotizaciones
+                                        </a>
+                                </li>
+                                <li class="w-100">
+                                    <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                                        Ventas en Proceso
+                                        </a>
+                                </li>
+                                <li class="w-100">
+                                    <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                                        Zona de Empaquetado
+                                        </a>
+                                </li>
+                                <li class="w-100">
+                                    <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                                        Guías de Envío
+                                        </a>
+                                </li>
+                                <li class="w-100">
+                                    <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                                        Ventas Entregadas
+                                        </a>
+                                </li>
+                            </ul>
+                        </li>
 
                         </div>
                     </div>
