@@ -684,10 +684,10 @@
 @endsection
 @section('scripts')
 {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script> --}}
+<script src="{{url('/')}}/js/validacionesFormulario.js" text="text/javascript"></script>
 <script async
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_SEN6wP2RzPdhZKjFPAW6M-iNIdBtnHQ&callback=initMap">
 </script>
-<script src="{{url('/')}}/js/validacionesFormulario.js" text="text/javascript"></script>
 <script text="text/javascript">
     var marker;
     var marker2;
