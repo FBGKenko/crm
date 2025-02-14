@@ -128,6 +128,8 @@
                                         <option>DIRECTO</option>
                                         <option>ORGANICO</option>
                                         <option>REFERENCIA</option>
+                                        <option>Tienda Nube</option>
+                                        <option>Kommo</option>
                                     </select>
                                     @error('datosControl[origen]')
                                         <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -1267,9 +1269,9 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_SEN6wP2RzPdhZKjFPAW6M-i
             $('#identificadorOrigen').val(datosFormulario.identificadorOrigen);
             $("#apellido_paterno").val(datosFormulario.apellido_paterno);
             $("#apellido_materno").val(datosFormulario.apellido_materno);
-            $("#genero").val(datosFormulario.genero);
+            $("#genero").val(datosFormulario.genero ?? 'SIN ESPECIFICAR');
             $("#fecha_nacimiento").val(datosFormulario.fecha_nacimiento);
-            $("#rangoEdad").val(datosFormulario.rangoEdad);
+            $("#rangoEdad").val(datosFormulario.rangoEdad ?? '23');
             $("#nombre_en_facebook").val(datosFormulario.nombre_en_facebook);
             $("#instagram").val(datosFormulario.instagram);
             $("#twitter").val(datosFormulario.twitter);

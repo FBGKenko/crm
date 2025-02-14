@@ -485,8 +485,10 @@ class personaController extends Controller
                 'referencia' => $request->datosDomicilio["referencia"],
             ];
             $idDomicilio = personaDomicilio::where('persona_id', $persona->id)->where('tipo', 'PRINCIPAL')->first();
-            $domicilio = domicilio::where('id', $idDomicilio->domicilio_id)->first();
-            $domicilio->update($datosDomicilio);
+            if($idDomicilio){
+                $domicilio = domicilio::where('id', $idDomicilio->domicilio_id)->first();
+                $domicilio->update($datosDomicilio);
+            }
 
             if($request->reutilizarDomicilio != "true"){
                 //$coordeandas = explode(',',$request->datosFacturacion["coordenadas"]);
@@ -503,8 +505,10 @@ class personaController extends Controller
                 ];
             }
             $idDomicilio = personaDomicilio::where('persona_id', $persona->id)->where('tipo', 'FACTURACION')->first();
-            $domicilio = domicilio::where('id', $idDomicilio->domicilio_id)->first();
-            $domicilio->update($datosDomicilio);
+            if($idDomicilio){
+                $domicilio = domicilio::where('id', $idDomicilio->domicilio_id)->first();
+                $domicilio->update($datosDomicilio);
+            }
 
             $relacionEmpresasExistentes = RelacionPersonaEmpresa::where('persona_id', $persona->id)->get();
             foreach ($relacionEmpresasExistentes as $relacion) {
