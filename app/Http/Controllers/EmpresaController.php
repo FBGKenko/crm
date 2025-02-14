@@ -157,7 +157,7 @@ class EmpresaController extends Controller
                     $datos = $datos->merge([
                         'colonia_id' => null
                     ]);
-                if(strlen($datos['coordenadas']) > 0){
+                if($datos['coordenadas'] != null){
                     $arrayCoordenadas = explode(',', $datos['coordenadas']);
                     $datos = $datos->merge([
                         'latitud' => $arrayCoordenadas[0],

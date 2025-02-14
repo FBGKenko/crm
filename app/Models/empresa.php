@@ -42,8 +42,8 @@ class empresa extends Model
             'colonia_id' => $datos['colonia_id'],
             //'identificacion_id' => null,
             'referencia' => $datos['referencia'],
-            'latitud' => $datos['latitud'],
-            'longitud' => $datos['longitud'],
+            'latitud' => $datos['latitud'] ?? null,
+            'longitud' => $datos['longitud'] ?? null,
             'tipo' => 'empresa'
         ];
         $domicilio = domicilio::create($datosDomicilio);

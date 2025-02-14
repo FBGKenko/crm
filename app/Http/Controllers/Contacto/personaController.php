@@ -92,6 +92,14 @@ class personaController extends Controller
             DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
             'supervisado',
         );
+        if($search){
+            $query->where(function($consulta) use ($search){
+                $consulta->where('estatus', 'LIKE', '%'.$search.'%')
+                ->orWhere('id', 'LIKE', '%'.$search.'%')
+                ->orWhere('apodo', 'LIKE', '%'.$search.'%')
+                ->orWhere(DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres)'), 'LIKE', '%'.$search.'%');
+            });
+        }
         $usuarioActual = auth()->user();
         if($usuarioActual->getRoleNames()->first() != 'SUPER ADMINISTRADOR' && $usuarioActual->getRoleNames()->first() != 'ADMINISTRADOR'){
             if($usuarioActual->nivel_acceso != "TODOS" && $usuarioActual->niveles != ""){
