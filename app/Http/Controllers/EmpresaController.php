@@ -61,13 +61,22 @@ class EmpresaController extends Controller
         $filter = $formulario->get('search');
         $search = (isset($filter['value']))? $filter['value'] : false;
 
-        $query = empresa::where('empresas.deleted_at', null)->leftJoin('personas', 'empresas.persona_id', '=', 'personas.id')
+        $query = empresa::where('empresas.deleted_at', null)
+        ->leftJoin('personas', 'empresas.persona_id', '=', 'personas.id')
         ->select(
             'empresas.id',
             'nombreEmpresa',
             'persona_id',
             DB::raw('CONCAT(nombres, " ", apellido_paterno) as nombreRepresentante')
         );
+
+        if($search){
+            $query->where(function($consulta) use ($search){
+                $consulta->where('nombreEmpresa', 'LIKE', '%' . $search . '%')
+                ->orWhere('empresas.id', 'LIKE', '%' . $search . '%')
+                ->orWhere(DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres)'), 'LIKE', '%'.$search.'%');
+            });
+        }
 
         $usuarioActual = auth()->user();
         if($usuarioActual->getRoleNames()->first() != 'SUPER ADMINISTRADOR' && $usuarioActual->getRoleNames()->first() != 'ADMINISTRADOR'){
