@@ -263,9 +263,9 @@
                                     valor="{{ old('datosDomicilio[calle2]') }}" />
                                 <x-inputFormulario tipo="text" identificador="calle3" nombre="datosDomicilio[calle3]"  label="Entre calle 2"
                                     valor="{{ old('datosDomicilio[calle3]') }}" />
-                                <x-inputFormulario tipo="number" identificador="numero_exterior" nombre="datosDomicilio[numero_exterior]"  label="Número Externo"
+                                <x-inputFormulario tipo="text" identificador="numero_exterior" nombre="datosDomicilio[numero_exterior]"  label="Número Externo"
                                     valor="{{ old('datosDomicilio[numero_exterior]') }}" />
-                                <x-inputFormulario tipo="number" identificador="numero_interior" nombre="datosDomicilio[numero_interior]"  label="Número Interno"
+                                <x-inputFormulario tipo="text" identificador="numero_interior" nombre="datosDomicilio[numero_interior]"  label="Número Interno"
                                     valor="{{ old('datosDomicilio[numero_interior]') }}" />
                                 <div class="col"></div>
                                 <div class="col">
@@ -558,9 +558,9 @@
                                     valor="{{ old('datosFacturacion[calle2]') }}" />
                                 <x-inputFormulario tipo="text" identificador="calle3Facturacion" nombre="datosFacturacion[calle3]" label="Entre calle 2" clases="campoFacturacion"
                                     valor="{{ old('datosFacturacion[calle3]') }}" />
-                                <x-inputFormulario tipo="number" identificador="numero_exteriorFacturacion" nombre="datosFacturacion[numero_exterior]" label="Número Externo" clases="campoFacturacion"
+                                <x-inputFormulario tipo="text" identificador="numero_exteriorFacturacion" nombre="datosFacturacion[numero_exterior]" label="Número Externo" clases="campoFacturacion"
                                     valor="{{ old('datosFacturacion[numero_exterior]') }}" />
-                                <x-inputFormulario tipo="number" identificador="numero_interiorFacturacion" nombre="datosFacturacion[numero_interior]" label="Número Interno" clases="campoFacturacion"
+                                <x-inputFormulario tipo="text" identificador="numero_interiorFacturacion" nombre="datosFacturacion[numero_interior]" label="Número Interno" clases="campoFacturacion"
                                     valor="{{ old('datosFacturacion[numero_interior]') }}" />
                                 <div class="col"></div>
                                 <div class="col">

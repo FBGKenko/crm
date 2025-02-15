@@ -632,5 +632,9 @@ class personaController extends Controller
             'persona' => $registro,
         ]);
     }
+
+    function filtrarMunicipios($entidad){
+        
+    }
 }
 
