@@ -82,6 +82,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
         ->name('crudUsuario.editar')->middleware(['can:crudUsuarios.edit']);
         Route::post('/borrar-usuario-{usuario}', 'borrarUsuario')
         ->name('crudUsuario.borrar')->middleware(['can:crudUsuarios.delete']);
+        Route::get('/cargar-municipios', 'cargarMunicipios');
     });
     Route::prefix('contactos')->controller(personaController::class)->group(function() {
         Route::get('/', 'index')->name('contactos.index');

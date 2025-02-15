@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Configuracion;
 
 use App\Http\Controllers\Controller;
+use App\Imports\importAdapterExcel;
 use App\Models\bitacora;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 class crudUsuariosController extends Controller
@@ -240,6 +243,33 @@ class crudUsuariosController extends Controller
         }
         else{
             return back()->withErrors(['errorBorrar' => 'Ha ocurrido un error al registrar el usuario']);
+        }
+    }
+
+    public function cargarMunicipios(){
+        ini_set('memory_limit','1024M');
+        set_time_limit(3000000);
+        $rutaArchivo = 'Catalogos/catalogos/CODIGO_POSTAL.xlsx';
+        if (!Storage::exists($rutaArchivo)) {
+            echo "El archivo no existe\n";
+            return;
+        }
+        try {
+            $path = Storage::path($rutaArchivo);
+            $importacion = new importAdapterExcel();
+            $datos = Excel::toCollection($importacion, $path);
+            return "Archivo cargado\n";
+            foreach ($datos as $index => $hoja) { // Iterar sobre cada hoja del archivo
+                return "Leyendo hoja: " . ($index + 1) . "\n";
+                foreach ($hoja as $fila) {
+                    // dd($fila);
+
+                }
+            }
+            return "Lectura finalizada\n";
+        } catch (Exception $e) {
+            return "Fallo al leer el archivo";
+            Log::info($e);
         }
     }
 }

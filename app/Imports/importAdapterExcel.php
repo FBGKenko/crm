@@ -4,9 +4,10 @@ namespace App\Imports;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class importAdapterExcel implements ToCollection, WithHeadingRow
+class importAdapterExcel implements ToCollection, WithHeadingRow, WithChunkReading
 {
     /**
     * @param Collection $collection
@@ -14,5 +15,10 @@ class importAdapterExcel implements ToCollection, WithHeadingRow
     public function collection(Collection $collection)
     {
         return $collection;
+    }
+
+    public function chunkSize(): int
+    {
+        return 500;
     }
 }
