@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('precios', function (Blueprint $table) {
             $table->id();
+            $table->float('monto');
+            $table->string('nombre');
+            $table->foreignId('variante_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

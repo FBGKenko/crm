@@ -179,13 +179,17 @@ class personaController extends Controller
     }
 
     function vistaAgregar(){
+
         $listaPromotores = persona::where('deleted_at', null)->where('promotor','SI')->get();
         $listaPersonas = persona::where('deleted_at', null)->get();
         $listaEstatus = estatus::get();
-        $listaColonias = colonia::with('seccionColonia.seccion.distritoLocal.municipio')->get();
+        $listaColonias = colonia::with('localidades')->paginate(500);
+        return $listaColonias;
+
         $listaEstados = entidad::get();
         $listaMunicipios = municipio::get();
         $listaSecciones = seccion::get();
+
         $listaEmpresas = empresa::where('deleted_at', null)->get();
         $listaDistritoLocal = distritoLocal::get();
         $listaDistritoFederal = distritoFederal::get();
@@ -634,7 +638,7 @@ class personaController extends Controller
     }
 
     function filtrarMunicipios($entidad){
-        
+
     }
 }
 

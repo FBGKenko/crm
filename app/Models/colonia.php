@@ -15,4 +15,8 @@ class colonia extends Model
     public function seccionColonia() {
         return $this->hasMany(seccionColonia::class);
     }
+
+    public function localidades(){
+        return $this->belongsTo(localidad::class);
+    }
 }

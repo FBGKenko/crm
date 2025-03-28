@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventarios', function (Blueprint $table) {
-            $table->id();
-            $table->string('codigo')->nullable();
-            $table->string('nombreProducto')->nullable();
-            $table->float('costo')->nullable();
-            $table->float('precio')->nullable();
-            $table->bigInteger('existencia')->nullable();
-            $table->string('unidadMedida')->nullable();
-            $table->string('fechaBorrado')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('inventarios', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('codigo')->nullable();
+        //     $table->string('nombreProducto')->nullable();
+        //     $table->float('costo')->nullable();
+        //     $table->float('precio')->nullable();
+        //     $table->bigInteger('existencia')->nullable();
+        //     $table->string('unidadMedida')->nullable();
+        //     $table->string('fechaBorrado')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventarios');
+        // Schema::dropIfExists('inventarios');
     }
 };

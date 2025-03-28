@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('observacions', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        // Schema::create('observacions', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->text('descripcion')->nullable();
+        //     $table->string('estatusParticipo')->nullable();
+        //     $table->foreignId('vendedor_id')->nullable()->constrained();
+        //     $table->foreignId('venta_id')->nullable()->constrained();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('observacions');
+        // Schema::dropIfExists('observacions');
     }
 };

@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('objetivos', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre');
-            $table->text('descripcion');
-            $table->integer('numeroPasos');
-            $table->string('arrayPasos');
-            $table->date('deleted_at')->nullable();
-            $table->string('estatus')->default('DESACTIVADO');
-            $table->timestamps();
-        });
+        // Schema::create('objetivos', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('nombre');
+        //     $table->text('descripcion');
+        //     $table->integer('numeroPasos');
+        //     $table->string('arrayPasos');
+        //     $table->date('deleted_at')->nullable();
+        //     $table->string('estatus')->default('DESACTIVADO');
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('objetivos');
+        // Schema::dropIfExists('objetivos');
     }
 };

@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('oportunidads', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('promotor_id')->nullable();
-            $table->foreignId('objetivo_id')->constrained();
-            $table->foreignId('persona_id')->constrained();
-            $table->string('estatus')->default('pendiente');
-            $table->date('deleted_at')->nullable();
-            $table->timestamps();
+        // Schema::create('oportunidads', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('promotor_id')->nullable();
+        //     $table->foreignId('objetivo_id')->constrained();
+        //     $table->foreignId('persona_id')->constrained();
+        //     $table->string('estatus')->default('pendiente');
+        //     $table->date('deleted_at')->nullable();
+        //     $table->timestamps();
 
-            $table->foreign('promotor_id')->references('id')->on('personas')->onDelete('set null');
-        });
+        //     $table->foreign('promotor_id')->references('id')->on('personas')->onDelete('set null');
+        // });
     }
 
     /**
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('oportunidads');
+        // Schema::dropIfExists('oportunidads');
     }
 };

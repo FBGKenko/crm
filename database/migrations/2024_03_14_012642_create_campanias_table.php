@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('campanias', function (Blueprint $table) {
-            $table->id();
-            $table->string('objetivo');
-            $table->string('descripcion');
-            $table->string('nivel');
-            $table->dateTime('fecha_inicio');
-            $table->dateTime('fecha_fin');
-            $table->timestamps();
-        });
+        // Schema::create('campanias', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('objetivo');
+        //     $table->string('descripcion');
+        //     $table->string('nivel');
+        //     $table->dateTime('fecha_inicio');
+        //     $table->dateTime('fecha_fin');
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('campanias');
+        // Schema::dropIfExists('campanias');
     }
 };

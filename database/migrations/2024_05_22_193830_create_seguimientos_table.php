@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('seguimientos', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('oportunidad_id')->constrained();
-            // $table->foreignId('catalogo_seguimiento_id')->constrained();
-            $table->string('accion');
-            $table->text('observacion')->nullable();
-            $table->date('fecha_registro');
-            $table->time('hora_registro');
-            $table->timestamps();
-        });
+        // Schema::create('seguimientos', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('oportunidad_id')->constrained();
+        //     // $table->foreignId('catalogo_seguimiento_id')->constrained();
+        //     $table->string('accion');
+        //     $table->text('observacion')->nullable();
+        //     $table->date('fecha_registro');
+        //     $table->time('hora_registro');
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('seguimientos');
+        // Schema::dropIfExists('seguimientos');
     }
 };

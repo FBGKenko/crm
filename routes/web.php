@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\compras\catalogocontroller;
 use App\Http\Controllers\Configuracion\bitacoraController;
 use App\Http\Controllers\Configuracion\catalogosController;
 use App\Http\Controllers\Configuracion\crudUsuariosController;
@@ -210,6 +211,14 @@ Route::prefix('/')->middleware('auth')->group(function (){
         ->name('objetivos.modificar');
         Route::post('/borrar-{objetivo}', 'borrar')
         ->name('objetivos.borrar');
+    });
+    Route::prefix('productos/catalogo')->controller(catalogocontroller::class)->group(function (){
+        route::get('/', 'index')->name('catalogo.index');
+        route::get('/agregar', 'agregar')->name('catalogo.agregar');
+        route::get('/modificar-{producto}', 'modificar')->name('catalogo.modificar');
+        route::post('/agregar', 'agregando')->name('catalogo.agregar');
+        route::post('/modificar-{producto}', 'modificando')->name('catalogo.modificar');
+        route::post('/categoria/agregar', 'agregarCategoria')->name('catalogo.agregarCategoria');
     });
     Route::prefix('inventario')->controller(InventarioController::class)->group(function (){
         route::get('/', 'index')->name('inventario.index');

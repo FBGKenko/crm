@@ -19,7 +19,12 @@ class domicilio extends Model
         'colonia_id',
         'referencia',
         'rfc',
-        'tipo'
+        'tipo',
+
+        'codigoPostal',
+        'ciudad_id',
+        'municipio_id',
+        'estado_id'
     ];
     public function identificacion(){
         return $this->belongsTo(identificacion::class);

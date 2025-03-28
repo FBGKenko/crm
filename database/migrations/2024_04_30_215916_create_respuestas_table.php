@@ -11,21 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('respuestas', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('folio');
-            $table->text('jsonRespuestas');
-            $table->string('origen');
-            $table->foreignId('persona_id')->nullable()->constrained();
-            $table->unsignedBigInteger('promotor_id')->nullable();
-            $table->foreignId('encuesta_id')->constrained();
-            $table->string('nombres')->nullable();
-            $table->string('apellidos')->nullable();
-            $table->string('telefono')->nullable();
-            $table->timestamps();
+        // Schema::create('respuestas', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->bigInteger('folio');
+        //     $table->text('jsonRespuestas');
+        //     $table->string('origen');
+        //     $table->foreignId('persona_id')->nullable()->constrained();
+        //     $table->unsignedBigInteger('promotor_id')->nullable();
+        //     $table->foreignId('encuesta_id')->constrained();
+        //     $table->string('nombres')->nullable();
+        //     $table->string('apellidos')->nullable();
+        //     $table->string('telefono')->nullable();
+        //     $table->timestamps();
 
-            $table->foreign('promotor_id')->references('id')->on('personas')->onDelete('set null');
-        });
+        //     $table->foreign('promotor_id')->references('id')->on('personas')->onDelete('set null');
+        // });
     }
 
     /**
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('respuestas');
+        // Schema::dropIfExists('respuestas');
     }
 };

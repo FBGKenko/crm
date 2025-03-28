@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
+            $table->string('claveCamarena')->nullable();
+            $table->string('nombreCorto');
+            $table->text('descripcion')->nullable();
+            $table->string('identificadorUrl')->nullable();
+            $table->string('nombreWeb')->nullable();
+            $table->text('videoUsoUrl')->nullable();
+            $table->text('fichaTecnicaUrl')->nullable();
+            $table->text('descripcionWeb')->nullable();
+            $table->foreignId('categoria_id')->nullable()->constrained();
+            $table->dateTime('fechaBorrado')->nullable();
             $table->timestamps();
         });
     }

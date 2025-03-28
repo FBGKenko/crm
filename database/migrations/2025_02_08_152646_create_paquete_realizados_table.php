@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('paquete_realizados', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        // Schema::create('paquete_realizados', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('tipoPaquete');
+        //     $table->string('peso')->nullable();
+        //     $table->binary('documentoGuia')->nullable();
+        //     $table->string('estatusDocumentoGuia')->nullable();
+        //     $table->foreignId('venta_id')->nullable()->constrained();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('paquete_realizados');
+        // Schema::dropIfExists('paquete_realizados');
     }
 };

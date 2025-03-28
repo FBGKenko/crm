@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('errors', function (Blueprint $table) {
             $table->id();
-            $table->text('descripcion');
+            $table->longText('descripcion');
             $table->text('caminoRequest');
             $table->string('codigo');
             $table->text('archivo');

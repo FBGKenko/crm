@@ -34,9 +34,9 @@ class cargarCatalogoEstadosSeeder extends Seeder
                         'abreviatura' => $fila["abreviatura"]
                     ]);
 
-                    $distritoFederal = distritoFederal::firstOrCreate([
-                        'entidad_id' => $entidad->id,
-                    ]);
+                    // $distritoFederal = distritoFederal::firstOrCreate([
+                    //     'entidad_id' => $entidad->id,
+                    // ]);
                     echo "Persona creada: " . $entidad->id . "\n";
                 }
             }

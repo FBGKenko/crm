@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('manzanas', function (Blueprint $table) {
-            $table->id();
-            $table->integer('folio');
-            $table->string('status');
-            $table->foreignId('localidad_id')->constrained();
-            $table->timestamps();
-        });
+        // Schema::create('manzanas', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->integer('folio');
+        //     $table->string('status');
+        //     $table->foreignId('localidad_id')->constrained();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('manzanas');
+        // Schema::dropIfExists('manzanas');
     }
 };

@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('colonias', function (Blueprint $table) {
             $table->id();
+            $table->string('clave')->nullable();
             $table->string('nombre');
             $table->string('tipo');
             $table->integer('codigo_postal');
-            $table->integer('control');
+            $table->integer('control')->nullable();
+            $table->foreignId('localidad_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

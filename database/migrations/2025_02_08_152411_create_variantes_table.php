@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('variantes', function (Blueprint $table) {
             $table->id();
+            $table->string('codigo')->nullable();
+            $table->string('sku')->nullable();
+            $table->string('nombre')->nullable();
+            $table->string('presentacion')->nullable();
+            $table->integer('cantidad')->nullable();
+            $table->string('unidad')->nullable();
+            $table->text('descripcion')->nullable();
+            $table->foreignId('producto_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

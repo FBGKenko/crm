@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('seccions', function (Blueprint $table) {
             $table->id();
             $table->string('tipo')->nullable();
-            $table->foreignId('distrito_local_id')->constrained();
+            $table->foreignId('distrito_local_id')->nullable()->constrained();
+            $table->foreignId('distrito_federal_id')->nullable()->constrained();
             $table->integer('poblacion')->default(0);
             $table->integer('objetivo')->default(0);
             $table->timestamps();

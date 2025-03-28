@@ -258,7 +258,7 @@
                                     <i class="fas fa-chart-bar"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Productos</span> </a>
                                 <ul class="collapse  nav flex-column ms-1" id="menuCatalogo" data-bs-parent="#menu">
                                     <li class="w-100">
-                                        <a class="nav-link" href="{{url('/')}}/estadistica" class="nav-link ">
+                                        <a class="nav-link" href="{{route('catalogo.index')}}" class="nav-link ">
                                             <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
                                             Catálogo
                                         </a>

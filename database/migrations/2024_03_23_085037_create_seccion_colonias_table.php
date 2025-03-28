@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('seccion_colonias', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('colonia_id')->constrained();
-            $table->foreignId('seccion_id')->constrained();
-            $table->timestamps();
-        });
+        // Schema::create('seccion_colonias', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('colonia_id')->constrained();
+        //     $table->foreignId('seccion_id')->constrained();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('seccion_colonias');
+        // Schema::dropIfExists('seccion_colonias');
     }
 };

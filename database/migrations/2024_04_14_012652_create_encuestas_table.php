@@ -11,23 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('encuestas', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->string('nombre');
-            $table->text('jsonPregunta')->nullable();
-            $table->text('seccionesObjetivo')->nullable();
-            // $table->string('tipoGrafica')->nullable();
-            $table->boolean('cierreAutomatico')->default(false);
-            $table->date('fecha_inicio_sistema')->nullable();
-            $table->date('fecha_fin_sistema')->nullable();
-            $table->boolean('buscarBaseDatos')->default(false);
-            $table->date('fecha_inicio')->nullable();
-            $table->date('fecha_fin')->nullable();
-            $table->string('estatus')->default('CREANDO');
-            $table->date('deleted_at')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('encuestas', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('user_id')->constrained();
+        //     $table->string('nombre');
+        //     $table->text('jsonPregunta')->nullable();
+        //     $table->text('seccionesObjetivo')->nullable();
+        //     // $table->string('tipoGrafica')->nullable();
+        //     $table->boolean('cierreAutomatico')->default(false);
+        //     $table->date('fecha_inicio_sistema')->nullable();
+        //     $table->date('fecha_fin_sistema')->nullable();
+        //     $table->boolean('buscarBaseDatos')->default(false);
+        //     $table->date('fecha_inicio')->nullable();
+        //     $table->date('fecha_fin')->nullable();
+        //     $table->string('estatus')->default('CREANDO');
+        //     $table->date('deleted_at')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('encuestas');
+        // Schema::dropIfExists('encuestas');
     }
 };

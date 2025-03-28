@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('campania_seccions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('campania_id')->constrained();
-            $table->foreignId('seccion_id')->constrained();
-            $table->timestamps();
-        });
+        // Schema::create('campania_seccions', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('campania_id')->constrained();
+        //     $table->foreignId('seccion_id')->constrained();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('campania_seccions');
+        // Schema::dropIfExists('campania_seccions');
     }
 };

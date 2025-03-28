@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('catalogo_seguimientos', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('nombreIcono');
-        //     $table->string('accion');
-        //     $table->timestamps();
-        // });
+        Schema::table('domicilios', function (Blueprint $table) {
+            $table->string('codigoPostal')->nullable();
+            $table->unsignedBigInteger('ciudad_id')->nullable();
+            $table->unsignedBigInteger('municipio_id')->nullable();
+            $table->unsignedBigInteger('estado_id')->nullable();
+        });
     }
 
     /**
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Schema::dropIfExists('catalogo_seguimientos');
+        //
     }
 };

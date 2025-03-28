@@ -2,8 +2,11 @@
 
 namespace App\Imports;
 
+use App\Models\colonia;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
+use App\Models\entidad;
+use App\Models\localidad;
 use App\Models\municipio;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -18,15 +21,35 @@ class importarMunicipios implements ToModel, WithHeadingRow, WithChunkReading
     */
     public function model(array $row)
     {
-        $distritoFederalPadre = distritoFederal::where('entidad_id', strtoupper($row["c_estado"]))->first();
-        if($distritoFederalPadre){
-            $municipio = municipio::where('distrito_federal_id', $distritoFederalPadre->id)
+        $entidadPadre = entidad::where('id', strtoupper($row["c_estado"]))->first();
+        if($entidadPadre){
+            $municipio = municipio::where('entidad_id', $entidadPadre->id)
             ->where('nombre', strtoupper($row["d_mnpio"]))
             ->first();
             if(!isset($municipio)){
-                municipio::create([
+                $municipio = municipio::create([
                     'nombre' => strtoupper($row['d_mnpio']),
-                    'distrito_federal_id' => $distritoFederalPadre->id
+                    'entidad_id' => $entidadPadre->id
+                ]);
+            }
+            $ciudad = localidad::where('municipio_id', $municipio->id)
+            ->where('nombre', strtoupper($row["d_ciudad"]))
+            ->first();
+            if(!isset($ciudad)){
+                $ciudad = localidad::create([
+                    'nombre' => strtoupper($row["d_ciudad"]),
+                    'municipio_id' => $municipio->id,
+                ]);
+            }
+            $colonia = colonia::where('nombre', strtoupper($row["d_asenta"]))
+            ->where('localidad_id', $ciudad->id)
+            ->first();
+            if(!isset($colonia)){
+                $colonia = colonia::create([
+                    'nombre' => strtoupper($row["d_asenta"]),
+                    'codigo_postal' => $row["d_codigo"],
+                    'tipo' => $row['d_tipo_asenta'],
+                    'localidad_id' => $ciudad->id,
                 ]);
             }
         }

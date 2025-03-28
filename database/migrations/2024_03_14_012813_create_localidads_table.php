@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('localidads', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('tipo');
-            $table->foreignId('seccion_id');
+            $table->string('tipo')->nullable();
+            $table->foreignId('municipio_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

@@ -61,35 +61,7 @@ class DatabaseSeeder extends Seeder
         }
 
 
-        $ivan = User::Create([
-            'nombre' => 'IVAN',
-            'apellido_paterno' => 'SOTO',
-            'email' => 'ivan.soto@hotmail.com',
-            'password' => Hash::make('123'),
-            'email_verified_at' => Date("Y-m-d H:i:s"),
-            'nivel_acceso' => 'TODO',
-        ]);
-        $ivan->assignRole('ADMINISTRADOR');
 
-        $belizario = User::Create([
-            'nombre' => 'BELIZARIO',
-            'apellido_paterno' => 'RUIZ',
-            'email' => 'belizario.ruiz@hotmail.com',
-            'password' => Hash::make('@IngeniaSI2024'),
-            'email_verified_at' => Date("Y-m-d H:i:s"),
-            'nivel_acceso' => 'TODO',
-        ]);
-        $belizario->assignRole('SUPER ADMINISTRADOR');
-
-        $eduardo = User::Create([
-            'nombre' => 'EDUARDO',
-            'apellido_paterno' => 'REYES',
-            'email' => 'eduardo.reyes@hotmail.com',
-            'password' => Hash::make('123'),
-            'email_verified_at' => Date("Y-m-d H:i:s"),
-            'nivel_acceso' => 'TODO',
-        ]);
-        $eduardo->assignRole('SUPER ADMINISTRADOR');
         $emilio = User::Create([
             'nombre' => 'EMILIO',
             'apellido_paterno' => 'MENDOZA',
@@ -100,40 +72,6 @@ class DatabaseSeeder extends Seeder
             'niveles' => '190,191'
         ]);
         $emilio->assignRole('SUPER ADMINISTRADOR');
-        User::Create([
-            'nombre' => 'ANA',
-            'apellido_paterno' => 'CECILIA',
-            'email' => 'ana.cecilia@hotmail.com',
-            'password' => Hash::make('123'),
-            'email_verified_at' => Date("Y-m-d H:i:s"),
-            'nivel_acceso' => 'TODO',
-        ])->assignRole('CAPTURISTA');
-
-        User::Create([
-            'nombre' => 'HECTOR',
-            'apellido_paterno' => 'GALVAN',
-            'email' => 'hector.galvan@hotmail.com',
-            'password' => Hash::make('123'),
-            'email_verified_at' => Date("Y-m-d H:i:s"),
-            'nivel_acceso' => 'TODO',
-        ])->assignRole('SUPERVISOR');
-
-        User::Create([
-            'nombre' => 'Consultas',
-            'apellido_paterno' => 'Nuevo',
-            'email' => 'consultas.nuevo@hotmail.com',
-            'password' => Hash::make('123'),
-            'email_verified_at' => Date("Y-m-d H:i:s"),
-            'nivel_acceso' => 'TODO',
-        ])->assignRole('CONSULTAS');
-
-        objetivo::Create([
-            'nombre' => 'DÍA DE',
-            'descripcion' => 'Confirmar la asistencia de los simpatizantes a el día de votaciones',
-            'numeroPasos' => 4,
-            'estatus' => 'ACTIVADO',
-            'arrayPasos' => 'primer llamado,seguimiento,confirmar asistencia,asistió'
-        ]);
 
 
         // CARGA INICIAL ENTIDAD
@@ -172,7 +110,7 @@ class DatabaseSeeder extends Seeder
             municipio::create([
                 'id' => $row[4],
                 'nombre' => $row[5],
-                'distrito_federal_id' => $row[2],
+                'entidad_id' => $row[0],
             ]);
         }
 
@@ -202,6 +140,7 @@ class DatabaseSeeder extends Seeder
             seccion::create([
                 'id' => $row[6],
                 'distrito_local_id' => $row[3],
+                'distrito_federal_id' => $row[2]
             ]);
         }
 
@@ -236,20 +175,20 @@ class DatabaseSeeder extends Seeder
         }
 
         // CARGA INICIAL PIVOTE
-        $dataForFirstTable = Excel::toArray(new seccionColoniaImport, storage_path('app/Catalogos/Catalogo de Colonias.xlsx'));
-        foreach ($dataForFirstTable[0] as $row) {
-            if($row[0] == null){
-                break;
-            }
-            $entidadExiste = seccionColonia::where('seccion_id', $row[5])->where('colonia_id', $row[0])->first();
-            if(isset($entidadExiste)){
-                continue;
-            }
-            seccionColonia::create([
-                'seccion_id' => $row[5],
-                'colonia_id' => $row[0],
-            ]);
-        }
+        // $dataForFirstTable = Excel::toArray(new seccionColoniaImport, storage_path('app/Catalogos/Catalogo de Colonias.xlsx'));
+        // foreach ($dataForFirstTable[0] as $row) {
+        //     if($row[0] == null){
+        //         break;
+        //     }
+        //     $entidadExiste = seccionColonia::where('seccion_id', $row[5])->where('colonia_id', $row[0])->first();
+        //     if(isset($entidadExiste)){
+        //         continue;
+        //     }
+        //     seccionColonia::create([
+        //         'seccion_id' => $row[5],
+        //         'colonia_id' => $row[0],
+        //     ]);
+        // }
 
         // meta::create([
         //     'numeroObjetivo' => 100,
@@ -283,6 +222,15 @@ class DatabaseSeeder extends Seeder
             'color' => '#ed1717',
             'nivel' => '2'
         ]);
+        $bcs = entidad::where('nombre', 'BAJA CALIFORNIA SUR')->first();
+        $bcs->abreviatura = 'BS';
+        $bcs->save();
+        $this->call([
+            cargarCatalogoEstadosSeeder::class,
+            // cargarMunicipiosSeeder::class,
+        ]);
+
+
         // $datos = Excel::toCollection(new personasYDatosImport, storage_path('app/Catalogos/FORMATO CARGA INICIAL OK.xlsx'));
         // foreach ($datos[0] as $dato) {
         //     if(!isset($dato[1])){
