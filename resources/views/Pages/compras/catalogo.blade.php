@@ -25,7 +25,7 @@ Catálogo
             <div class="card-body">
                 <table id="tablaProductos" class="wrap table table-striped" style="width: 100%;">
                     <thead>
-                        <th>Codigo</th>
+                        <th>Id</th>
                         <th>Categoria</th>
                         <th>Nombre</th>
                         <th>No. Variantes</th>
@@ -34,12 +34,13 @@ Catálogo
                     <tbody>
                         @foreach ($listaProductos as $producto)
                             <tr>
-                                <td>{{$producto->codigo}}</td>
+                                <td>{{$producto->id}}</td>
                                 <td>{{$producto->categorias->nombre}}</td>
                                 <td>{{$producto->nombreCorto}}</td>
                                 <td>{{$producto->conteoVariantes}}</td>
                                 <td>
-                                    <a href="" class="btn btn-primary">Multimedia</a>
+                                    <a href="" class="btn btn-primary">Variantes</a>
+                                    <a href="" class="btn btn-primary">Precios</a>
                                     <a href="{{route('catalogo.modificar', $producto->id)}}" class="btn btn-secondary">modificar</a>
                                     <a href="" class="btn btn-danger">Eliminar</a>
                                 </td>

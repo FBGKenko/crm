@@ -265,7 +265,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <a class="nav-link" href="{{route('integracion.index')}}">
+                            {{-- <a class="nav-link" href="{{route('integracion.index')}}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-globe"></i></div>
                                 Tablero de Ventas
                             </a>
@@ -304,7 +304,7 @@
                                             </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li> --}}
                         @endcan
                         </div>
                     </div>
