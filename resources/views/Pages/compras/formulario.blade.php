@@ -206,12 +206,7 @@
     });
     $("#btnCrearCategoria").on('click', abrirModalCategoria);
     $("#btnCrearVariante").on('click', abrirModalVariante);
-    function abrirModalCategoria(){
-        $("#modalAgregarCategoria").modal('show');
-    }
-    function abrirModalVariante(){
-        $("#modalAgregarVariante").modal('show');
-    }
+
     $('#btnGuardarCategoria').click(function(){
         var datosFormulario = $('#formularioGuardarCategoria').serializeArray();
         $.ajax({
@@ -303,25 +298,15 @@
             url: "{{$ruta}}",
             data: datosForm,
             success: function (response) {
-                if(response.resultado){
-                    Swal.fire({
-                        title: "Éxito",
-                        text: response.mensaje,
-                        icon: "success"
-                    }).then((resultado) => {
-                        if(resultado.isCorfimed){
-                            location.href = "{{route('catalogo.index')}}"
-                        }
-                    })
-
-                }
-                else{
-                    Swal.fire({
-                        title: "error",
-                        text: response.mensaje,
-                        icon: "error"
-                    })
-                }
+                Swal.fire({
+                    title: "Éxito",
+                    text: response.mensaje,
+                    icon: "success"
+                }).then((resultado) => {
+                    if(resultado.isCorfimed){
+                        location.href = "{{route('catalogo.index')}}"
+                    }
+                })
             },
             error: function( data, textStatus, jqXHR){
                 if (jqXHR.status === 0) {
@@ -342,7 +327,12 @@
             }
         })
     });
-
+    function abrirModalCategoria(){
+        $("#modalAgregarCategoria").modal('show');
+    }
+    function abrirModalVariante(){
+        $("#modalAgregarVariante").modal('show');
+    }
     function validarFormulario(datos){
         var respuesta = {
             resultado: true,
@@ -355,9 +345,5 @@
         }
         return respuesta;
     }
-
-
-
-
 </script>
 @endsection

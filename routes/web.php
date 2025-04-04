@@ -219,6 +219,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
         route::post('/agregar', 'agregando')->name('catalogo.agregar');
         route::post('/modificar-{producto}', 'modificando')->name('catalogo.modificar');
         route::post('/categoria/agregar', 'agregarCategoria')->name('catalogo.agregarCategoria');
+        route::get('/cargar-variantes-{producto}', 'cargarVariantes')->name('catalogo.cargarVariantes');
     });
     Route::prefix('inventario')->controller(InventarioController::class)->group(function (){
         route::get('/', 'index')->name('inventario.index');

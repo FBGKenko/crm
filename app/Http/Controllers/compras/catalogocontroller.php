@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\catalogoRequest;
 use App\Models\categoria;
 use App\Models\producto;
+use App\Models\variante;
 use Illuminate\Http\Request;
 
 class catalogocontroller extends Controller
@@ -58,6 +59,23 @@ class catalogocontroller extends Controller
         $resultado["resultado"] = true;
         $resultado["mensaje"] = "Se ha creado la categoria con éxito";
         $resultado["nombreCategoria"] = $categoria->nombre;
+        return $resultado;
+    }
+    public function cargarVariantes(producto $producto){
+        $variantes = variante::where('producto_id', $producto->id)
+        ->select(
+            'id',
+            'codigo',
+            'nombre',
+            'presentacion',
+            'cantidad',
+            'unidad',
+        )
+        ->get();
+        $resultado = [
+            'titulo' => $producto->nombreCorto,
+            'variantes' => $variantes
+        ];
         return $resultado;
     }
 }

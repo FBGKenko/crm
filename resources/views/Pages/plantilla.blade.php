@@ -390,7 +390,7 @@
                 Swal.close();
             }
         }
-        function peticionAjax(url, funcionExito, tipoRequest, data = null) {
+        function peticionAjax(url, funcionExito, tipoRequest = "GET", data = null) {
             $.ajax({
                 url: url,
                 type: tipoRequest,
