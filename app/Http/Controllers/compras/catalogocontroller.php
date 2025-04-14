@@ -4,7 +4,9 @@ namespace App\Http\Controllers\compras;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\catalogoRequest;
+use App\Http\Requests\varianteRequest;
 use App\Models\categoria;
+use App\Models\precio;
 use App\Models\producto;
 use App\Models\variante;
 use Illuminate\Http\Request;
@@ -77,5 +79,32 @@ class catalogocontroller extends Controller
             'variantes' => $variantes
         ];
         return $resultado;
+    }
+
+    public function crearVariante(producto $producto, varianteRequest $request){
+        $varianteNueva = variante::create($request->variante);
+        return [
+            "respuesta" => true,
+            "mensaje" => "Se ha agregado la variante con éxito",
+            "variante" => [$varianteNueva]
+        ];
+    }
+
+    public function cargarPrecios(producto $producto){
+        $listaPrecios = variante::select('id', 'nombre')
+        ->with(['precios'])
+        ->where('producto_id', $producto->id)
+        ->get();
+
+        $nombreVariantes = $listaPrecios->pluck('nombre')->toArray();
+        $idsListaVariantes = $listaPrecios->pluck('id')->toArray();
+        $nombrePrecios = precio::whereIn('variante_id', $idsListaVariantes)->pluck('nombre')->toArray();
+
+        return [
+            "lista" => $listaPrecios,
+            'nombreVariantes' => $nombreVariantes,
+            'nombrePrecios' => $nombrePrecios,
+            'nombreProducto' => $producto->nombreCorto
+        ];
     }
 }

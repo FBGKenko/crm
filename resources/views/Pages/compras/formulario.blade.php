@@ -303,9 +303,7 @@
                     text: response.mensaje,
                     icon: "success"
                 }).then((resultado) => {
-                    if(resultado.isCorfimed){
-                        location.href = "{{route('catalogo.index')}}"
-                    }
+                    location.href = "{{route('catalogo.index')}}"
                 })
             },
             error: function( data, textStatus, jqXHR){

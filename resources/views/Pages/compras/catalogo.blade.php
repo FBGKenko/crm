@@ -63,10 +63,11 @@ Catálogo
                 <div class="modal-body">
                     <table id="tablaVariante" class="wrap table table-striped" style="width: 100%;">
                         <thead class="table-dark">
-                            <th>Id</th>
-                            <th>Categoria</th>
+                            <th>Código</th>
                             <th>Nombre</th>
-                            <th>Descripción</th>
+                            <th>Presentación</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
                             <th class="col-4">Opciones</th>
                         </thead>
                         <tbody>
@@ -76,7 +77,6 @@ Catálogo
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary">Guardar</button>
                 </div>
             </div>
         </div>
@@ -91,37 +91,38 @@ Catálogo
                     </div>
                     <div class="modal-body row row-cols-2">
                         @csrf
+                        <input type="hidden" id="idProducto" name="variante[producto_id]">
                         <div class="col">
                             <label for="" class="form-label">Producto:</label>
                             <input type="text" id="nombreProducto" class="form-control" disabled>
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Codigo:</label>
-                            <input type="text" id="codigoVariante" class="form-control">
+                            <input type="text" id="codigoVariante" name="variante[codigo]" class="form-control">
                         </div>
                         <div class="col">
                             <label for="" class="form-label">SKU:</label>
-                            <input type="text" id="skuVariante" class="form-control">
+                            <input type="text" id="skuVariante" name="variante[sku]" class="form-control">
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Nombre:</label>
-                            <input type="text" id="nombreVariante" class="form-control">
+                            <input type="text" id="nombreVariante" name="variante[nombre]" class="form-control">
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Presentación:</label>
-                            <input type="text" id="presentacionVariante" class="form-control">
+                            <input type="text" id="presentacionVariante" name="variante[presentacion]" class="form-control">
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Cantidad:</label>
-                            <input type="text" id="cantidadVariante" class="form-control">
+                            <input type="number" id="cantidadVariante" name="variante[cantidad]" class="form-control">
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Unidad:</label>
-                            <input type="text" id="unidadVariante" class="form-control">
+                            <input type="text" id="unidadVariante" name="variante[unidad]" class="form-control">
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Descripción:</label>
-                            <textarea id="descripcionVariante" rows="5" class="form-control"></textarea>
+                            <textarea id="descripcionVariante" name="variante[descripcion]" rows="5" class="form-control"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -132,13 +133,42 @@ Catálogo
             </form>
         </div>
     </div>
+    <div class="modal fade" id="modalPrecios" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 me-5" id="tituloModalPrecios">Variantes</h1>
+                    <button type="button" id="btnAgregarPrecio" class="btn btn-success">Agregar Precio</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row row-cols-2">
+
+                    <table id="tablaPrecios" class="wrap table table-striped" style="width: 100%;">
+                        <thead class="table-dark">
+                            <th>Id</th>
+                            <th>Categoria</th>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnSubmitModalPrecios" class="btn btn-success">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
 <script src="//cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css"></script>
 <script text="text/javascript">
-    var idVarianteSeleccionada = -1;
+    var idProductoSeleccionado = -1;
     var nombreProducto = "";
+    var arrayPrecios = [];
+    var numeroMaximoVariantes = 0;
     $(document).ready(function () {
         $('#tablaProductos').DataTable({
             searching: true,
@@ -155,10 +185,9 @@ Catálogo
     });
 
     $('.cargarModalVariantes').click(function (){
-        var id = $(this).parent().children().first().val();
-        idVarianteSeleccionada = id;
+        idProductoSeleccionado = $(this).parent().children().first().val();
         var url = "{{route('catalogo.cargarVariantes', 'idProducto')}}";
-        url = url.replace("idProducto", id);
+        url = url.replace("idProducto", idProductoSeleccionado);
         peticionAjax(url, cargarVariantes)
     });
 
@@ -166,19 +195,111 @@ Catálogo
         $('#modalVariantes').modal('show');
         nombreProducto = response.titulo;
         $('#tituloModalVariantes').text("Variantes de producto: " + response.titulo);
-        console.log(response);
+        cargarTablaVariantes(response.variantes)
     }
 
     $('#abrirModalAgregarVariante').click(function (){
         $('#formularioVariante')[0].reset();
         $('#titulomodalAgregarVariante').text("Agregar Variante de " + nombreProducto);
         $('#nombreProducto').val(nombreProducto);
+        $('#idProducto').val(idProductoSeleccionado);
         $('#modalAgregarVariante').modal('show');
     })
 
     $('#btnSubmitAgregarVariante').click(function(){
         var datos = $('#formularioVariante').serializeArray();
+        var urlAgregarVariante = "{{route('catalogo.crearVariante', 'idProducto')}}"
+        urlAgregarVariante = urlAgregarVariante.replace('idProducto', idProductoSeleccionado)
         console.log(datos);
+        peticionAjax(urlAgregarVariante, varianteCreado, "POST", datos)
     });
+
+    function varianteCreado(response){
+        console.log(response);
+        if(response.respuesta){
+            swal.fire({
+                'title': 'Éxito',
+                'text': response.mensaje,
+                'icon': 'success'
+            })
+            cargarTablaVariantes(response.variante)
+            $('#modalAgregarVariante').modal('hide');
+        }
+    }
+
+    function cargarTablaVariantes(array){
+        array.forEach(variante => {
+            $('#tablaVariante tbody').append(
+                $('<tr>').append(
+                    $('<td>').text(variante.codigo),
+                    $('<td>').text(variante.nombre),
+                    $('<td>').text(variante.presentacion),
+                    $('<td>').text(variante.cantidad),
+                    $('<td>').text(variante.unidad),
+                    $('<td>').append(
+                        $('<input type="hidden">').val(variante.id),
+                        $('<button type="buttom" class="btn btn-primary">Modificar</button>'),
+                        $('<button type="buttom" class="btn btn-danger">Borrar</button>'),
+                    ),
+                )
+            )
+        });
+    }
+
+    $('.cargarModalPrecios').click(function(){
+        idProductoSeleccionado = $(this).parent().children().first().val();
+        var url = "{{route('catalogo.cargarPrecios', 'idProducto')}}";
+        url = url.replace("idProducto", idProductoSeleccionado);
+        peticionAjax(url, cargarPrecios)
+    })
+
+    function cargarPrecios(response){
+        console.log(response);
+        numeroMaximoVariantes = response.nombreVariantes.length;
+        $('#tituloModalPrecios').text('Precios y Variantes del Producto: ' + response.nombreProducto)
+        $('#tablaPrecios').html(
+            $('<thead>').addClass('table-dark').append(
+                $('<tr>').append(
+                    $('<th>').text('Precios')
+                )
+            )
+        );
+        $('#tablaPrecios').append(
+            $('<tbody>')
+        );
+        response.nombreVariantes.forEach(function (variante){
+            $('#tablaPrecios thead tr').append(
+                $('<th>').text("Variante: " + variante)
+            )
+        })
+
+        // response.nombrePrecios.forEach(function (precio)){
+        //     $()
+        // }
+
+
+
+        // tablaPrecios
+        $('#modalPrecios').modal('show')
+    }
+
+    $('#btnAgregarPrecio').click(function (){
+        $('#tablaPrecios tbody').append(
+            $('<tr>').append(
+                $('<td>').append(
+                    $('<input type="text">').addClass('form-control')
+                )
+            )
+        )
+        for (let i = 0; i < numeroMaximoVariantes; i++) {
+            $('#tablaPrecios tbody tr').last().append(
+                $('<td>').append(
+                    $('<input type="number">').addClass('form-control')
+                )
+            )
+        }
+
+    });
+
 </script>
 @endsection

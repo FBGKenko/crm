@@ -220,6 +220,9 @@ Route::prefix('/')->middleware('auth')->group(function (){
         route::post('/modificar-{producto}', 'modificando')->name('catalogo.modificar');
         route::post('/categoria/agregar', 'agregarCategoria')->name('catalogo.agregarCategoria');
         route::get('/cargar-variantes-{producto}', 'cargarVariantes')->name('catalogo.cargarVariantes');
+        route::post('/crear-variante-{producto}', 'crearVariante')->name('catalogo.crearVariante');
+        route::get('/cargar-precios-{producto}', 'cargarPrecios')->name('catalogo.cargarPrecios');
+
     });
     Route::prefix('inventario')->controller(InventarioController::class)->group(function (){
         route::get('/', 'index')->name('inventario.index');
