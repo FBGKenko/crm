@@ -15,84 +15,95 @@
                     <a href="#" id="btnGuardarFormulario" class="btn btn-success">Guardar</a>
                 </div>
             </div>
+            {{-- CONTENEDOR CATEGORIA --}}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h4 class="mt-4">Categoria</h4>
+                    <h4>Categoria y Presentación</h4>
                 </div>
                 <div class="card-body row">
-                    <div class="col">
-                        <label for="" class="form-label">Categoria</label>
-                        <select name="producto[categoria_id]" id="selectCategoria" class="form-select">
+                    <div class="d-flex col-6">
+                        <div class="col me-3">
+                            <label for="" class="form-label">Categoria</label>
+                            <select name="producto[categoria_id]" id="selectCategoria" class="form-select">
+                                <option value="0" selected disabled>Seleccione una opcion</option>
+                                @foreach ($listaCategorias as $categoria)
+                                    <option value="{{$categoria->id}}" @selected($categoria->id == old('producto[categoria_id]', isset($producto->categoria_id) ? $producto->categoria_id : null))>{{$categoria->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col align-self-end">
+                            <a href="#" id="btnCrearCategoria" class="btn btn-primary">Crear Categoria</a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label for="" class="form-label">Presentación</label>
+                        <select name="producto[presentacion]" id="selectPresentacion" class="form-select">
                             <option value="0" selected disabled>Seleccione una opcion</option>
-                            @foreach ($listaCategorias as $categoria)
-                                <option value="{{$categoria->id}}">{{$categoria->nombre}}</option>
-                            @endforeach
+                            <option value="M" @selected(old('producto[presentacion]', isset($producto->presentacion) ? $producto->presentacion : null))>CHICO</option>
+                            <option value="L" @selected(old('producto[presentacion]', isset($producto->presentacion) ? $producto->presentacion : null))>MEDIANO</option>
+                            <option value="G" @selected(old('producto[presentacion]', isset($producto->presentacion) ? $producto->presentacion : null))>GRANDE</option>
+                            <option value="B" @selected(old('producto[presentacion]', isset($producto->presentacion) ? $producto->presentacion : null))>EXTRA GRANDE</option>
+                            <option value="X" @selected(old('producto[presentacion]', isset($producto->presentacion) ? $producto->presentacion : null))>OTRO</option>
                         </select>
                     </div>
-                    <div class="col align-self-end">
-                        <a href="#" id="btnCrearCategoria" class="btn btn-primary">Crear Categoria</a>
-                    </div>
                 </div>
             </div>
+            {{-- CONTENEDOR PRODUCTO --}}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h4 class="mt-4">Producto</h4>
+                    <h4>Producto</h4>
                 </div>
                 <div class="card-body row row-cols-3">
-                    <div class="col">
+                    <div class="col mb-3">
                         <label for="" class="form-label">Código</label>
-                        <input type="text" name="producto[codigo]" class="form-control" maxlength="255">
+                        <input type="text" name="producto[codigo]" id="codigoProducto" class="form-control" maxlength="255" value="{{old('producto[codigo]', isset($producto->codigo) ? $producto->codigo : '')}}">
+                        {{-- <input type="hidden" name="producto[codigo]" id="codigoProductoHidden" class="form-control" maxlength="255" value="{{old('producto[codigo]', isset($producto->codigo) ? $producto->codigo : '')}}"> --}}
                     </div>
-                    <div class="col">
+                    <div class="col mb-3">
                         <label for="" class="form-label">Nombre Producto (*)</label>
-                        <input type="text" name="producto[nombreCorto]" class="form-control" maxlength="255">
+                        <input type="text" name="producto[nombreCorto]" class="form-control" maxlength="255" value="{{old('producto[nombreCorto]', isset($producto->nombreCorto) ? $producto->nombreCorto : '')}}">
                     </div>
-                    <div class="col">
+                    <div class="col mb-3">
                         <label for="" class="form-label">Identificar Tienda Nube</label>
-                        <input type="text" name="producto[identificadorUrl]" class="form-control" maxlength="255">
+                        <input type="text" name="producto[identificadorUrl]" class="form-control" maxlength="255" value="{{old('producto[identificadorUrl]', isset($producto->identificadorUrl) ? $producto->identificadorUrl : '')}}">
                     </div>
-                    <div class="col">
+                    <div class="col-6 mb-3">
                         <label for="" class="form-label">Descripción</label>
-                        <textarea name="producto[descripcion]" rows="4" class="form-control"></textarea>
+                        <textarea name="producto[descripcion]" rows="4" class="form-control">{{old('producto[descripcion]', isset($producto->descripcion) ? $producto->descripcion : '')}}</textarea>
                     </div>
-                    <div class="col">
+                    <div class="col-6 mb-3">
                         <label for="" class="form-label">Descripción Tienda Nube</label>
-                        <textarea name="producto[descripcionWeb]" rows="4" class="form-control"></textarea>
+                        <textarea name="producto[descripcionWeb]" rows="4" class="form-control">{{old('producto[descripcionWeb]', isset($producto->descripcionWeb) ? $producto->descripcionWeb : '')}}</textarea>
                     </div>
-                    <div class="col"></div>
-                    <div class="col">
+                    <div class="col mb-3">
                         <label for="" class="form-label">Url Video de Uso</label>
-                        <input type="text" name="producto[videoUsoUrl]" class="form-control">
+                        <input type="text" name="producto[videoUsoUrl]" class="form-control" value="{{old('producto[videoUsoUrl]', isset($producto->videoUsoUrl) ? $producto->videoUsoUrl : '')}}">
                     </div>
-                    <div class="col">
+                    <div class="col mb-3">
                         <label for="" class="form-label">Url Ficha Técnica</label>
-                        <input type="text" name="producto[fichaTecnicaUrl]" class="form-control">
+                        <input type="text" name="producto[fichaTecnicaUrl]" class="form-control" value="{{old('producto[fichaTecnicaUrl]', isset($producto->fichaTecnicaUrl) ? $producto->fichaTecnicaUrl : '')}}">
                     </div>
-                    <div class="col"></div>
-                    <div class="col">
+                    <div class="col mb-3">
                         <label for="" class="form-label">Nombre Web</label>
-                        <input type="text" name="producto[nombreWeb]" class="form-control" maxlength="255">
+                        <input type="text" name="producto[nombreWeb]" class="form-control" maxlength="255" value="{{old('producto[nombreWeb]', isset($producto->nombreWeb) ? $producto->nombreWeb : '')}}">
                     </div>
-                    <div class="col">
+                    {{-- <div class="col mb-3">
                         <label for="" class="form-label">Código Tienda Camarena</label>
                         <input type="text" name="producto[claveCamarena]" class="form-control" maxlength="255">
-                    </div>
+                    </div> --}}
                 </div>
             </div>
-            {{-- <div class="card mb-4">
-                <div class="card-header row justify-content-between align-items-end">
-                    <h4 class="mt-4 col">Variante</h4>
-                    <div class="col-auto">
-                        <a href="#" id="btnCrearVariante" class="btn btn-primary">Crear Variante</a>
-                    </div>
+            {{-- CONTENEDOR PRECIOS --}}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between">
+                    <h4>Precios</h4>
+                    <button type="button" id="btnAgregarPrecio" class="btn btn-primary">Agregar</button>
                 </div>
-                <div class="card-body">
-                    <table id="tablaVariantes" class="table ">
+                <div class="card-body row row-cols-3">
+                    <table id="tablaPrecios" class="table">
                         <thead class="table-dark">
-                            <th>Código</th>
                             <th>Nombre</th>
-                            <th>Presentación</th>
-                            <th>cantidad y Unidad</th>
+                            <th>Monto</th>
                             <th>opciones</th>
                         </thead>
                         <tbody>
@@ -100,7 +111,31 @@
                         </tbody>
                     </table>
                 </div>
-            </div> --}}
+            </div>
+            {{-- CONTENEDOR VARIANTES --}}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between">
+                    <h4>variantes</h4>
+                    <button id="btnModalAgregarVariante" type="button" class="btn btn-primary">Agregar Variantes</button>
+                </div>
+                <div class="card-body row row-cols-3">
+                    <div id="contenedorTablaVariantes" class="d-none">
+                        <table id="tablaVariante" class="table">
+                            <thead class="table-dark">
+                                <th>Nombre</th>
+                                <th>Monto</th>
+                                <th>opciones</th>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
             <small class="mt-3">(*) Son campos obligatorios para el formulario</small>
         </div>
 
@@ -201,6 +236,8 @@
     var arrayVariantes = [];
     var idVariante = 1;
     var idVarianteSeleccionada = 0;
+    var banderaSinVariantes = true;
+    var contadorPrecios = 1;
     $(document).ready(function () {
 
     });
@@ -342,6 +379,25 @@
             respuesta.mensaje += "El campo Nombre del Producto es requerido.\n"
         }
         return respuesta;
+    }
+
+    $('#btnAgregarPrecio').click(function () {
+        $('#tablaPrecios tbody').append(
+            $('<tr>').append(
+                $('<td>').append($('<input>').attr({name: `producto[precios][${contadorPrecios}][nombre]`, class: 'form-control'})),
+                $('<td>').append($('<input type="number">').attr({name: `producto[precios][${contadorPrecios}][monto]`, class: 'form-control'})),
+                $('<td>').append($('<button type="button">').attr({class: 'btn btn-danger'}).text('Borrar').click(borrarPrecio)),
+            )
+        )
+        contadorPrecios++;
+    })
+
+    $('#btnModalAgregarVariante').click(function(){
+
+    })
+
+    function borrarPrecio(){
+
     }
 </script>
 @endsection

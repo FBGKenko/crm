@@ -16,6 +16,7 @@ return new class extends Migration
             $table->float('monto');
             $table->string('nombre');
             $table->foreignId('variante_id')->nullable()->constrained();
+            $table->foreignId('producto_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

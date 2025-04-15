@@ -10,6 +10,7 @@ use App\Models\precio;
 use App\Models\producto;
 use App\Models\variante;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class catalogocontroller extends Controller
 {
@@ -24,13 +25,16 @@ class catalogocontroller extends Controller
         $listaCategorias = categoria::all();
         return view('pages.compras.formulario', compact('titulo', 'listaCategorias', 'ruta'));
     }
-    public function modificar($producto){
+    public function modificar(producto $producto){
         $titulo = "Modificar producto";
+        $ruta = route('catalogo.modificar', $producto->id);
         $listaCategorias = categoria::all();
-        return view('pages.compras.formulario', compact('titulo', 'listaCategorias'));
+        return view('pages.compras.formulario', compact('titulo', 'listaCategorias', 'producto', 'ruta'));
     }
     public function agregando(catalogoRequest $request){
+        Log::info($request);
         $productoNuevo = producto::create($request->producto);
+            
         return [
             "mensaje" => "Se ha agregado el producto con éxito"
         ];

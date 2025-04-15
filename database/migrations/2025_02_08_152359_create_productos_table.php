@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('descripcion')->nullable();
             $table->string('identificadorUrl')->nullable();
             $table->string('nombreWeb')->nullable();
+            $table->string('presentacion')->nullable();
             $table->text('videoUsoUrl')->nullable();
             $table->text('fichaTecnicaUrl')->nullable();
             $table->text('descripcionWeb')->nullable();
