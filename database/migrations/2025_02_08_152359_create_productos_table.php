@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('claveCamarena')->nullable();
             $table->string('nombreCorto');
+            $table->string('codigo')->nullable();
             $table->text('descripcion')->nullable();
             $table->string('identificadorUrl')->nullable();
             $table->string('nombreWeb')->nullable();

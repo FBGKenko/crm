@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Log;
 class catalogocontroller extends Controller
 {
     public function index(){
-        $listaProductos = producto::where('fechaBorrado', null)->get();
+        $listaProductos = producto::where('fechaBorrado', null)
+        ->orderByDesc('id')
+        ->get();
         return view('pages.compras.catalogo', compact('listaProductos'));
         return $listaProductos;
     }
@@ -32,15 +34,64 @@ class catalogocontroller extends Controller
         return view('pages.compras.formulario', compact('titulo', 'listaCategorias', 'producto', 'ruta'));
     }
     public function agregando(catalogoRequest $request){
-        Log::info($request);
+        Log::info($request->producto);
         $productoNuevo = producto::create($request->producto);
-            
+        $categoria = $productoNuevo->categorias->nombre ?? '';
+        $presentacion = $productoNuevo->presentacion ?? '';
+        $codigoProducto = 'NIT' . strtoupper(substr($categoria, 0, 2)) . $presentacion . $productoNuevo->id;
+        $productoNuevo->codigo = $codigoProducto;
+        $productoNuevo->save();
+        if($request->producto["SinVariantes"] == 'true'){
+            $productoNuevo->precios()->createMany($request->producto["precios"]);
+        }
+        else{
+            foreach($request->producto["variantes"] as $key => $value){
+                $variante = variante::create([
+                    'nombre' => $key,
+                    'producto_id' => $productoNuevo->id
+                ]);
+                $codigoVariante = $codigoProducto . '-' . $variante->id;
+                $variante->codigo = $codigoVariante;
+                $variante->save();
+                $variante->precios()->createMany($value["precios"]);
+            }
+        }
         return [
             "mensaje" => "Se ha agregado el producto con éxito"
         ];
     }
-    public function modificando(Request $request, $producto){
-        return redirect()->route('catalogo.index');
+    public function modificando(Request $request, producto $producto){
+        Log::info($request->producto);
+        $producto->update($request->producto);
+        $categoria = $producto->categorias->nombre ?? '';
+        $presentacion = $producto->presentacion ?? '';
+        $codigoProducto = 'NIT' . strtoupper(substr($categoria, 0, 2)) . $presentacion . $producto->id;
+        $producto->codigo = $codigoProducto;
+        $producto->save();
+        $producto->precios()->delete();
+        $producto->variantes()->each(function ($variante) {
+            $variante->precios()->delete();
+            $variante->delete();
+        });
+
+        if ($request->producto["SinVariantes"] == 'true') {
+            $producto->precios()->createMany($request->producto["precios"]);
+        } else {
+            foreach ($request->producto["variantes"] as $key => $value) {
+                $variante = variante::create([
+                    'nombre' => $key,
+                    'producto_id' => $producto->id,
+                ]);
+                $codigoVariante = $codigoProducto . '-' . $variante->id;
+                $variante->codigo = $codigoVariante;
+                $variante->save();
+
+                $variante->precios()->createMany($value["precios"]);
+            }
+        }
+        return [
+            "mensaje" => "Se ha modificado el producto con éxito"
+        ];
     }
     public function agregarCategoria(Request $request){
         $resultado = [
@@ -60,8 +111,11 @@ class catalogocontroller extends Controller
         $categoria = new categoria();
         $categoria->nombre = strtoupper(trim($request->categoria));
         $categoria->save();
-        $resultado["idCategoria"] = $categoria->id;
 
+
+
+
+        $resultado["idCategoria"] = $categoria->id;
         $resultado["resultado"] = true;
         $resultado["mensaje"] = "Se ha creado la categoria con éxito";
         $resultado["nombreCategoria"] = $categoria->nombre;
@@ -110,5 +164,12 @@ class catalogocontroller extends Controller
             'nombrePrecios' => $nombrePrecios,
             'nombreProducto' => $producto->nombreCorto
         ];
+    }
+
+    public function borrar($id){
+        $producto = Producto::findOrFail($id);
+        $producto->fechaBorrado = now();
+        $producto->save();
+        return response()->json(['success' => true]);
     }
 }

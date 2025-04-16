@@ -219,6 +219,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
         route::post('/agregar', 'agregando')->name('catalogo.agregar');
         route::post('/modificar-{producto}', 'modificando')->name('catalogo.modificar');
         route::post('/categoria/agregar', 'agregarCategoria')->name('catalogo.agregarCategoria');
+        route::post('/borrar-{id}', 'borrar')->name('catalogo.borrar');
         route::get('/cargar-variantes-{producto}', 'cargarVariantes')->name('catalogo.cargarVariantes');
         route::post('/crear-variante-{producto}', 'crearVariante')->name('catalogo.crearVariante');
         route::get('/cargar-precios-{producto}', 'cargarPrecios')->name('catalogo.cargarPrecios');

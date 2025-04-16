@@ -11,10 +11,10 @@ Catálogo
         <div class="card mb-4">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
-                    <a href="" target="_blank" class="me-3">
+                    <a href="" target="_blank" class="me-3 d-none">
                         <button class="btn btn-primary">Importar de Excel</button>
                     </a>
-                    <a href="" target="_blank" class="me-3">
+                    <a href="" target="_blank" class="me-3 d-none">
                         <button class="btn btn-secondary">Exportar a Excel</button>
                     </a>
                     <a href="{{route('catalogo.agregar')}}">
@@ -40,10 +40,8 @@ Catálogo
                                 <td>{{$producto->descripcion}}</td>
                                 <td>
                                     <input type="hidden" value="{{$producto->id}}">
-                                    <a href="#" class="btn btn-primary cargarModalVariantes">Variantes</a>
-                                    <a href="#" class="btn btn-primary cargarModalPrecios">Precios</a>
                                     <a href="{{route('catalogo.modificar', $producto->id)}}" class="btn btn-secondary">modificar</a>
-                                    <a href="#" class="btn btn-danger">Eliminar</a>
+                                    <a href="#" class="btn btn-danger btn-eliminar" data-id="{{ $producto->id }}">Eliminar</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -299,6 +297,53 @@ Catálogo
             )
         }
 
+    });
+
+MEXICANA, HAWAINA,
+
+
+
+    $('.btn-eliminar').on('click', function (e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Se eliminarán también los datos relacionados. Multimedia, precios y variantes",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/productos/catalogo/borrar-${id}`, // Ajusta esta ruta según tus rutas
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: id
+                    },
+                    success: function (response) {
+                        Swal.fire(
+                            '¡Eliminado!',
+                            'El producto ha sido eliminado.',
+                            'success'
+                        ).then(() => {
+                            location.reload(); // Refresca la tabla
+                        });
+                    },
+                    error: function (xhr) {
+                        Swal.fire(
+                            'Error',
+                            'Ocurrió un error al intentar eliminar el producto.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     });
 
 </script>

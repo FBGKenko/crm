@@ -22,4 +22,8 @@ class variante extends Model
     public function precios(){
         return $this->hasMany(precio::class, 'variante_id');
     }
+
+    public function producto(){
+        return $this->belongsTo(producto::class, 'producto_id');
+    }
 }
