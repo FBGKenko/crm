@@ -7,7 +7,7 @@ Catálogo
 @section('cuerpo')
     <br>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Catálogo</h1>
+        <h1 class="mt-4">Catálogo de productos</h1>
         <div class="card mb-4">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
@@ -298,8 +298,6 @@ Catálogo
         }
 
     });
-
-MEXICANA, HAWAINA,
 
 
 
