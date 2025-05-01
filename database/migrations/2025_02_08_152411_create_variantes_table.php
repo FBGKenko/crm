@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('codigo')->nullable();
             $table->string('sku')->nullable();
-            $table->string('nombre')->nullable();
+            $table->text('nombre')->nullable();
             $table->string('presentacion')->nullable();
             $table->integer('cantidad')->nullable();
             $table->string('unidad')->nullable();

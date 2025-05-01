@@ -223,6 +223,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
         route::get('/cargar-variantes-{producto}', 'cargarVariantes')->name('catalogo.cargarVariantes');
         route::post('/crear-variante-{producto}', 'crearVariante')->name('catalogo.crearVariante');
         route::get('/cargar-precios-{producto}', 'cargarPrecios')->name('catalogo.cargarPrecios');
+        Route::post('/importar', 'importar')->name('catalogo.importar');
 
     });
     Route::prefix('inventario')->controller(InventarioController::class)->group(function (){

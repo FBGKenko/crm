@@ -11,8 +11,8 @@ Catálogo
         <div class="card mb-4">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
-                    <a href="" target="_blank" class="me-3 d-none">
-                        <button class="btn btn-primary">Importar de Excel</button>
+                    <a href="#" id="btnImportarExcel" class="me-3">
+                        <button type="button" class="btn btn-primary">Importar de Excel</button>
                     </a>
                     <a href="" target="_blank" class="me-3 d-none">
                         <button class="btn btn-secondary">Exportar a Excel</button>
@@ -158,6 +158,27 @@ Catálogo
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalImportarExcel" tabindex="-1" aria-labelledby="modalImportarExcelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('catalogo.importar') }}" method="POST" enctype="multipart/form-data" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalImportarExcelLabel">Importar desde Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="archivoExcel" class="form-label">Selecciona un archivo Excel</label>
+                        <input type="file" class="form-control" name="file" id="archivoExcel" accept=".xlsx,.xls" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Importar</button>
+                </div>
+            </form>
+        </div>
+      </div>
 @endsection
 
 @section('scripts')
@@ -342,6 +363,11 @@ Catálogo
                 });
             }
         });
+    });
+
+    $('#btnImportarExcel').on('click', function (e) {
+        e.preventDefault();
+        $('#modalImportarExcel').modal('show');
     });
 
 </script>

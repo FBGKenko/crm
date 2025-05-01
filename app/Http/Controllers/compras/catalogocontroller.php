@@ -5,12 +5,14 @@ namespace App\Http\Controllers\compras;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\catalogoRequest;
 use App\Http\Requests\varianteRequest;
+use App\Imports\CatalogoProductoImport;
 use App\Models\categoria;
 use App\Models\precio;
 use App\Models\producto;
 use App\Models\variante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class catalogocontroller extends Controller
 {
@@ -171,5 +173,15 @@ class catalogocontroller extends Controller
         $producto->fechaBorrado = now();
         $producto->save();
         return response()->json(['success' => true]);
+    }
+
+    public function importar(Request $request){
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new CatalogoProductoImport, $request->file('file'));
+
+        return back()->with('success', 'Usuarios importados correctamente.');
     }
 }
