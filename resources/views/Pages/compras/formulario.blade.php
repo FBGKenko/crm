@@ -5,8 +5,44 @@
 @endsection
 
 @section('cuerpo')
+    <style>
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .remove-btn, .remove-btn-existing {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
     <br>
-    <form id="formularioPrincipal" action="" method="post">
+    <form id="formularioPrincipal" action="" method="post" enctype="multipart/form-data">
         @csrf
         <div class="container-fluid px-4">
             <div class="d-flex justify-content-between">
@@ -91,6 +127,25 @@
                         <label for="" class="form-label">Código Tienda Camarena</label>
                         <input type="text" name="producto[claveCamarena]" class="form-control" maxlength="255">
                     </div> --}}
+                </div>
+            </div>
+            {{-- CONTENEDOR IMAGENES --}}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between">
+                    <h4>Multimedia de Producto</h4>
+                    <button type="button" id="addImageBtn" class="btn btn-primary" >Agregar imágenes</button>
+                </div>
+                <div class="card-body row">
+                    <input type="file" id="imageInput" name="images[]" multiple hidden multiple accept="image/*">
+                    <div class="image-preview" id="imagePreview">
+                        @foreach ($producto->imagenes as $imagen)
+                            <div class="preview-item" data-id="{{ $imagen->id }}">
+                                <img src="{{ asset('storage/' . $imagen->ruta) }}" width="120">
+                                <button type="button" class="remove-btn-existing" data-id="{{ $imagen->id }}">×</button>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div id="inputs-delete"></div>
                 </div>
             </div>
             {{-- CONTENEDOR PRECIOS --}}
@@ -189,13 +244,8 @@
                     </div>
                 </div>
             </div>
-
-
-
-
             <small class="mt-3">(*) Son campos obligatorios para el formulario</small>
         </div>
-
     </form>
     <div class="modal fade" id="modalAgregarVariante" tabindex="-1" aria-labelledby="modalAgregarVarianteLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -257,83 +307,21 @@
             </div>
         </div>
     </div>
-    {{-- <div class="modal fade" id="modalAgregarVariante" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Agregar Variante</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formularioAgragarVariante" action="" method="post">
-                        @csrf
-                        <label for="" class="form-label">Código</label>
-                        <input type="text" name="codigo" class="form-control">
-                        <label for="" class="form-label">Sku</label>
-                        <input type="text" name="sku" class="form-control">
-                        <label for="" class="form-label">Nombre</label>
-                        <input type="text" name="nombre" class="form-control">
-                        <label for="" class="form-label">Presentación</label>
-                        <input type="text" name="presentacion" class="form-control">
-                        <label for="" class="form-label">Cantidad</label>
-                        <input type="number" name="cantidad" class="form-control">
-                        <label for="" class="form-label">Unidad</label>
-                        <select name="unidad" class="form-select">
-                            <option value="0" selected disabled>Seleccione una opcion</option>
-                            <option>LITRO</option>
-                            <option>PIEZA</option>
-                            <option>PAQUETE</option>
-                        </select>
-                        <div class="col">
-                            <label for="" class="form-label">Descripción</label>
-                            <textarea name="descripcion" rows="4" class="form-control"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" id="btnGuardarVariante" class="btn btn-primary">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-    {{-- <div class="modal fade" id="modalImagenes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title me-3" id="staticBackdropLabel">Imagenes</h5>
-                    <button type="button" id="btnAgregarPrecioModal" class="btn btn-primary">Agregar precio</button>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table id="tablaPrecios" class="">
-                        <thead class="table-dark">
-                            <th>Precio</th>
-                            <th>Descripción</th>
-                            <th>opciones</th>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 @endsection
 
 @section('scripts')
 <script src="//cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css"></script>
 <script text="text/javascript">
 
+    let selectedFiles = [];
     var arrayVariantes = [];
     var idVariante = 1;
     var idVarianteSeleccionada = 0;
     var banderaSinVariantes = {{isset($producto) ? (count($producto->variantes) == 0 ? 'true' : 'false') : 'true'}};
     var contadorPrecios = {{isset($producto) ? count($producto->precios) : 0}};
+    const modalVariante = new bootstrap.Modal(document.getElementById('modalAgregarVariante'));
+    let varianteEditando = null;
+
     $(document).ready(function () {
         $('.btnBorrarPrecio').click(borrarPrecio)
     });
@@ -386,8 +374,16 @@
         })
     });
     $('#btnGuardarFormulario').click(function(){
-        var datosForm = $('#formularioPrincipal').serializeArray();
-        datosForm.push({name: "producto[SinVariantes]", value: banderaSinVariantes});
+        var formElement = document.getElementById('formularioPrincipal');
+        var datosForm = new FormData(formElement);
+        datosForm.append('producto[SinVariantes]', banderaSinVariantes);
+        selectedFiles.forEach(file => {
+            if (file) {
+                datosForm.append('images[]', file);
+            }
+        });
+        // var datosForm = $('#formularioPrincipal').serializeArray();
+        // datosForm.push({name: "producto[SinVariantes]", value: banderaSinVariantes});
         var resultado = validarFormulario(datosForm);
         if(!resultado.resultado){
             Swal.fire({
@@ -402,6 +398,8 @@
             type: "post",
             url: "{{$ruta}}",
             data: datosForm,
+            contentType: false,
+            processData: false,
             success: function (response) {
                 Swal.fire({
                     title: "Éxito",
@@ -441,10 +439,11 @@
             resultado: true,
             mensaje: "",
         }
-        console.log(datos);
-        if(datos[4].value.trim() == ""){
-            respuesta.resultado = false
-            respuesta.mensaje += "El campo Nombre del Producto es requerido.\n"
+        for (let campo of datos.entries()) {
+            if(campo[0] == "producto[nombreCorto]" && campo[1].trim() == ""){
+                respuesta.resultado = false
+                respuesta.mensaje += "El campo Nombre del Producto es requerido.\n"
+            }
         }
         return respuesta;
     }
@@ -466,12 +465,6 @@
     function borrarPrecio(){
         $(this).closest('tr').remove();
     }
-
-
-    const modalVariante = new bootstrap.Modal(document.getElementById('modalAgregarVariante'));
-    let varianteEditando = null; // <-- saber si estamos editando una variante existente
-
-    // Mostrar modal para agregar o editar
     $('#btnModalAgregarVariante').click(function () {
         $('#nombreVariante').val('');
         $('#tablaPreciosModal tbody').empty();
@@ -479,8 +472,6 @@
 
         modalVariante.show();
     });
-
-    // Botón para agregar precio dentro del modal
     $('#btnAgregarPrecioModal').click(function () {
         const row = `
             <tr>
@@ -498,8 +489,6 @@
         `;
         $('#tablaPreciosModal tbody').append(row);
     });
-
-    // Guardar variante
     $('#btnGuardarVariante').click(function () {
         const nombreVariante = $('#nombreVariante').val().trim();
         if (!nombreVariante) return alert('Ingrese el nombre de la variante');
@@ -566,7 +555,6 @@
         $('#btnModalAgregarVariante').removeClass('d-none');
         $('#preguntaVariantes').hide();
     });
-
     $(document).on('click', '.btnEditarVariante', function () {
         const fila = $(this).closest('tr');
         const nombreVariante = fila.data('variante');
@@ -602,7 +590,6 @@
     $(document).on('click', '.btnBorrarVariante', function () {
         $(this).closest('tr').remove();
     });
-
     $('#btnSiAgregarVariante').click(function () {
         $('#tablaPrecios').closest('.card').addClass('d-none'); // solo ocultar
         $('#contenedorTablaVariantes').removeClass('d-none');
@@ -611,9 +598,49 @@
         banderaSinVariantes = false;
         $('#preguntaVariantes').hide();
     });
-
     $('#btnNoAgregarVariante').click(function () {
         $('#preguntaVariantes').hide();
+    });
+
+
+
+    $('#addImageBtn').click(() => {
+        $('#imageInput').click();
+    });
+    $('#imageInput').on('change', function(e) {
+        let files = Array.from(e.target.files);
+
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const index = selectedFiles.push(file) - 1;
+                $('#imagePreview').append(`
+                    <div class="preview-item" data-index="${index}">
+                        <img src="${event.target.result}">
+                        <button type="button" class="remove-btn" data-index="${index}">×</button>
+                    </div>
+                `);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Reset input to allow same file selection again
+        $(this).val('');
+    });
+    $(document).on('click', '.remove-btn', function() {
+        const index = $(this).data('index');
+        selectedFiles[index] = null; // Marcar como eliminada
+        $(this).parent().remove();
+    });
+
+    $(document).on('click', '.remove-btn-existing', function () {
+        const id = $(this).data('id');
+
+        // 1. Agrega input oculto con el ID a eliminar
+        $('#inputs-delete').append(`<input type="hidden" name="delete_ids[]" value="${id}">`);
+
+        // 2. Oculta la vista previa
+        $(this).parent().remove();
     });
 </script>
 @endsection

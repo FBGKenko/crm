@@ -35,7 +35,7 @@ Catálogo
                         @foreach ($listaProductos as $producto)
                             <tr>
                                 <td>{{$producto->id}}</td>
-                                <td>{{$producto->categorias->nombre}}</td>
+                                <td>{{$producto->categorias->nombre ?? 'NO DEFINIDO'}}</td>
                                 <td>{{$producto->nombreCorto}}</td>
                                 <td>{{$producto->descripcion}}</td>
                                 <td>

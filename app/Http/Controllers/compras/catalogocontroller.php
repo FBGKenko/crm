@@ -7,11 +7,13 @@ use App\Http\Requests\catalogoRequest;
 use App\Http\Requests\varianteRequest;
 use App\Imports\CatalogoProductoImport;
 use App\Models\categoria;
+use App\Models\imagenProducto;
 use App\Models\precio;
 use App\Models\producto;
 use App\Models\variante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class catalogocontroller extends Controller
@@ -36,15 +38,21 @@ class catalogocontroller extends Controller
         return view('pages.compras.formulario', compact('titulo', 'listaCategorias', 'producto', 'ruta'));
     }
     public function agregando(catalogoRequest $request){
-        Log::info($request->producto);
         $productoNuevo = producto::create($request->producto);
         $categoria = $productoNuevo->categorias->nombre ?? '';
         $presentacion = $productoNuevo->presentacion ?? '';
         $codigoProducto = 'NIT' . strtoupper(substr($categoria, 0, 2)) . $presentacion . $productoNuevo->id;
         $productoNuevo->codigo = $codigoProducto;
         $productoNuevo->save();
+        foreach ($request->file('images') as $image) {
+            $path = $image->store('product_images', 'public');
+            imagenProducto::create([
+                'producto_id' => $productoNuevo->id,
+                'ruta' => $path,
+            ]);
+        }
         if($request->producto["SinVariantes"] == 'true'){
-            $productoNuevo->precios()->createMany($request->producto["precios"]);
+            $productoNuevo->precios()->createMany($request->producto["precios"] ?? []);
         }
         else{
             foreach($request->producto["variantes"] as $key => $value){
@@ -55,7 +63,7 @@ class catalogocontroller extends Controller
                 $codigoVariante = $codigoProducto . '-' . $variante->id;
                 $variante->codigo = $codigoVariante;
                 $variante->save();
-                $variante->precios()->createMany($value["precios"]);
+                $variante->precios()->createMany($value["precios"] ?? []);
             }
         }
         return [
@@ -76,8 +84,27 @@ class catalogocontroller extends Controller
             $variante->delete();
         });
 
+        // 1. Eliminar imágenes marcadas
+        if ($request->has('delete_ids')) {
+            foreach ($request->delete_ids as $id) {
+                $imagen = imagenProducto::find($id);
+                if ($imagen) {
+                    Storage::disk('public')->delete($imagen->ruta); // borra del storage
+                    $imagen->delete(); // borra del DB
+                }
+            }
+        }
+
+        foreach ($request->file('images') ?? [] as $image) {
+            $path = $image->store('product_images', 'public');
+            imagenProducto::create([
+                'producto_id' => $producto->id,
+                'ruta' => $path,
+            ]);
+        }
+
         if ($request->producto["SinVariantes"] == 'true') {
-            $producto->precios()->createMany($request->producto["precios"]);
+            $producto->precios()->createMany($request->producto["precios"] ?? []);
         } else {
             foreach ($request->producto["variantes"] as $key => $value) {
                 $variante = variante::create([
@@ -88,7 +115,7 @@ class catalogocontroller extends Controller
                 $variante->codigo = $codigoVariante;
                 $variante->save();
 
-                $variante->precios()->createMany($value["precios"]);
+                $variante->precios()->createMany($value["precios"] ?? []);
             }
         }
         return [

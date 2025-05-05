@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('imagen_productos', function (Blueprint $table) {
             $table->id();
-            $table->text('imagenBase64')->nullable();
+            $table->text('ruta')->nullable();
             $table->foreignId('variante_id')->nullable()->constrained();
             $table->foreignId('producto_id')->nullable()->constrained();
             $table->timestamps();
