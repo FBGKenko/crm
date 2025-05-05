@@ -40,6 +40,10 @@
             cursor: pointer;
             font-size: 14px;
         }
+        #modalImagenGrande .modal-content {
+            border: none;
+            background-color: transparent;
+        }
     </style>
     <br>
     <form id="formularioPrincipal" action="" method="post" enctype="multipart/form-data">
@@ -304,6 +308,15 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" id="btnGuardarCategoria" class="btn btn-primary">Guardar</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalImagenGrande" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark">
+            <div class="modal-body text-center">
+                <img id="imagenAmpliada" src="" class="img-fluid rounded">
+            </div>
             </div>
         </div>
     </div>
@@ -641,6 +654,11 @@
 
         // 2. Oculta la vista previa
         $(this).parent().remove();
+    });
+    $(document).on('click', '#imagePreview img', function () {
+        const src = $(this).attr('src');
+        $('#imagenAmpliada').attr('src', src);
+        $('#modalImagenGrande').modal('show');
     });
 </script>
 @endsection
