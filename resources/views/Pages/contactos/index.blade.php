@@ -42,9 +42,9 @@ Tabla de Simpatizantes
         <div class="card mb-4">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
-                    {{-- <a href="" target="_blank" class="me-3">
-                        <button class="btn btn-primary">Exportar a Excel</button>
-                    </a> --}}
+                    <a href="{{route('contactos.exportarContactos')}}" target="_blank" class="me-3">
+                        <button class="btn btn-success">Exportar a Excel</button>
+                    </a>
                     <a href="{{route('contactos.agregar')}}">
                         <button class="btn btn-primary">Agregar Persona</button>
                     </a>

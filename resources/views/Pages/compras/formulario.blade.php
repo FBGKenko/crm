@@ -334,10 +334,38 @@
     var contadorPrecios = {{isset($producto) ? count($producto->precios) : 0}};
     const modalVariante = new bootstrap.Modal(document.getElementById('modalAgregarVariante'));
     let varianteEditando = null;
+    let configuracionPrecios = @json($configuracionPrecios);
+    let configuracionPreciosArray;
+    let productoSinPrecio = @json($productoSinPrecio);
 
     $(document).ready(function () {
         $('.btnBorrarPrecio').click(borrarPrecio)
+        configuracionPreciosArray = Object.entries(configuracionPrecios);
+        cargarPerfilPrecios()
+        console.log(productoSinPrecio);
     });
+    function cargarPerfilPrecios(){
+        //FOREACH RECORRIENDO CONFIGURACIONPRECIOS
+        if(!productoSinPrecio.sinPrecios || productoSinPrecio.variantes){
+            return;
+        }
+        configuracionPreciosArray.forEach((precio, index) => {
+            $('#tablaPrecios tbody').append(
+                $('<tr>').append(
+                    $('<td>').append($('<input>').attr({name: `producto[precios][${contadorPrecios}][nombre]`, class: 'form-control'}).val(precio[0])),
+                    $('<td>').append(
+                        $('<div class="input-group">').append(
+                            $('<span class="input-group-text">').text('$'),
+                            $('<input type="number" class="form-control precio-monto-input">').attr('name', `producto[precios][${contadorPrecios}][monto]`).attr('placeholder', '0.00').attr('min', 0).val(precio[1])
+                        )
+                    ),
+                    $('<td>').append($('<button type="button">').attr({class: 'btn btn-danger'}).text('Borrar').click(borrarPrecio)),
+                )
+            )
+            contadorPrecios++;
+        });
+
+    }
     $("#btnCrearCategoria").on('click', abrirModalCategoria);
     $("#btnCrearVariante").on('click', abrirModalVariante);
     $('#btnGuardarCategoria').click(function(){
@@ -414,13 +442,22 @@
             contentType: false,
             processData: false,
             success: function (response) {
-                Swal.fire({
-                    title: "Éxito",
-                    text: response.mensaje,
-                    icon: "success"
-                }).then((resultado) => {
-                    location.href = "{{route('catalogo.index')}}"
-                })
+                if(response.respuesta){
+                    Swal.fire({
+                        title: "Éxito",
+                        text: response.mensaje,
+                        icon: "success"
+                    }).then((resultado) => {
+                        location.href = "{{route('catalogo.index')}}"
+                    })
+                }
+                else{
+                    Swal.fire({
+                        title: "Error",
+                        text: response.mensaje,
+                        icon: "error"
+                    })
+                }
             },
             error: function( data, textStatus, jqXHR){
                 if (jqXHR.status === 0) {
@@ -482,7 +519,25 @@
         $('#nombreVariante').val('');
         $('#tablaPreciosModal tbody').empty();
         varianteEditando = null;
-
+        configuracionPreciosArray.forEach((precio, index) => {
+            const nombre = precio[0];
+            const monto = precio[1];
+            const row = `
+                <tr>
+                    <td><input type="text" class="form-control precio-nombre-input" value="${nombre}" placeholder="Nombre del precio"></td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control precio-monto-input" placeholder="0.00" min="0" value="${monto}">
+                        </div>
+                    </td>
+                    <td class="text-center">
+                    <input type="checkbox" class="form-check-input precio-seleccionado" checked>
+                    </td>
+                </tr>
+            `;
+            $('#tablaPreciosModal tbody').append(row);
+        });
         modalVariante.show();
     });
     $('#btnAgregarPrecioModal').click(function () {
@@ -614,9 +669,7 @@
     $('#btnNoAgregarVariante').click(function () {
         $('#preguntaVariantes').hide();
     });
-
-
-
+    //MANEJO DE IMAGENES
     $('#addImageBtn').click(() => {
         $('#imageInput').click();
     });
@@ -645,7 +698,6 @@
         selectedFiles[index] = null; // Marcar como eliminada
         $(this).parent().remove();
     });
-
     $(document).on('click', '.remove-btn-existing', function () {
         const id = $(this).data('id');
 

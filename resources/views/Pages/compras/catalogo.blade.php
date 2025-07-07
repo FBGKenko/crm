@@ -14,8 +14,8 @@ Catálogo
                     <a href="#" id="btnImportarExcel" class="me-3">
                         <button type="button" class="btn btn-primary">Importar de Excel</button>
                     </a>
-                    <a href="" target="_blank" class="me-3 d-none">
-                        <button class="btn btn-secondary">Exportar a Excel</button>
+                    <a href="{{route('catalogo.exportar')}}" target="_blank" class="me-3">
+                        <button class="btn btn-success">Exportar a Excel</button>
                     </a>
                     <a href="{{route('catalogo.agregar')}}">
                         <button class="btn btn-success">Agregar Producto</button>
@@ -203,6 +203,7 @@ Catálogo
         });
     });
 
+    //DESUSO
     $('.cargarModalVariantes').click(function (){
         idProductoSeleccionado = $(this).parent().children().first().val();
         var url = "{{route('catalogo.cargarVariantes', 'idProducto')}}";
@@ -264,7 +265,7 @@ Catálogo
             )
         });
     }
-
+    // DESUSO
     $('.cargarModalPrecios').click(function(){
         idProductoSeleccionado = $(this).parent().children().first().val();
         var url = "{{route('catalogo.cargarPrecios', 'idProducto')}}";

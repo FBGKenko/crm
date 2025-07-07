@@ -640,5 +640,9 @@ class personaController extends Controller
     function filtrarMunicipios($entidad){
 
     }
+
+    function exportarContactos(Request $request){
+        return "AAAAAAAAAAAA";
+    }
 }
 

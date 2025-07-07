@@ -100,6 +100,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::get('/ficha-{persona}', 'fichaTecnica')->name('contactos.fichaTecnica');
         Route::get('/asignar-empresas-{persona}', 'cargarEmpresasAsignadas')->name('contactos.cargarEmpresasAsignadas');
         Route::post('/asignar-empresas-{persona}', 'gardarEmpresasAsignadas')->name('contactos.gardarEmpresasAsignadas');
+        Route::get('/exportar', 'exportarContactos')->name('contactos.exportarContactos');
     });
     Route::prefix('empresas')->controller(EmpresaController::class)->group(function() {
         Route::get('/', 'index')->name('empresas.index');
@@ -224,7 +225,7 @@ Route::prefix('/')->middleware('auth')->group(function (){
         route::post('/crear-variante-{producto}', 'crearVariante')->name('catalogo.crearVariante');
         route::get('/cargar-precios-{producto}', 'cargarPrecios')->name('catalogo.cargarPrecios');
         Route::post('/importar', 'importar')->name('catalogo.importar');
-
+        Route::get('/exportar', 'exportar')->name('catalogo.exportar');
     });
     Route::prefix('inventario')->controller(InventarioController::class)->group(function (){
         route::get('/', 'index')->name('inventario.index');

@@ -125,7 +125,7 @@
 
                             <li>
                                 <a href="#submenu3" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
-                                    <i class="fas fa-id-card"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Listas</span>
+                                    <i class="fas fa-id-card"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Contactos</span>
                                 </a>
                                 <ul class="collapse  nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
                                         <li class="w-100">
