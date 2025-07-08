@@ -306,7 +306,9 @@ class catalogocontroller extends Controller
             LEFT JOIN variantes v ON v.producto_id = p.id
             LEFT JOIN precios pr
                 ON (pr.variante_id = v.id OR (v.id IS NULL AND pr.producto_id = p.id))
-            GROUP BY p.id, v.id
+            GROUP BY
+                p.id, p.codigo, c.nombre, p.nombreCorto, p.descripcion,
+                p.presentacion, v.nombre, v.id
         ";
 
         $resultado = DB::select($sql);
