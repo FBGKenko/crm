@@ -27,8 +27,9 @@ class PedidosController extends Controller
                 COUNT(pedido_productos.id) as total,
                 ROUND(SUM(CASE WHEN pedido_productos.estatus = 'ENTREGADO' THEN 1 ELSE 0 END) / COUNT(pedido_productos.id) * 100, 2) as porcentaje_avance
             ")
-            ->groupBy('pedidos.id')
+            ->groupBy('pedidos.id', 'pedidos.folio', 'pedidos.estatus', 'pedidos.created_at', 'pedidos.updated_at', 'pedidos.persona_id', 'nombre_completo')
             ->get();
+            return $pedidos;
         return view('Pages.pedidos.index', compact('pedidos'));
     }
 
