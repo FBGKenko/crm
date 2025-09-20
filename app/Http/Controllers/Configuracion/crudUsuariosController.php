@@ -197,7 +197,7 @@ class crudUsuariosController extends Controller
                 $usuario->telefono = $formulario->telefono;
                 $usuario->email = strtoupper($formulario->correo);
                 $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
-                $usuario->persona_id = $formulario->idDistribuidor;
+                $usuario->persona_id = $formulario->idDistribuidor == -1 ? null : $formulario->idDistribuidor;
                 if($formulario->nivelAcceso != 'TODO'){
                     if(count($formulario->niveles) > 0){
                         $nivelesConcatenados = '';
