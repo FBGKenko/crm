@@ -29,7 +29,6 @@ class PedidosController extends Controller
             ")
             ->groupBy('pedidos.id', 'pedidos.folio', 'pedidos.estatus', 'pedidos.created_at', 'pedidos.updated_at', 'pedidos.persona_id', 'nombre_completo')
             ->get();
-            return $pedidos;
         return view('Pages.pedidos.index', compact('pedidos'));
     }
 
