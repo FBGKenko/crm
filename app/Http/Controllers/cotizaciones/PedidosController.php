@@ -38,7 +38,7 @@ class PedidosController extends Controller
         ->map(function($item){
             $imagen = $item->imagenes()->first() != null ?
                 '/storage/' . $item->imagenes()->first()->ruta :
-                'img/img-default.jpg';
+                '/img/img-default.jpg';
             $precio = $item->precios()
                 ->where('nombre', 'PRECIO_DISTRIBUIDOR')
                 ->select('monto')
@@ -103,7 +103,7 @@ class PedidosController extends Controller
         $productos = $productos->map(function($item){
             $imagen = $item->producto->imagenes()->first() != null ?
                 '/storage/' . $item->producto->imagenes()->first()->ruta :
-                'img/img-default.jpg';
+                '/img/img-default.jpg';
             return (object)[
                 'id' => $item->id,
                 'producto' => $item->producto->nombreCorto,
