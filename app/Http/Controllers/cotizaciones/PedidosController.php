@@ -62,7 +62,7 @@ class PedidosController extends Controller
 
         $pedido = pedido::create([
             'estatus' => 'PENDIENTE',
-            'persona_id' => Auth::user()->persona->id,
+            'persona_id' => Auth::user()->persona != null ? Auth::user()->persona->id : null,
         ]);
         $pedido->folio = 'PED-' . $pedido->id;
         $pedido->save();
