@@ -15,6 +15,7 @@ use App\Http\Controllers\Contacto\tablaSimpatizantesController;
 use App\Http\Controllers\cotizaciones\CotizacionController;
 use App\Http\Controllers\cotizaciones\FacturaController;
 use App\Http\Controllers\cotizaciones\InventarioController;
+use App\Http\Controllers\cotizaciones\PedidosController;
 use App\Http\Controllers\crudPromotoresController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\Encuestas\crudEncuestasController;
@@ -254,6 +255,14 @@ Route::prefix('/')->middleware('auth')->group(function (){
             route::get('/', 'index')->name('importar.index');
         });
     });
+
+    Route::prefix('pedidos')->controller(PedidosController::class)->group(function (){
+        route::get('/', 'index')->name('pedidos.index');
+        route::get('/crear', 'vistaCrear')->name('pedidos.vistaCrear');
+        route::post('/crear', 'hacerPedido')->name('pedidos.hacerPedido');
+        route::get('/ver-detalles-{pedido}', 'vistaVer')->name('pedidos.vistaVer');
+    });
+
     Route::prefix('integraciones')->controller(integracionesController::class)->group(function(){
         route::get('/', 'index')->name('integracion.index');
         route::post('/crear', 'crear')->name('integracion.crear');

@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('seccion_colonias', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('colonia_id')->constrained();
-            $table->foreignId('seccion_id')->constrained();
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('persona_id')->nullable()->constrained('personas')->onDelete('set null');
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('seccion_colonias');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['persona_id']);
+            $table->dropColumn('persona_id');
+        });
     }
 };

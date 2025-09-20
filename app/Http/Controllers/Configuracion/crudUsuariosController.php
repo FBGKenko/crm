@@ -8,6 +8,7 @@ use App\Models\bitacora;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
 use App\Models\entidad;
+use App\Models\persona;
 use App\Models\seccion;
 use App\Models\User;
 use Exception;
@@ -31,8 +32,38 @@ class crudUsuariosController extends Controller
         $bitacora->user_id = $user->id;
         $bitacora->save();
 
+        $distribuidores = persona::where('programa', 1)
+            ->select(
+                'id',
+                DB::raw("
+                    CONCAT(
+                        CASE WHEN apodo != '' THEN
+                            CONCAT(apodo, ', ')
+                        ELSE
+                            ''
+                        END,
+                        CASE WHEN nombres != '' THEN
+                            nombres
+                        ELSE
+                            ''
+                        END,
+                        CASE WHEN apellido_paterno != '' THEN
+                            CONCAT(' ', apellido_paterno)
+                        ELSE
+                            ''
+                        END,
+                        CASE WHEN apellido_materno != '' THEN
+                            CONCAT(' ', apellido_materno)
+                        ELSE
+                            ''
+                        END
+                    )
+                AS nombre
+            "))
+            ->get();
+
         $roles = Role::where('name', '!=', 'SUPER ADMINISTRADOR')->get(['name']);
-        return view('Pages.usuarios.crudUsuarios', compact('roles'));
+        return view('Pages.usuarios.crudUsuarios', compact('roles', 'distribuidores'));
     }
     public function todosUsuarios(Request $formulario){
         $user = auth()->user();
@@ -106,6 +137,7 @@ class crudUsuariosController extends Controller
                 $usuario->email = strtoupper($formulario->correo);
                 $usuario->password = Hash::make($formulario->contrasenia);
                 $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
+                $usuario->persona_id = $formulario->idDistribuidor;
                 if($formulario->nivelAcceso != 'TODO'){
                     if(count($formulario->niveles) > 0){
                         $nivelesConcatenados = '';
@@ -165,6 +197,7 @@ class crudUsuariosController extends Controller
                 $usuario->telefono = $formulario->telefono;
                 $usuario->email = strtoupper($formulario->correo);
                 $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
+                $usuario->persona_id = $formulario->idDistribuidor;
                 if($formulario->nivelAcceso != 'TODO'){
                     if(count($formulario->niveles) > 0){
                         $nivelesConcatenados = '';

@@ -43,6 +43,9 @@ class persona extends Model
         'coordinadorDe',
         'funcionAsignada',
     ];
+    public function pedidos(){
+        return $this->hasMany(pedido::class, 'persona_id');
+    }
     public function identificacion(){
         return $this->hasOne(identificacion::class);
     }
@@ -64,6 +67,10 @@ class persona extends Model
 
     public function relacionPersonaEmpresa(){
         return $this->hasMany(RelacionPersonaEmpresa::class, 'persona_id');
+    }
+
+    public function user(){
+        return $this->hasOne(User::class, 'persona_id');
     }
 
     public static function crear($response){

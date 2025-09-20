@@ -40,6 +40,7 @@ Catálogo
                                 <td>{{$producto->descripcion}}</td>
                                 <td>
                                     <input type="hidden" value="{{$producto->id}}">
+                                    <a href="#" class="btn btn-primary btnAbrirModal">Ajustar existencia</a>
                                     <a href="{{route('catalogo.modificar', $producto->id)}}" class="btn btn-secondary">modificar</a>
                                     <a href="#" class="btn btn-danger btn-eliminar" data-id="{{ $producto->id }}">Eliminar</a>
                                 </td>
@@ -179,6 +180,53 @@ Catálogo
             </form>
         </div>
       </div>
+      <!-- Botón para abrir el modal -->
+<button id="btnAbrirModal" class="btn btn-primary">
+  Controlar Existencia
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="modalExistencia" tabindex="-1" aria-labelledby="modalExistenciaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Encabezado -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalExistenciaLabel">Control de Existencia de Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <!-- Cuerpo -->
+      <div class="modal-body">
+        <form id="formExistencia">
+          <div class="mb-3">
+            <label for="existencia" class="form-label">Existencia</label>
+            <input type="number" class="form-control" id="existencia" name="existencia" placeholder="Cantidad disponible" required>
+          </div>
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Escriba una nota o comentario"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <!-- Pie -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" form="formExistencia" class="btn btn-success">Guardar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Scripts necesarios -->
+
+
+<script>
+
+</script>
+
 @endsection
 
 @section('scripts')
@@ -369,6 +417,28 @@ Catálogo
     $('#btnImportarExcel').on('click', function (e) {
         e.preventDefault();
         $('#modalImportarExcel').modal('show');
+    });
+
+    $(document).ready(function() {
+        // Inicializar modal con Bootstrap 5
+        var modalExistencia = new bootstrap.Modal(document.getElementById('modalExistencia'));
+
+        // Abrir modal al dar clic en el botón
+        $(".btnAbrirModal").on("click", function() {
+        modalExistencia.show();
+        });
+
+        // Capturar el submit del formulario
+        $("#formExistencia").on("submit", function(e) {
+        e.preventDefault();
+        let existencia = $("#existencia").val();
+        let descripcion = $("#descripcion").val();
+
+        alert("Existencia: " + existencia + "\nDescripción: " + descripcion);
+
+        modalExistencia.hide();
+        this.reset();
+        });
     });
 
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Contacto;
 
+use App\Exports\personasExport;
 use App\Http\Controllers\Controller;
 use App\Models\bitacora;
 use App\Models\ciudad;
@@ -28,6 +29,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class personaController extends Controller
 {
@@ -184,7 +186,6 @@ class personaController extends Controller
         $listaPersonas = persona::where('deleted_at', null)->get();
         $listaEstatus = estatus::get();
         $listaColonias = colonia::with('localidades')->paginate(500);
-        return $listaColonias;
 
         $listaEstados = entidad::get();
         $listaMunicipios = municipio::get();
@@ -642,7 +643,7 @@ class personaController extends Controller
     }
 
     function exportarContactos(Request $request){
-        return "AAAAAAAAAAAA";
+         return Excel::download(new personasExport, 'personas.xlsx');
     }
 }
 

@@ -24,6 +24,10 @@ class producto extends Model
         'presentacion'
     ];
 
+    public function pedidos(){
+        return $this->hasMany(pedidoProducto::class, 'producto_id');
+    }
+
     public function categorias(){
         return $this->belongsTo(categoria::class, 'categoria_id');
     }
@@ -38,5 +42,5 @@ class producto extends Model
 
     public function imagenes(){
         return $this->hasMany(imagenProducto::class, 'producto_id');
-    }   
+    }
 }

@@ -52,4 +52,8 @@ class User extends Authenticatable
     public function bitacoras(){
         return $this->hasMany(bitacora::class);
     }
+
+    public function persona(){
+        return $this->belongsTo(persona::class, 'persona_id');
+    }
 }

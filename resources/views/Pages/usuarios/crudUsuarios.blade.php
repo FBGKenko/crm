@@ -110,7 +110,7 @@
                             </div>
 
                             <h4>Roles</h4>
-                            <select class="form-control" name="rolUsuario">
+                            <select class="form-control" id="rolUsuario" name="rolUsuario">
                                 <option value="-1">Selecciona un rol</option>
                                 @foreach ($roles as $rol)
                                     <option value="{{$rol->name}}">{{str_replace('_', ' ', $rol->name)}}</option>
@@ -120,6 +120,19 @@
                                 <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                             <br>
+                            <div id="contenedorUsuario" style="display: none">
+                                <h4>Persona ligada:</h4>
+                                <select class="form-control" name="idDistribuidor">
+                                    <option value="-1">Selecciona un distribuidor</option>
+                                    @foreach ($distribuidores as $distribuidor)
+                                        <option value="{{$distribuidor->id}}">{{$distribuidor->nombre}}</option>
+                                    @endforeach
+                                </select>
+                                @error('rolUsuario')
+                                    <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                @enderror
+                                <br>
+                            </div>
                             <h4>Nivel de acceso</h4>
                             <select class="form-control nivelAcceso" name="nivelAcceso">
                                 <option value="-1">Seleccionar un nivel de acceso</option>
@@ -598,5 +611,15 @@
         });
 
         $('#cambiosToast').show();
+
+        $('#rolUsuario').change(function (e) {
+            var seleccion = $(this).val();
+            if(seleccion == 'DISTRIBUIDOR'){
+                $('#contenedorUsuario').show();
+            }
+            else{
+                $('#contenedorUsuario').hide();
+            }
+        });
     </script>
 @endsection

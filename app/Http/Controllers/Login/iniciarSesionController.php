@@ -41,6 +41,9 @@ class iniciarSesionController extends Controller
                 case 'CONSULTAS':
                     return redirect()->route('crudSimpatizantes.index');
                     break;
+                case 'DISTRIBUIDOR':
+                    return redirect()->route('pedidos.index');
+                    break;
             }
         }
         else{

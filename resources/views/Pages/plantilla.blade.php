@@ -123,6 +123,7 @@
 
                             @endcan --}}
 
+                            @can('crudSimpatizantes.index')
                             <li>
                                 <a href="#submenu3" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                     <i class="fas fa-id-card"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Contactos</span>
@@ -157,6 +158,7 @@
                                     @endcan --}}
                                 </ul>
                             </li>
+                            @endcan
                             {{-- <li>
                                 <a href="#submenu2" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                     <i class="fas fa-balance-scale"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Cotizaciones</span>
@@ -261,6 +263,20 @@
                                         <a class="nav-link" href="{{route('catalogo.index')}}" class="nav-link ">
                                             <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
                                             Catálogo
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endcan
+                        @can('accesoPedidos')
+                            <li>
+                                <a href="#menuPedidos" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
+                                    <i class="fas fa-chart-bar"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Pedidos</span> </a>
+                                <ul class="collapse  nav flex-column ms-1" id="menuPedidos" data-bs-parent="#menu">
+                                    <li class="w-100">
+                                        <a class="nav-link" href="{{route('pedidos.index')}}" class="nav-link ">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-chart-simple"></i></div>
+                                            Pedidos
                                         </a>
                                     </li>
                                 </ul>
